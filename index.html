@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yu-Gi-Oh! Collection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ My Yu-Gi-Oh! Collection</h1>
+        <div class="stats">
+            <div class="stat-item">📦 <span id="totalCardsCount">12</span> Cards</div>
+            <div class="stat-item">⭐ <span id="visibleCardsCount">12</span> Visible</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by name, type, or serial...">
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-pills">
+                <button class="pill" data-filter="monster">Monster</button>
+                <button class="pill" data-filter="spell">Spell</button>
+                <button class="pill" data-filter="trap">Trap</button>
+                <button class="pill" data-filter="rare">Rare Only</button>
+            </div>
+            <button class="clear-btn" id="clearFilters">Clear Filters</button>
+        </div>
+
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="carousel">Carousel</button>
+            <button class="view-btn" data-view="grid">Grid</button>
+        </div>
+    </div>
+
+    <!-- Carousel View -->
+    <div class="carousel-view" id="carouselView">
+        <div class="carousel-container">
+            <div class="carousel-stage" id="carouselStage">
+                <!-- Cards will be injected here -->
+            </div>
+
+            <div class="carousel-controls">
+                <button class="nav-btn" id="prevBtn">‹</button>
+                <div class="card-counter">
+                    <span class="current" id="currentCard">1</span> / <span id="totalCardsCarousel">12</span>
+                </div>
+                <button class="nav-btn" id="nextBtn">›</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid View -->
+    <div class="grid-view" id="gridView">
+        <div class="card-grid" id="cardGrid">
+            <!-- Cards will be injected here -->
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn" id="prevPage">‹</button>
+            <div class="page-info">
+                Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+            </div>
+            <button class="page-btn" id="nextPage">›</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
