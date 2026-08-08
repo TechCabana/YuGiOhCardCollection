@@ -185,8 +185,21 @@ body {
 }
 
 /* Carousel View */
+
+/*
+ * Carousel geometry lives in custom properties so the breakpoints at the end of
+ * this file can resize the whole stage by overriding four values, rather than
+ * restating every transform.
+ */
 .carousel-view {
     display: block;
+
+    --card-width: 350px;
+    --card-height: 500px;
+    --offset-near: 380px;
+    --offset-far: 500px;
+    --stage-height: 550px;
+    --container-height: 650px;
 }
 
 .carousel-view.hidden {
@@ -197,13 +210,13 @@ body {
     position: relative;
     padding: 4rem 0;
     overflow: visible;
-    height: 650px;
+    height: var(--container-height);
 }
 
 .carousel-stage {
     position: relative;
     width: 100%;
-    height: 550px;
+    height: var(--stage-height);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,8 +224,8 @@ body {
 
 .carousel-card {
     position: absolute;
-    width: 350px;
-    height: 500px;
+    width: var(--card-width);
+    height: var(--card-height);
     background: #1a1a2e;
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
@@ -238,14 +251,14 @@ body {
 }
 
 .carousel-card.pos-left {
-    transform: translateX(-500px) translateY(120px) scale(0.7);
+    transform: translateX(calc(var(--offset-far) * -1)) translateY(120px) scale(0.7);
     opacity: 0.3;
     z-index: 1;
     filter: blur(3px);
 }
 
 .carousel-card.pos-center-left {
-    transform: translateX(-380px) translateY(0) scale(0.95);
+    transform: translateX(calc(var(--offset-near) * -1)) translateY(0) scale(0.95);
     opacity: 1;
     z-index: 2;
 }
@@ -259,13 +272,13 @@ body {
 }
 
 .carousel-card.pos-center-right {
-    transform: translateX(380px) translateY(0) scale(0.95);
+    transform: translateX(var(--offset-near)) translateY(0) scale(0.95);
     opacity: 1;
     z-index: 2;
 }
 
 .carousel-card.pos-right {
-    transform: translateX(500px) translateY(120px) scale(0.7);
+    transform: translateX(var(--offset-far)) translateY(120px) scale(0.7);
     opacity: 0.3;
     z-index: 1;
     filter: blur(3px);
@@ -512,4 +525,183 @@ body {
 
 .carousel-card.pos-center .card-image-area {
     animation: float 3s ease-in-out infinite;
+}
+/* ==========================================================================
+   Responsive breakpoints
+
+   Lean pass: restack the controls, meet the 44px touch-target minimum, and
+   make both views usable down to 320px. The filter pills stay as pills — the
+   dropdown treatment belongs with the design system rebuild, which replaces
+   this stylesheet wholesale.
+   ========================================================================== */
+
+/* Tablet and small laptop */
+@media (max-width: 900px) {
+    .header,
+    .controls {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .header h1 {
+        font-size: 1.6rem;
+    }
+
+    /* Shrink the whole carousel by overriding its geometry variables. */
+    .carousel-view {
+        --card-width: 260px;
+        --card-height: 380px;
+        --offset-near: 285px;
+        --offset-far: 380px;
+        --stage-height: 420px;
+        --container-height: 500px;
+    }
+
+    .carousel-container {
+        padding: 2rem 0;
+    }
+
+    .card-image-area {
+        height: 240px;
+        font-size: 3rem;
+    }
+
+    .card-info-area {
+        padding: 1rem;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.2rem;
+    }
+
+    .grid-view {
+        padding: 1.5rem;
+    }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .header h1 {
+        font-size: 1.35rem;
+    }
+
+    .stats {
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    /* Stack the control row: at this width it otherwise becomes an unusable pile. */
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    /*
+     * min-width: 250px on the search box plus the container padding overflows a
+     * 320px viewport. Releasing it lets the field shrink with the column.
+     */
+    .search-box {
+        flex: none;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .filter-pills {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    /* 44px is the minimum comfortable touch target; pills were ~32px. */
+    .pill,
+    .clear-btn,
+    .view-btn {
+        min-height: 44px;
+        font-size: 0.9rem;
+    }
+
+    .view-toggle {
+        justify-content: center;
+    }
+
+    .view-btn {
+        flex: 1;
+    }
+
+    /*
+     * One card at a time. The side slots cannot fit either side of a centred
+     * card at this width without overlapping it.
+     */
+    .carousel-view {
+        --card-width: min(78vw, 300px);
+        --card-height: 420px;
+        --stage-height: 440px;
+        --container-height: 520px;
+    }
+
+    .carousel-card.pos-left,
+    .carousel-card.pos-center-left,
+    .carousel-card.pos-center-right,
+    .carousel-card.pos-right {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(0) scale(0.9);
+    }
+
+    .carousel-card.pos-center {
+        transform: translateX(0) translateY(0) scale(1);
+    }
+
+    .card-image-area {
+        height: 260px;
+    }
+
+    .carousel-controls {
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .nav-btn {
+        width: 52px;
+        height: 52px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .grid-view {
+        padding: 1rem;
+    }
+
+    .grid-card .card-image-area {
+        height: 260px;
+    }
+
+    .status-message {
+        margin: 2rem 1rem;
+    }
+}
+
+/* The float animation assumes the desktop centre transform; skip it on phones. */
+@media (max-width: 640px) {
+    .carousel-card.pos-center .card-image-area {
+        animation: none;
+    }
 }
