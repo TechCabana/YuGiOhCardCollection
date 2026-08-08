@@ -1,278 +1,62 @@
 [
   {
-    "name": "Polymerization",
-    "type": "spell",
-    "rarity": "common",
-    "cardType": "Normal Spell",
-    "serial": "LOB-059",
-    "gradient": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-    "emoji": "🌟",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Spell"
-      },
-      {
-        "label": "Category",
-        "value": "Fusion"
-      },
-      {
-        "label": "Serial",
-        "value": "LOB-059"
-      }
-    ]
-  },
-  {
-    "name": "Dark Magician",
-    "type": "monster",
-    "rarity": "ultra",
+    "atk": 300,
+    "attribute": "Light",
     "cardType": "Spellcaster / Effect",
-    "serial": "LOB-005",
-    "gradient": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-    "emoji": "🐉",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recaJSj5whniIQTRl",
+    "level": 1,
+    "name": "Magician of Faith",
+    "passcode": "31560081",
+    "rarity": "common",
+    "serial": "SDJ-017",
     "stats": [
       {
         "label": "ATK",
-        "value": "2500"
+        "value": "300"
       },
       {
         "label": "DEF",
-        "value": "2100"
+        "value": "400"
       },
       {
         "label": "Level",
-        "value": "⭐7"
+        "value": "⭐1"
       }
-    ]
+    ],
+    "summonType": null,
+    "type": "monster"
   },
   {
-    "name": "Blue-Eyes White Dragon",
-    "type": "monster",
-    "rarity": "secret",
-    "cardType": "Dragon / Normal",
-    "serial": "SDK-001",
-    "gradient": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    "emoji": "🐲",
-    "stats": [
-      {
-        "label": "ATK",
-        "value": "3000"
-      },
-      {
-        "label": "DEF",
-        "value": "2500"
-      },
-      {
-        "label": "Level",
-        "value": "⭐8"
-      }
-    ]
-  },
-  {
-    "name": "Mirror Force",
-    "type": "trap",
-    "rarity": "rare",
-    "cardType": "Normal Trap",
-    "serial": "MRD-138",
-    "gradient": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-    "emoji": "⚡",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Trap"
-      },
-      {
-        "label": "Category",
-        "value": "Normal"
-      },
-      {
-        "label": "Serial",
-        "value": "MRD-138"
-      }
-    ]
-  },
-  {
-    "name": "Red-Eyes Black Dragon",
-    "type": "monster",
-    "rarity": "super",
-    "cardType": "Dragon / Normal",
-    "serial": "LOB-070",
-    "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
-    "emoji": "🔥",
-    "stats": [
-      {
-        "label": "ATK",
-        "value": "2400"
-      },
-      {
-        "label": "DEF",
-        "value": "2000"
-      },
-      {
-        "label": "Level",
-        "value": "⭐7"
-      }
-    ]
-  },
-  {
-    "name": "Mystical Space Typhoon",
-    "type": "spell",
-    "rarity": "rare",
-    "cardType": "Quick-Play Spell",
-    "serial": "MRL-049",
-    "gradient": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
-    "emoji": "🎴",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Spell"
-      },
-      {
-        "label": "Speed",
-        "value": "Quick"
-      },
-      {
-        "label": "Serial",
-        "value": "MRL-049"
-      }
-    ]
-  },
-  {
-    "name": "Exodia the Forbidden One",
-    "type": "monster",
-    "rarity": "ultra",
+    "atk": 300,
+    "attribute": "Light",
     "cardType": "Spellcaster / Effect",
-    "serial": "LOB-124",
-    "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    "emoji": "👁️",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "receCt3faNX0h9T24",
+    "level": 1,
+    "name": "Magician of Faith",
+    "passcode": "31560081",
+    "rarity": "common",
+    "serial": "SD6-EN005",
     "stats": [
       {
         "label": "ATK",
-        "value": "1000"
+        "value": "300"
       },
       {
         "label": "DEF",
-        "value": "1000"
+        "value": "400"
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "⭐1"
       }
-    ]
-  },
-  {
-    "name": "Pot of Greed",
-    "type": "spell",
-    "rarity": "common",
-    "cardType": "Normal Spell",
-    "serial": "LOB-119",
-    "gradient": "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
-    "emoji": "🏺",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Spell"
-      },
-      {
-        "label": "Category",
-        "value": "Draw"
-      },
-      {
-        "label": "Serial",
-        "value": "LOB-119"
-      }
-    ]
-  },
-  {
-    "name": "Torrential Tribute",
-    "type": "trap",
-    "rarity": "super",
-    "cardType": "Normal Trap",
-    "serial": "LON-025",
-    "gradient": "linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%)",
-    "emoji": "🌊",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Trap"
-      },
-      {
-        "label": "Category",
-        "value": "Normal"
-      },
-      {
-        "label": "Serial",
-        "value": "LON-025"
-      }
-    ]
-  },
-  {
-    "name": "Summoned Skull",
-    "type": "monster",
-    "rarity": "rare",
-    "cardType": "Fiend / Normal",
-    "serial": "LOB-017",
-    "gradient": "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
-    "emoji": "💀",
-    "stats": [
-      {
-        "label": "ATK",
-        "value": "2500"
-      },
-      {
-        "label": "DEF",
-        "value": "1200"
-      },
-      {
-        "label": "Level",
-        "value": "⭐6"
-      }
-    ]
-  },
-  {
-    "name": "Monster Reborn",
-    "type": "spell",
-    "rarity": "ultra",
-    "cardType": "Normal Spell",
-    "serial": "LOB-118",
-    "gradient": "linear-gradient(135deg, #faaca8 0%, #ddd6f3 100%)",
-    "emoji": "♻️",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Spell"
-      },
-      {
-        "label": "Category",
-        "value": "Revival"
-      },
-      {
-        "label": "Serial",
-        "value": "LOB-118"
-      }
-    ]
-  },
-  {
-    "name": "Call of the Haunted",
-    "type": "trap",
-    "rarity": "common",
-    "cardType": "Continuous Trap",
-    "serial": "PSV-012",
-    "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
-    "emoji": "📞",
-    "stats": [
-      {
-        "label": "Type",
-        "value": "Trap"
-      },
-      {
-        "label": "Category",
-        "value": "Continuous"
-      },
-      {
-        "label": "Serial",
-        "value": "PSV-012"
-      }
-    ]
+    ],
+    "summonType": null,
+    "type": "monster"
   }
 ]
