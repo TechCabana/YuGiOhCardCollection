@@ -1,6 +1,6 @@
 import { loadCards } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
-import { matchesSearch } from './assets/js/filters.js';
+import { matchesSearch, getCarouselSlots, wrapIndex } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 
 // Populated from data/cards.json once the fetch resolves.
@@ -25,22 +25,21 @@ function updateCarousel() {
         return;
     }
 
-    const positions = ['pos-left', 'pos-center-left', 'pos-center', 'pos-center-right', 'pos-right'];
-    
-    for (let i = -2; i <= 2; i++) {
-        let index = (currentIndex + i + filteredCards.length) % filteredCards.length;
-        const card = filteredCards[index];
+    // Slots narrow below 5 cards instead of wrapping, so no card index repeats.
+    const slots = getCarouselSlots(filteredCards, currentIndex);
+
+    slots.forEach(({ card, index, position, isCenter }) => {
         const cardEl = document.createElement('div');
-        cardEl.className = `carousel-card ${positions[i + 2]}`;
+        cardEl.className = `carousel-card ${position}`;
         cardEl.innerHTML = buildCardHTML(card);
         cardEl.onclick = () => {
-            if (i !== 0) {
+            if (!isCenter) {
                 currentIndex = index;
                 updateCarousel();
             }
         };
         stage.appendChild(cardEl);
-    }
+    });
 
     document.getElementById('currentCard').textContent = currentIndex + 1;
     document.getElementById('totalCardsCarousel').textContent = filteredCards.length;
@@ -151,12 +150,12 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 
 // Carousel navigation
 document.getElementById('prevBtn').addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+    currentIndex = wrapIndex(currentIndex - 1, filteredCards.length);
     updateCarousel();
 });
 
 document.getElementById('nextBtn').addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % filteredCards.length;
+    currentIndex = wrapIndex(currentIndex + 1, filteredCards.length);
     updateCarousel();
 });
 
@@ -180,10 +179,10 @@ document.getElementById('nextPage').addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
     if (currentView === 'carousel') {
         if (e.key === 'ArrowLeft') {
-            currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+            currentIndex = wrapIndex(currentIndex - 1, filteredCards.length);
             updateCarousel();
         } else if (e.key === 'ArrowRight') {
-            currentIndex = (currentIndex + 1) % filteredCards.length;
+            currentIndex = wrapIndex(currentIndex + 1, filteredCards.length);
             updateCarousel();
         }
     }
