@@ -11,13 +11,21 @@
 
 import { escapeHtml } from './filters.js';
 
-/** Human-readable labels for the rarity values used in the data. */
+/**
+ * Human-readable labels for the rarity values used in the data.
+ * Keys mirror RARITY_ORDER in filters.js and the Airtable Rarity options.
+ */
 export const RARITY_LABELS = {
     common: 'Common',
     rare: 'Rare',
     super: 'Super Rare',
     ultra: 'Ultra Rare',
-    secret: 'Secret Rare'
+    ultimate: 'Ultimate Rare',
+    secret: 'Secret Rare',
+    prismatic: 'Prismatic Secret Rare',
+    collector: "Collector's Rare",
+    ghost: 'Ghost Rare',
+    starlight: 'Starlight Rare'
 };
 
 /**
