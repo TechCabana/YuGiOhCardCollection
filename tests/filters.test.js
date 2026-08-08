@@ -6,6 +6,9 @@ import {
     matchesTypes,
     matchesRarities,
     filterCards,
+    getFilterGroup,
+    TYPE_FILTERS,
+    RARITY_FILTERS,
     getTotalPages,
     clampPage,
     getPageSlice,
@@ -208,6 +211,29 @@ describe('filterCards', () => {
 
     it('tolerates a non-array input', () => {
         expect(filterCards(null)).toEqual([]);
+    });
+});
+
+describe('getFilterGroup', () => {
+    it('routes every type pill to the "type" group', () => {
+        TYPE_FILTERS.forEach(filter => {
+            expect(getFilterGroup(filter)).toBe('type');
+        });
+    });
+
+    it('routes every rarity pill to the "rarity" group', () => {
+        RARITY_FILTERS.forEach(filter => {
+            expect(getFilterGroup(filter)).toBe('rarity');
+        });
+    });
+
+    it('returns null for a pill matching neither list', () => {
+        expect(getFilterGroup('unknown')).toBeNull();
+    });
+
+    it('keeps the two groups disjoint', () => {
+        const overlap = TYPE_FILTERS.filter(filter => RARITY_FILTERS.includes(filter));
+        expect(overlap).toEqual([]);
     });
 });
 
