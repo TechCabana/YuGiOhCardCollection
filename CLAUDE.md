@@ -144,13 +144,27 @@ the same rule.
 Three commands drive the board. Each is explicit; never run one unprompted.
 
 ### `process To Do`
+Works a **batch** of up to three cards onto one branch, so the owner reviews a related set
+in one pass rather than card by card.
+
 1. Read every card in **To Do**.
-2. Evaluate and plan all of them first. Present the plan before touching code.
-3. Execute **one card at a time**, in dependency order.
-4. Move a card to **In-Progress** when work on it starts — one card in In-Progress at a
-   time unless told otherwise.
-5. If anything is unclear or ambiguous: **stop and ask. Never assume.**
-   Raise the question on the card (see §7) and move to the next card rather than guessing.
+2. Evaluate and plan all of them first. **Present the plan before touching code**, naming
+   which cards are in the batch and why the batch stops where it does.
+3. Create one branch for the batch, named after the first card (§6.1 rule 7).
+4. Work the cards **in dependency order, one at a time**, moving each to **In-Progress** as
+   it starts and leaving it there until the batch reaches Review.
+5. **One commit per card**, each a self-contained Conventional Commit naming what it changed.
+   Never squash two cards into one commit — the per-card history is what makes the batch
+   reviewable and what lets a single card be revised later.
+6. Stop and hand over when any of these is true (§6.1 rule 2):
+   - three cards are done
+   - the next card depends on something not yet merged
+   - the next card needs an owner decision
+   - the diff has grown too large to review well
+7. Run the Fable review gate (§6.2) over the whole batch, open **one PR**, then move every
+   card in the batch to **Review**.
+8. If anything is unclear or ambiguous: **stop and ask. Never assume.** Raise the question on
+   that card (§7), leave it in To Do, and carry on with the next card in the batch.
 
 ### `process In-Progress`
 1. Read the owner's answers on each In-Progress card.
@@ -161,12 +175,18 @@ Three commands drive the board. Each is explicit; never run one unprompted.
    card go to **Review**.
 
 ### `process Review`
+Approval is **per card**, merging is **per batch**.
+
 1. Check each card in **Review** for a verdict from the owner.
-2. **Approval** is the word `approve` / `approved` / `Approved` in any casing.
-3. For approved cards only: merge the branch into `main`, which triggers the Pages deploy.
-4. Move the card to **Done**.
-5. Leave cards with no verdict in Review, untouched.
-6. Cards with a **changes-requested** verdict follow §6.1 rule 1.
+2. **Approval** is the word `approve` / `approved` / `Approved`, any casing.
+3. Group the cards by the PR they belong to.
+4. Merge a PR only when **every card in that batch is approved**. Merging triggers the Pages
+   deploy. Move all of the batch's cards to **Done**.
+5. If any card in a batch has a **changes-requested** verdict, **hold the entire PR** — do not
+   merge, do not split the branch. Follow §6.1 rule 1 for that card only.
+6. If some cards are approved and others have no verdict yet, do nothing and say which cards
+   are still waiting.
+7. Cards in a batch that is on hold stay in Review, except the one being reworked.
 
 ### `audit project`
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
@@ -194,19 +214,29 @@ These are settled. Follow them without asking.
 **1. Changes-requested path.**
 Any verdict on a Review card that is *not* an approval is treated as changes requested.
 On `process Review`:
-- Move the card back to **In-Progress**
-- Leave the branch and PR **open** — never close or delete them, push follow-up commits
-  to the same branch so the PR history stays intact
+- Move **that card only** back to **In-Progress**. The rest of its batch stays in Review.
+- **Hold the whole PR.** Do not merge it, even if every other card in the batch is approved,
+  and never rebase or split the rejected card out — the batch stays atomic.
+- Leave the branch and PR **open** — never close or delete them. Follow-up work is new
+  commits on the same branch, so the PR history and the owner's review threads survive.
 - Record the requested changes in the card description under a `## 🔄 CHANGES REQUESTED`
-  heading, so the ask survives across sessions
-- The card is then picked up by the next `process In-Progress`, which addresses the
-  feedback, pushes to the same branch, and moves the card back to **Review**
-- A card may cycle Review ↔ In-Progress any number of times
+  heading, so the ask survives across sessions.
+- The next `process In-Progress` addresses the feedback, pushes to the same branch, re-runs
+  the Fable gate, and moves the card back to **Review**.
+- The owner then approves that card, and the full batch merges together.
+- A card may cycle Review ↔ In-Progress any number of times.
 
-**2. WIP limit: one card in In-Progress at a time.**
-`process To Do` plans every card in To Do but executes them strictly one at a time.
-Finish or block the current card before starting the next. Blocked cards do not count
-against the limit — a card awaiting an answer parks in In-Progress and the next card starts.
+**2. Batch size: a hard cap of three cards per PR.**
+`process To Do` batches up to three cards onto one branch so a related set is reviewed
+together. Never exceed three, even when the cards look small.
+
+Stop short of three whenever the next card depends on something unmerged, needs an owner
+decision, or would push the diff past what can be reviewed carefully. State where the batch
+stops, and why, in the plan before starting.
+
+Cards are still built **one at a time in dependency order**, with **one commit per card**.
+A blocked card does not consume a batch slot — leave it in To Do with a question comment and
+move to the next card.
 
 **3. Test harness comes first.**
 The Vitest harness card is promoted ahead of the bug fixes it validates. Until it exists,
@@ -322,8 +352,10 @@ test: cover filter group AND/OR combinations
 chore: add .nojekyll and .gitignore
 ```
 
-**PRs:** one card per PR. Body states what changed, why, how it was tested, and links the
-Trello card. Write the PR URL back into the card description so the link survives the session.
+**PRs:** one **batch** per PR, up to three cards (§6.1 rule 2). The body carries a section per
+card — what changed, why, how it was tested — and links every Trello card in the batch. Write
+the PR URL back into each card's description so the link survives the session. Name which
+model did the work (§6.2).
 
 **Testing is not optional.** Every behavioural change ships with unit tests (Vitest).
 Extract pure logic out of DOM handlers so it is testable. Report test results honestly —
