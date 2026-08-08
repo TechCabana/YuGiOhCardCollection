@@ -1,0 +1,43 @@
+name: CI
+
+# Gate for pull requests targeting main: install dependencies and run the
+# Vitest suite. A red build here can block merge in Trello `process Review`
+# (CLAUDE.md §6.1 rule 4), and the "Run tests" job below is the name to add
+# as a required status check once the owner enables that in branch
+# protection.
+#
+# Loop guard: this workflow listens for `pull_request` only — there is no
+# `push` trigger. sync-airtable.yml commits straight to `main` on a
+# schedule/workflow_dispatch and never opens a PR, so that commit cannot
+# fire a `pull_request` event and this workflow never runs for it. The
+# `[skip ci]` tag on that commit is belt-and-braces; the event-type mismatch
+# is what actually prevents the run.
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
