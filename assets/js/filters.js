@@ -6,8 +6,25 @@
  * writing the result to the page.
  */
 
-/** Rarity tiers in ascending order. Index position defines "rare or better". */
-export const RARITY_ORDER = ['common', 'rare', 'super', 'ultra', 'secret'];
+/**
+ * Rarity tiers in ascending scarcity. Index position defines "rare or better",
+ * so the order matters — do not sort this alphabetically.
+ *
+ * Mirrors the Rarity options in the Airtable base. A value missing from this
+ * list is rejected by any active rarity filter, so both must be kept in step.
+ */
+export const RARITY_ORDER = [
+    'common',
+    'rare',
+    'super',
+    'ultra',
+    'ultimate',
+    'secret',
+    'prismatic',
+    'collector',
+    'ghost',
+    'starlight'
+];
 
 /** Lowest tier that the "Rare Only" filter accepts. */
 const RARE_THRESHOLD = RARITY_ORDER.indexOf('rare');
