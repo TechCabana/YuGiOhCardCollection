@@ -1,0 +1,25 @@
+{
+  "name": "yugioh-card-collection",
+  "version": "0.1.0",
+  "description": "Static Yu-Gi-Oh! card collection site, data synced from Airtable at build time.",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TechCabana/YuGiOhCardCollection.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/TechCabana/YuGiOhCardCollection/issues"
+  },
+  "homepage": "https://github.com/TechCabana/YuGiOhCardCollection#readme",
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  },
+  "private": true
+}
