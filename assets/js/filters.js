@@ -29,6 +29,33 @@ export const RARITY_ORDER = [
 /** Lowest tier that the "Rare Only" filter accepts. */
 const RARE_THRESHOLD = RARITY_ORDER.indexOf('rare');
 
+/**
+ * Pill data-filter values that belong to the "type" group.
+ *
+ * Kept as a constant so the click handler routes pills into the right group
+ * (type vs rarity) by lookup instead of hardcoding per-value checks — adding a
+ * new type pill only means updating this list.
+ */
+export const TYPE_FILTERS = ['monster', 'spell', 'trap'];
+
+/** Pill data-filter values that belong to the "rarity" group. */
+export const RARITY_FILTERS = ['rare'];
+
+/**
+ * Determine which filter group a pill's data-filter value belongs to.
+ *
+ * Groups combine with AND (see filterCards), so routing a pill into the wrong
+ * group — or into a single flat set — silently changes filter semantics.
+ *
+ * @param {string} filter - a pill's data-filter value
+ * @returns {'type'|'rarity'|null} the group name, or null for an unknown pill
+ */
+export function getFilterGroup(filter) {
+    if (TYPE_FILTERS.includes(filter)) return 'type';
+    if (RARITY_FILTERS.includes(filter)) return 'rarity';
+    return null;
+}
+
 /** Carousel slot classes, ordered from leftmost to rightmost. */
 export const CAROUSEL_POSITIONS = [
     'pos-left',
