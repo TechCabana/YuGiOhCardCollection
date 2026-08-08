@@ -54,6 +54,11 @@ describe('escapeHtml', () => {
         expect(escapeHtml(undefined)).toBe('');
     });
 
+    it('coerces non-string values to strings before escaping', () => {
+        expect(escapeHtml(42)).toBe('42');
+        expect(escapeHtml(true)).toBe('true');
+    });
+
     it('leaves ordinary card names untouched', () => {
         expect(escapeHtml('Blue-Eyes White Dragon')).toBe('Blue-Eyes White Dragon');
     });
@@ -133,6 +138,21 @@ describe('matchesRarities', () => {
     it('rejects an unknown rarity when a constraint is active', () => {
         expect(matchesRarities({ rarity: 'promo' }, ['rare'])).toBe(false);
     });
+
+    // Every other test above only exercises the "rare" threshold branch (or the
+    // tier === -1 early return). This covers the exact-match branch used for any
+    // other rarity pill, so a regression there wouldn't slip through untested.
+    it('exact-matches a non-"rare" rarity constraint rather than treating it as a threshold', () => {
+        expect(matchesRarities({ rarity: 'ultra' }, ['ultra'])).toBe(true);
+        expect(matchesRarities({ rarity: 'secret' }, ['ultra'])).toBe(false);
+        expect(matchesRarities({ rarity: 'super' }, ['ultra'])).toBe(false);
+    });
+
+    it('ORs multiple non-"rare" rarity selections together', () => {
+        expect(matchesRarities({ rarity: 'common' }, ['common', 'ultra'])).toBe(true);
+        expect(matchesRarities({ rarity: 'ultra' }, ['common', 'ultra'])).toBe(true);
+        expect(matchesRarities({ rarity: 'super' }, ['common', 'ultra'])).toBe(false);
+    });
 });
 
 describe('filterCards', () => {
@@ -162,6 +182,13 @@ describe('filterCards', () => {
         ]);
         expect(names(result)).not.toContain('Mirror Force');
         expect(names(result)).not.toContain('Pot of Greed');
+    });
+
+    // Proves the AND-across-groups fix also holds for the exact-match rarity
+    // branch, not just the "rare" threshold branch exercised above.
+    it('ANDs a type filter with an exact (non-threshold) rarity filter', () => {
+        const result = filterCards(cards, { types: ['spell'], rarities: ['common'] });
+        expect(names(result)).toEqual(['Pot of Greed']);
     });
 
     it('ANDs the search term on top of the pills', () => {
