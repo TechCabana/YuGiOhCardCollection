@@ -10,8 +10,10 @@ name: CI
 # `push` trigger. sync-airtable.yml commits straight to `main` on a
 # schedule/workflow_dispatch and never opens a PR, so that commit cannot
 # fire a `pull_request` event and this workflow never runs for it. The
-# `[skip ci]` tag on that commit is belt-and-braces; the event-type mismatch
-# is what actually prevents the run.
+# sync commit deliberately carries no `[skip ci]` tag: that string skips
+# every push/pull_request workflow repo-wide for the commit, which would
+# also block pages.yml's push-triggered deploy — the event-type mismatch
+# above is what actually (and safely) prevents this workflow from firing.
 
 on:
   pull_request:
