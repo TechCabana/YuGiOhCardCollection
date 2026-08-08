@@ -1,13 +1,16 @@
 import { loadCards } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
-import { matchesSearch, getCarouselSlots, wrapIndex } from './assets/js/filters.js';
+import { filterCards, getFilterGroup, getCarouselSlots, wrapIndex } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 
 // Populated from data/cards.json once the fetch resolves.
 let allCards = [];
 let filteredCards = [];
 let currentIndex = 0;
-let activeFilters = new Set();
+// Two groups so filters AND across groups (type AND rarity) but OR within a
+// group (monster OR spell) — see filterCards() in assets/js/filters.js.
+let activeTypeFilters = new Set();
+let activeRarityFilters = new Set();
 let currentView = 'carousel';
 let currentPage = 1;
 const cardsPerPage = 18;
@@ -73,19 +76,13 @@ function updateGrid() {
 }
 
 function applyFilters() {
-    filteredCards = allCards.filter(card => {
-        if (activeFilters.size === 0) return true;
-
-        return Array.from(activeFilters).some(filter => {
-            if (filter === 'monster') return card.type === 'monster';
-            if (filter === 'spell') return card.type === 'spell';
-            if (filter === 'trap') return card.type === 'trap';
-            if (filter === 'rare') return ['rare', 'super', 'ultra', 'secret'].includes(card.rarity);
-            return false;
-        });
-    // The search term ANDs on top of whatever the pill logic above produced,
-    // it does not change how the pills combine with each other.
-    }).filter(card => matchesSearch(card, searchQuery));
+    // Types and rarities AND against each other; values inside each group OR.
+    // The search term ANDs on top of both, all handled inside filterCards().
+    filteredCards = filterCards(allCards, {
+        types: Array.from(activeTypeFilters),
+        rarities: Array.from(activeRarityFilters),
+        query: searchQuery
+    });
 
     currentIndex = 0;
     currentPage = 1;
@@ -104,11 +101,25 @@ function applyFilters() {
 document.querySelectorAll('.pill').forEach(pill => {
     pill.addEventListener('click', () => {
         const filter = pill.dataset.filter;
-        if (activeFilters.has(filter)) {
-            activeFilters.delete(filter);
+        // Route the pill into its group so it ANDs against the other group
+        // instead of OR-ing into one flat set (the original bug). A pill
+        // matching neither constant list is a markup error, not a filter.
+        const filterGroup = getFilterGroup(filter);
+        let group;
+        if (filterGroup === 'type') {
+            group = activeTypeFilters;
+        } else if (filterGroup === 'rarity') {
+            group = activeRarityFilters;
+        } else {
+            console.warn(`Unrecognised filter pill: "${filter}"`);
+            return;
+        }
+
+        if (group.has(filter)) {
+            group.delete(filter);
             pill.classList.remove('active');
         } else {
-            activeFilters.add(filter);
+            group.add(filter);
             pill.classList.add('active');
         }
         applyFilters();
@@ -116,7 +127,8 @@ document.querySelectorAll('.pill').forEach(pill => {
 });
 
 document.getElementById('clearFilters').addEventListener('click', () => {
-    activeFilters.clear();
+    activeTypeFilters.clear();
+    activeRarityFilters.clear();
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     searchQuery = '';
     document.getElementById('searchInput').value = '';
