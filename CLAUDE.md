@@ -10,9 +10,13 @@ Read this first in every session.
 A lightweight **static site on GitHub Pages** that displays a personal Yu-Gi-Oh! card
 collection. Card data lives in **Airtable** and is pulled into the repo at build time.
 
-- **Repo:** `TechCabana/YuGiOhCardCollection` (`origin`, branch `main`)
+- **Repo:** `TechCabana/YuGiOhCardCollection` (`origin`, branch `main`) — **public**
+- **Live site:** https://techcabana.github.io/YuGiOhCardCollection/
 - **Trello board:** https://trello.com/b/l9T2n1MM/yugioh
 - **Owner:** Ankhit Sharma (Trello `@ankhitsharma1`, timezone `Europe/London`)
+
+The repo is public. This is precisely why the Airtable token must never reach client-side
+code — see §3.
 
 **Goals, in priority order**
 1. Stays genuinely lightweight and static — no runtime backend, no framework
@@ -280,14 +284,31 @@ REST API is used instead, with credentials from `.env`. Post, read and delete we
 verified against a live card. Use the MCP for cards, lists, labels and moves; use REST only
 for comments. §6 and §7 work exactly as specified.
 
-**✅ `gh` CLI — installed**, v2.97.0, at `C:\Program Files\GitHub CLI\gh.exe`.
+**✅ `gh` CLI — installed and authenticated.** v2.97.0 at `C:\Program Files\GitHub CLI\gh.exe`.
+Account `TechCabana`, permission `ADMIN`, scopes `gist`, `read:org`, `repo`, `workflow`.
+The token lives in the **Windows keyring**, not `hosts.yml` — that file does not exist and its
+absence proves nothing. Always check with `gh auth status`, never by looking for the file.
 
-**⚠️ `gh` not authenticated.** `gh auth status` reports no logged-in host. PR creation in
-`process In-Progress` will fail until the owner runs `gh auth login` — it is interactive and
-cannot be automated. Fallback until then: push the branch and hand over the compare URL.
+**✅ GitHub Pages — enabled** 2026-08-08. Source: branch `main`, path `/`, HTTPS enforced,
+`build_type: legacy`. Serving at https://techcabana.github.io/YuGiOhCardCollection/
+When the Actions-based deploy workflow lands, switch `build_type` to `workflow`.
+
+**✅ Branch protection on `main` — enabled** 2026-08-08:
+
+| Setting | Value | Why |
+|---|---|---|
+| Require a PR before merging | yes | enforces §6.1 rule 5 |
+| Required approving reviews | **0** | GitHub forbids self-approval and `TechCabana` is the only account; requiring 1 would deadlock every PR. Approval lives in Trello, not GitHub. |
+| Enforce for admins | **false** | prevents lockout; admins can bypass in an emergency |
+| Force pushes / deletions | blocked | protects history, supports the revert-based rollback in rule 6 |
+| Conversation resolution | required | review threads must be resolved before merge |
+| Required status checks | none yet | add once the CI workflow exists — see §6.1 rule 4 |
 
 **Environment:** Node v24.16.0, npm 11.13.0. No test runner installed yet — the Vitest
 harness is the first card in To Do.
+
+**Nothing is blocking work.** Trello comments, PR creation, git, Pages and branch protection
+are all functional as of 2026-08-08.
 
 ### Credential handling
 
