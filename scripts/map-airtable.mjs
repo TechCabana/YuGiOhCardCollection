@@ -14,7 +14,7 @@
  * The repo is public, so anything published is world-readable. These are
  * inventory and valuation details rather than card properties.
  */
-export const PRIVATE_FIELDS = ['Condition', 'Quantity'];
+export const PRIVATE_FIELDS = ['Condition', 'Quantity', 'Set Price'];
 
 /** Airtable Type display value to the lowercase key the filters use. */
 const TYPE_MAP = {
