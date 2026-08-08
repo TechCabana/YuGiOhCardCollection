@@ -1,4 +1,5 @@
 import { loadCards } from './assets/js/data.js';
+import { buildCardHTML } from './assets/js/render.js';
 
 // Populated from data/cards.json once the fetch resolves.
 let allCards = [];
@@ -9,36 +10,6 @@ let currentView = 'carousel';
 let currentPage = 1;
 const cardsPerPage = 18;
 
-const rarityMap = {
-    'common': 'Common',
-    'rare': 'Rare',
-    'super': 'Super Rare',
-    'ultra': 'Ultra Rare',
-    'secret': 'Secret Rare'
-};
-
-function createCardHTML(card, isGrid = false) {
-    const statsHTML = card.stats.map(stat => `
-        <div class="stat-box">
-            <div class="stat-label">${stat.label}</div>
-            <div class="stat-value" style="${stat.label === 'Serial' ? 'font-size: 0.8rem;' : ''}">${stat.value}</div>
-        </div>
-    `).join('');
-
-    return `
-        <div class="card-image-area" style="background: ${card.gradient};">
-            ${card.emoji}
-            <div class="rarity-badge">${rarityMap[card.rarity]}</div>
-        </div>
-        <div class="card-info-area">
-            <div class="card-name">${card.name}</div>
-            <div class="card-type">${card.cardType}</div>
-            <div class="card-stats-grid">
-                ${statsHTML}
-            </div>
-        </div>
-    `;
-}
 
 function updateCarousel() {
     const stage = document.getElementById('carouselStage');
@@ -56,7 +27,7 @@ function updateCarousel() {
         const card = filteredCards[index];
         const cardEl = document.createElement('div');
         cardEl.className = `carousel-card ${positions[i + 2]}`;
-        cardEl.innerHTML = createCardHTML(card);
+        cardEl.innerHTML = buildCardHTML(card);
         cardEl.onclick = () => {
             if (i !== 0) {
                 currentIndex = index;
@@ -87,7 +58,7 @@ function updateGrid() {
     pageCards.forEach(card => {
         const cardEl = document.createElement('div');
         cardEl.className = 'grid-card';
-        cardEl.innerHTML = createCardHTML(card, true);
+        cardEl.innerHTML = buildCardHTML(card);
         grid.appendChild(cardEl);
     });
 
