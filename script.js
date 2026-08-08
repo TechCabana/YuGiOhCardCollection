@@ -1,5 +1,7 @@
 import { loadCards } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
+import { matchesSearch } from './assets/js/filters.js';
+import { debounce } from './assets/js/debounce.js';
 
 // Populated from data/cards.json once the fetch resolves.
 let allCards = [];
@@ -9,6 +11,9 @@ let activeFilters = new Set();
 let currentView = 'carousel';
 let currentPage = 1;
 const cardsPerPage = 18;
+
+// Free-text search term, combined on top of the pill filters in applyFilters().
+let searchQuery = '';
 
 
 function updateCarousel() {
@@ -79,7 +84,9 @@ function applyFilters() {
             if (filter === 'rare') return ['rare', 'super', 'ultra', 'secret'].includes(card.rarity);
             return false;
         });
-    });
+    // The search term ANDs on top of whatever the pill logic above produced,
+    // it does not change how the pills combine with each other.
+    }).filter(card => matchesSearch(card, searchQuery));
 
     currentIndex = 0;
     currentPage = 1;
@@ -112,9 +119,16 @@ document.querySelectorAll('.pill').forEach(pill => {
 document.getElementById('clearFilters').addEventListener('click', () => {
     activeFilters.clear();
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
 });
+
+// Live search: debounced so filtering/re-render doesn't run on every keystroke.
+document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+    searchQuery = e.target.value;
+    applyFilters();
+}, 150));
 
 // View toggle
 document.querySelectorAll('.view-btn').forEach(btn => {
