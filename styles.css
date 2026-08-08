@@ -546,12 +546,23 @@ body {
         font-size: 1.6rem;
     }
 
-    /* Shrink the whole carousel by overriding its geometry variables. */
+    /*
+     * Shrink the whole carousel by overriding its geometry variables.
+     *
+     * offset-near/far scale with viewport width instead of a fixed px value:
+     * fixed 285px/380px offsets fit at 900px but overflow the stage (and get
+     * silently clipped by body's overflow-x: hidden) once the width drops
+     * toward the low end of this bracket. The vw ratios are sized against the
+     * narrowest width this rule governs (641px, just above the phone
+     * breakpoint) so the far card's scaled edge always stays inside the
+     * viewport; the px cap only matters above 900px, where this rule no
+     * longer applies anyway.
+     */
     .carousel-view {
         --card-width: 260px;
         --card-height: 380px;
-        --offset-near: 285px;
-        --offset-far: 380px;
+        --offset-near: min(28vw, 285px);
+        --offset-far: min(32vw, 380px);
         --stage-height: 420px;
         --container-height: 500px;
     }
