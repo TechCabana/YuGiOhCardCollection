@@ -258,7 +258,9 @@ document.getElementById('prevPage').addEventListener('click', () => {
 });
 
 document.getElementById('nextPage').addEventListener('click', () => {
-    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+    // Reuse getTotalPages rather than a second hand-rolled Math.ceil, so the
+    // two page-count computations in this file cannot drift apart.
+    const totalPages = getTotalPages(filteredCards.length, cardsPerPage);
     if (currentPage < totalPages) {
         currentPage++;
         updateGrid();
