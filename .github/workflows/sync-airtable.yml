@@ -61,6 +61,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/cards.json
-          # [skip ci] stops this commit retriggering the PR test workflow.
-          git commit -m "chore: sync collection from Airtable [skip ci]"
+          # No [skip ci] here: that string skips every push/pull_request-triggered
+          # workflow for the commit, not just this one. ci.yml only listens on
+          # pull_request, so a direct push can never retrigger it (event-type
+          # mismatch alone is sufficient). pages.yml *does* listen on push to
+          # main and is the whole reason this commit exists — [skip ci] would
+          # silently stop the deploy once build_type flips to "workflow".
+          git commit -m "chore: sync collection from Airtable"
           git push

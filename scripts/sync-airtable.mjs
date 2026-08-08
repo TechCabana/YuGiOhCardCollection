@@ -15,6 +15,7 @@
  */
 
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { mapRecords, assertNoPrivateFields } from './map-airtable.mjs';
 
 const OUTPUT_PATH = 'data/cards.json';
@@ -44,9 +45,10 @@ function requireEnv(name) {
  * @param {string} baseId - Airtable base id
  * @param {string} tableId - Airtable table id
  * @param {string} token - Airtable personal access token
+ * @param {typeof fetch} [fetchImpl] - injectable fetch, used by tests
  * @returns {Promise<object[]>} every record in the table
  */
-async function fetchAllRecords(baseId, tableId, token) {
+export async function fetchAllRecords(baseId, tableId, token, fetchImpl = globalThis.fetch) {
     const records = [];
     let offset;
     let page = 0;
@@ -56,7 +58,7 @@ async function fetchAllRecords(baseId, tableId, token) {
         url.searchParams.set('pageSize', String(PAGE_SIZE));
         if (offset) url.searchParams.set('offset', offset);
 
-        const response = await fetch(url, {
+        const response = await fetchImpl(url, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -92,7 +94,7 @@ async function fetchAllRecords(baseId, tableId, token) {
  * @param {object[]} cards - mapped cards
  * @returns {string} JSON text with a trailing newline
  */
-function serialise(cards) {
+export function serialise(cards) {
     const ordered = cards.map(card =>
         Object.fromEntries(Object.keys(card).sort().map(key => [key, card[key]]))
     );
@@ -137,7 +139,16 @@ async function main() {
     console.log(`Wrote ${cards.length} card(s) to ${OUTPUT_PATH}.`);
 }
 
-main().catch(error => {
-    console.error(`Sync failed: ${error.message}`);
-    process.exit(1);
-});
+// Only run when executed directly (`node scripts/sync-airtable.mjs`), never on
+// import. Tests import fetchAllRecords/serialise for coverage; without this
+// guard that import would also fire a real Airtable fetch and file write as a
+// side effect of merely loading the module. pathToFileURL (rather than a
+// manual "file://" + path string) handles Windows drive letters and slash
+// direction correctly.
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirectRun) {
+    main().catch(error => {
+        console.error(`Sync failed: ${error.message}`);
+        process.exit(1);
+    });
+}
