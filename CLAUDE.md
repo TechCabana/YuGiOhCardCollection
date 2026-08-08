@@ -115,10 +115,11 @@ Lists: **Backlog → To Do → In-Progress → Review → Done**
 All 31 cards start in Backlog, ordered by build sequence (position 1 → 31).
 Dependencies point backwards only, so pulling from the top never blocks.
 
-Labels are colour-only (the Trello MCP cannot rename labels). Each card also states its
-domain on the first line of its description, which is the authoritative mapping:
+Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST API
+(`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
+a name and colour. Every card also states its domain on the first line of its description.
 
-| Colour | Domain | Cards |
+| Colour | Label name | Cards |
 |---|---|---|
 | Blue | Data & Airtable | 5 |
 | Red | Bugs & Correctness | 8 |
@@ -126,6 +127,9 @@ domain on the first line of its description, which is the authoritative mapping:
 | Purple | Accessibility | 4 |
 | Orange | UI Design System | 5 |
 | Green | Repo & Tooling | 6 |
+
+Every new card must carry exactly one domain label. Cards created by `audit project` follow
+the same rule.
 
 **Gating cards** — these unblock others, do them early:
 1. Extract card data to `data/cards.json`
@@ -140,27 +144,66 @@ domain on the first line of its description, which is the authoritative mapping:
 Three commands drive the board. Each is explicit; never run one unprompted.
 
 ### `process To Do`
+Works a **batch** of up to three cards onto one branch, so the owner reviews a related set
+in one pass rather than card by card.
+
 1. Read every card in **To Do**.
-2. Evaluate and plan all of them first. Present the plan before touching code.
-3. Execute **one card at a time**, in dependency order.
-4. Move a card to **In-Progress** when work on it starts — one card in In-Progress at a
-   time unless told otherwise.
-5. If anything is unclear or ambiguous: **stop and ask. Never assume.**
-   Raise the question on the card (see §7) and move to the next card rather than guessing.
+2. Evaluate and plan all of them first. **Present the plan before touching code**, naming
+   which cards are in the batch and why the batch stops where it does.
+3. Create one branch for the batch, named after the first card (§6.1 rule 7).
+4. Work the cards **in dependency order, one at a time**, moving each to **In-Progress** as
+   it starts and leaving it there until the batch reaches Review.
+5. **One commit per card**, each a self-contained Conventional Commit naming what it changed.
+   Never squash two cards into one commit — the per-card history is what makes the batch
+   reviewable and what lets a single card be revised later.
+6. Stop and hand over when any of these is true (§6.1 rule 2):
+   - three cards are done
+   - the next card depends on something not yet merged
+   - the next card needs an owner decision
+   - the diff has grown too large to review well
+7. Run the Fable review gate (§6.2) over the whole batch, open **one PR**, then move every
+   card in the batch to **Review**.
+8. If anything is unclear or ambiguous: **stop and ask. Never assume.** Raise the question on
+   that card (§7), leave it in To Do, and carry on with the next card in the batch.
 
 ### `process In-Progress`
 1. Read the owner's answers on each In-Progress card.
 2. Resume development from where it stopped.
 3. Finish the card, including unit tests.
-4. Move the card to **Review**, commit, push a branch, and open a PR.
+4. Commit, push a branch, and open a PR.
+5. **Run the Fable review gate (§6.2) before the card moves.** Only after it passes does the
+   card go to **Review**.
 
 ### `process Review`
+Approval is **per card**, merging is **per batch**.
+
 1. Check each card in **Review** for a verdict from the owner.
-2. **Approval** is the word `approve` / `approved` / `Approved` in any casing.
-3. For approved cards only: merge the branch into `main`, which triggers the Pages deploy.
-4. Move the card to **Done**.
-5. Leave cards with no verdict in Review, untouched.
-6. Cards with a **changes-requested** verdict follow §6.1 rule 1.
+2. **Approval** is the word `approve` / `approved` / `Approved`, any casing.
+3. Group the cards by the PR they belong to.
+4. Merge a PR only when **every card in that batch is approved**. Merging triggers the Pages
+   deploy. Move all of the batch's cards to **Done**.
+5. If any card in a batch has a **changes-requested** verdict, **hold the entire PR** — do not
+   merge, do not split the branch. Follow §6.1 rule 1 for that card only.
+6. If some cards are approved and others have no verdict yet, do nothing and say which cards
+   are still waiting.
+7. Cards in a batch that is on hold stay in Review, except the one being reworked.
+
+### `audit project`
+Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
+
+1. Read the current repo state, the merged PRs, and every card across all five lists.
+2. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
+   and the design rules (§4).
+3. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
+   regressions, dropped follow-ups, missing tests, and anything a merged PR promised but did
+   not actually deliver.
+4. For each real gap, create a card in **Backlog** with a domain label (§5), a description
+   carrying `file:line` evidence, and a `**Done when:**` line.
+5. Do **not** duplicate an existing card — check all five lists first, and extend the
+   existing card instead where one already covers the ground.
+6. Report a summary in chat: what is on track, what has drifted, which cards were created.
+
+Creates cards only. Never edits code, never moves cards between lists, never merges.
 
 ---
 
@@ -171,19 +214,29 @@ These are settled. Follow them without asking.
 **1. Changes-requested path.**
 Any verdict on a Review card that is *not* an approval is treated as changes requested.
 On `process Review`:
-- Move the card back to **In-Progress**
-- Leave the branch and PR **open** — never close or delete them, push follow-up commits
-  to the same branch so the PR history stays intact
+- Move **that card only** back to **In-Progress**. The rest of its batch stays in Review.
+- **Hold the whole PR.** Do not merge it, even if every other card in the batch is approved,
+  and never rebase or split the rejected card out — the batch stays atomic.
+- Leave the branch and PR **open** — never close or delete them. Follow-up work is new
+  commits on the same branch, so the PR history and the owner's review threads survive.
 - Record the requested changes in the card description under a `## 🔄 CHANGES REQUESTED`
-  heading, so the ask survives across sessions
-- The card is then picked up by the next `process In-Progress`, which addresses the
-  feedback, pushes to the same branch, and moves the card back to **Review**
-- A card may cycle Review ↔ In-Progress any number of times
+  heading, so the ask survives across sessions.
+- The next `process In-Progress` addresses the feedback, pushes to the same branch, re-runs
+  the Fable gate, and moves the card back to **Review**.
+- The owner then approves that card, and the full batch merges together.
+- A card may cycle Review ↔ In-Progress any number of times.
 
-**2. WIP limit: one card in In-Progress at a time.**
-`process To Do` plans every card in To Do but executes them strictly one at a time.
-Finish or block the current card before starting the next. Blocked cards do not count
-against the limit — a card awaiting an answer parks in In-Progress and the next card starts.
+**2. Batch size: a hard cap of three cards per PR.**
+`process To Do` batches up to three cards onto one branch so a related set is reviewed
+together. Never exceed three, even when the cards look small.
+
+Stop short of three whenever the next card depends on something unmerged, needs an owner
+decision, or would push the diff past what can be reviewed carefully. State where the batch
+stops, and why, in the plan before starting.
+
+Cards are still built **one at a time in dependency order**, with **one commit per card**.
+A blocked card does not consume a batch slot — leave it in To Do with a question comment and
+move to the next card.
 
 **3. Test harness comes first.**
 The Vitest harness card is promoted ahead of the bug fixes it validates. Until it exists,
@@ -211,6 +264,44 @@ a force-push or a history rewrite. Tag known-good states once the site is live.
 - The PR URL is written back into the card description under a `## 🔗 PR` heading
 Nothing else connects a card to its code across sessions — if the link is missing, the
 next session cannot find the work.
+
+---
+
+## 6.2 Model assignment
+
+Different stages run on different models. Delegate with the `Agent` tool, passing the
+`model` parameter.
+
+| Stage | Model | Why |
+|---|---|---|
+| Planning, architecture, tricky refactors, design system work | **Opus 5**, high effort | Judgement-heavy, cross-file reasoning |
+| Well-specified single-card implementation, mechanical refactors, test writing | **Sonnet 5**, high effort | Faster on bounded work with a clear spec |
+| Review gate and `audit project` | **Fable** | Independent reviewer; must not be the model that wrote the code |
+
+Choose Opus vs Sonnet per task. Default to Opus when the card is ambiguous, spans several
+files, or involves a design decision; Sonnet when the card reads like a spec and the diff is
+predictable. State which model was used in the PR body.
+
+### The Fable review gate
+
+Runs when a card is finished and its PR is open, **before** the card moves to Review.
+Fable must not be the model that wrote the code — the point is an independent pass.
+
+Fable's remit:
+1. Run the test suite and report the real result — never assume green.
+2. Audit the PR against the card's `**Done when:**` line, against §3, §4 and §8 of this file,
+   and against the repo's own conventions.
+3. Look for missed cases, absent tests, silent error paths, accessibility regressions,
+   security issues, and scope that crept in or fell out.
+4. **Fix any gap that does not need an owner decision** — missing tests, weak edge-case
+   handling, convention drift, doc gaps — and push to the same branch so the PR arrives ready
+   to merge.
+5. Anything that *does* need an owner decision becomes a Trello comment tagging
+   `@ankhitsharma1`, per §7. Never guess.
+6. Report findings in chat: what was checked, what was fixed, what still needs the owner.
+
+Only once the gate passes does the card move to Review. A PR reaching Review has already been
+tested and audited — the owner's review is the final check, not the first.
 
 ---
 
@@ -261,8 +352,10 @@ test: cover filter group AND/OR combinations
 chore: add .nojekyll and .gitignore
 ```
 
-**PRs:** one card per PR. Body states what changed, why, how it was tested, and links the
-Trello card. Write the PR URL back into the card description so the link survives the session.
+**PRs:** one **batch** per PR, up to three cards (§6.1 rule 2). The body carries a section per
+card — what changed, why, how it was tested — and links every Trello card in the batch. Write
+the PR URL back into each card's description so the link survives the session. Name which
+model did the work (§6.2).
 
 **Testing is not optional.** Every behavioural change ships with unit tests (Vitest).
 Extract pure logic out of DOM handlers so it is testable. Report test results honestly —
