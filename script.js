@@ -10,6 +10,7 @@ import {
     clampPage
 } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
+import { isTextEntryTarget } from './assets/js/keyboard.js';
 
 // Populated from data/cards.json once the fetch resolves.
 let allCards = [];
@@ -266,15 +267,39 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
 // Keyboard navigation
 document.addEventListener('keydown', (e) => {
-    if (currentView === 'carousel') {
-        if (e.key === 'ArrowLeft') {
-            currentIndex = wrapIndex(currentIndex - 1, filteredCards.length);
-            updateCarousel();
-        } else if (e.key === 'ArrowRight') {
-            currentIndex = wrapIndex(currentIndex + 1, filteredCards.length);
-            updateCarousel();
-        }
+    // Stand down while the user is typing, or Left and Right would move the
+    // text cursor and the carousel at the same time.
+    if (isTextEntryTarget(e.target)) return;
+
+    // Escape clears filters from anywhere, including the grid view.
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        clearAllFilters();
+        return;
     }
+
+    if (currentView !== 'carousel' || filteredCards.length === 0) return;
+
+    switch (e.key) {
+        case 'ArrowLeft':
+            currentIndex = wrapIndex(currentIndex - 1, filteredCards.length);
+            break;
+        case 'ArrowRight':
+            currentIndex = wrapIndex(currentIndex + 1, filteredCards.length);
+            break;
+        case 'Home':
+            currentIndex = 0;
+            break;
+        case 'End':
+            currentIndex = filteredCards.length - 1;
+            break;
+        default:
+            return;
+    }
+
+    // Only reached for a handled key, so the page never scrolls underneath.
+    e.preventDefault();
+    updateCarousel();
 });
 
 // Bootstrap
