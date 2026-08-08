@@ -1,6 +1,14 @@
 import { loadCards } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
-import { filterCards, getFilterGroup, getCarouselSlots, wrapIndex } from './assets/js/filters.js';
+import {
+    filterCards,
+    getFilterGroup,
+    getCarouselSlots,
+    wrapIndex,
+    getTotalPages,
+    getPageSlice,
+    clampPage
+} from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 
 // Populated from data/cards.json once the fetch resolves.
@@ -19,14 +27,69 @@ const cardsPerPage = 18;
 let searchQuery = '';
 
 
+/**
+ * Build the block shown when no cards match the current filters.
+ *
+ * Carries its own clear action so the user can recover without hunting for
+ * the toolbar button, which may be scrolled out of view on a phone.
+ *
+ * @returns {HTMLElement} the empty-state element
+ */
+function buildEmptyState() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'empty-state';
+
+    const title = document.createElement('p');
+    title.className = 'empty-state-title';
+    title.textContent = 'No cards match your filters';
+
+    const hint = document.createElement('p');
+    hint.className = 'empty-state-hint';
+    hint.textContent = 'Try removing a filter or clearing the search.';
+
+    const action = document.createElement('button');
+    action.type = 'button';
+    action.className = 'empty-state-action';
+    action.textContent = 'Clear filters';
+    action.addEventListener('click', clearAllFilters);
+
+    wrapper.append(title, hint, action);
+    return wrapper;
+}
+
+/**
+ * Put the carousel counters and navigation into their empty state.
+ *
+ * Both renderers previously returned before touching their counters, leaving
+ * stale numbers such as "Page 1 of 3" beside zero results.
+ */
+function resetCarouselControls() {
+    document.getElementById('currentCard').textContent = '0';
+    document.getElementById('totalCardsCarousel').textContent = '0';
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = true;
+}
+
+/** Put the grid pagination into its empty state. */
+function resetGridControls() {
+    document.getElementById('currentPage').textContent = '0';
+    document.getElementById('totalPages').textContent = '0';
+    document.getElementById('prevPage').disabled = true;
+    document.getElementById('nextPage').disabled = true;
+}
+
 function updateCarousel() {
     const stage = document.getElementById('carouselStage');
     stage.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        stage.innerHTML = '<div style="text-align: center; color: #888;">No cards match your filters</div>';
+        stage.appendChild(buildEmptyState());
+        resetCarouselControls();
         return;
     }
+
+    document.getElementById('prevBtn').disabled = false;
+    document.getElementById('nextBtn').disabled = false;
 
     // Slots narrow below 5 cards instead of wrapping, so no card index repeats.
     const slots = getCarouselSlots(filteredCards, currentIndex);
@@ -53,14 +116,20 @@ function updateGrid() {
     grid.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        grid.innerHTML = '<div style="text-align: center; color: #888; grid-column: 1/-1;">No cards match your filters</div>';
+        const empty = buildEmptyState();
+        // The grid is a CSS grid; span the full row so the block centres.
+        empty.style.gridColumn = '1 / -1';
+        grid.appendChild(empty);
+        resetGridControls();
         return;
     }
 
-    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
-    const startIndex = (currentPage - 1) * cardsPerPage;
-    const endIndex = Math.min(startIndex + cardsPerPage, filteredCards.length);
-    const pageCards = filteredCards.slice(startIndex, endIndex);
+    // getTotalPages and getPageSlice clamp an out-of-range page rather than
+    // returning nothing, so a filter that shrinks the set cannot strand the
+    // user on a blank page.
+    const totalPages = getTotalPages(filteredCards.length, cardsPerPage);
+    currentPage = clampPage(currentPage, totalPages);
+    const pageCards = getPageSlice(filteredCards, currentPage, cardsPerPage);
 
     pageCards.forEach(card => {
         const cardEl = document.createElement('div');
@@ -126,14 +195,22 @@ document.querySelectorAll('.pill').forEach(pill => {
     });
 });
 
-document.getElementById('clearFilters').addEventListener('click', () => {
+/**
+ * Reset every filter and the search term, then re-render.
+ *
+ * Shared by the toolbar button and the empty state's own action, so both
+ * always clear exactly the same state.
+ */
+function clearAllFilters() {
     activeTypeFilters.clear();
     activeRarityFilters.clear();
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
-});
+}
+
+document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
 
 // Live search: debounced so filtering/re-render doesn't run on every keystroke.
 document.getElementById('searchInput').addEventListener('input', debounce((e) => {
