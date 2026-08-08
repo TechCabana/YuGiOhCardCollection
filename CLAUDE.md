@@ -115,10 +115,11 @@ Lists: **Backlog → To Do → In-Progress → Review → Done**
 All 31 cards start in Backlog, ordered by build sequence (position 1 → 31).
 Dependencies point backwards only, so pulling from the top never blocks.
 
-Labels are colour-only (the Trello MCP cannot rename labels). Each card also states its
-domain on the first line of its description, which is the authoritative mapping:
+Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST API
+(`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
+a name and colour. Every card also states its domain on the first line of its description.
 
-| Colour | Domain | Cards |
+| Colour | Label name | Cards |
 |---|---|---|
 | Blue | Data & Airtable | 5 |
 | Red | Bugs & Correctness | 8 |
@@ -126,6 +127,9 @@ domain on the first line of its description, which is the authoritative mapping:
 | Purple | Accessibility | 4 |
 | Orange | UI Design System | 5 |
 | Green | Repo & Tooling | 6 |
+
+Every new card must carry exactly one domain label. Cards created by `audit project` follow
+the same rule.
 
 **Gating cards** — these unblock others, do them early:
 1. Extract card data to `data/cards.json`
@@ -152,7 +156,9 @@ Three commands drive the board. Each is explicit; never run one unprompted.
 1. Read the owner's answers on each In-Progress card.
 2. Resume development from where it stopped.
 3. Finish the card, including unit tests.
-4. Move the card to **Review**, commit, push a branch, and open a PR.
+4. Commit, push a branch, and open a PR.
+5. **Run the Fable review gate (§6.2) before the card moves.** Only after it passes does the
+   card go to **Review**.
 
 ### `process Review`
 1. Check each card in **Review** for a verdict from the owner.
@@ -161,6 +167,23 @@ Three commands drive the board. Each is explicit; never run one unprompted.
 4. Move the card to **Done**.
 5. Leave cards with no verdict in Review, untouched.
 6. Cards with a **changes-requested** verdict follow §6.1 rule 1.
+
+### `audit project`
+Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
+
+1. Read the current repo state, the merged PRs, and every card across all five lists.
+2. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
+   and the design rules (§4).
+3. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
+   regressions, dropped follow-ups, missing tests, and anything a merged PR promised but did
+   not actually deliver.
+4. For each real gap, create a card in **Backlog** with a domain label (§5), a description
+   carrying `file:line` evidence, and a `**Done when:**` line.
+5. Do **not** duplicate an existing card — check all five lists first, and extend the
+   existing card instead where one already covers the ground.
+6. Report a summary in chat: what is on track, what has drifted, which cards were created.
+
+Creates cards only. Never edits code, never moves cards between lists, never merges.
 
 ---
 
@@ -211,6 +234,44 @@ a force-push or a history rewrite. Tag known-good states once the site is live.
 - The PR URL is written back into the card description under a `## 🔗 PR` heading
 Nothing else connects a card to its code across sessions — if the link is missing, the
 next session cannot find the work.
+
+---
+
+## 6.2 Model assignment
+
+Different stages run on different models. Delegate with the `Agent` tool, passing the
+`model` parameter.
+
+| Stage | Model | Why |
+|---|---|---|
+| Planning, architecture, tricky refactors, design system work | **Opus 5**, high effort | Judgement-heavy, cross-file reasoning |
+| Well-specified single-card implementation, mechanical refactors, test writing | **Sonnet 5**, high effort | Faster on bounded work with a clear spec |
+| Review gate and `audit project` | **Fable** | Independent reviewer; must not be the model that wrote the code |
+
+Choose Opus vs Sonnet per task. Default to Opus when the card is ambiguous, spans several
+files, or involves a design decision; Sonnet when the card reads like a spec and the diff is
+predictable. State which model was used in the PR body.
+
+### The Fable review gate
+
+Runs when a card is finished and its PR is open, **before** the card moves to Review.
+Fable must not be the model that wrote the code — the point is an independent pass.
+
+Fable's remit:
+1. Run the test suite and report the real result — never assume green.
+2. Audit the PR against the card's `**Done when:**` line, against §3, §4 and §8 of this file,
+   and against the repo's own conventions.
+3. Look for missed cases, absent tests, silent error paths, accessibility regressions,
+   security issues, and scope that crept in or fell out.
+4. **Fix any gap that does not need an owner decision** — missing tests, weak edge-case
+   handling, convention drift, doc gaps — and push to the same branch so the PR arrives ready
+   to merge.
+5. Anything that *does* need an owner decision becomes a Trello comment tagging
+   `@ankhitsharma1`, per §7. Never guess.
+6. Report findings in chat: what was checked, what was fixed, what still needs the owner.
+
+Only once the gate passes does the card move to Review. A PR reaching Review has already been
+tested and audited — the owner's review is the final check, not the first.
 
 ---
 
