@@ -12,6 +12,33 @@ body {
     overflow-x: hidden;
 }
 
+/*
+ * The view containers set their own display, which outranks the UA rule for
+ * [hidden]. Without this, hiding a view during loading would have no effect.
+ */
+[hidden] {
+    display: none !important;
+}
+
+/* Loading and failure banner, shown while the collection is being fetched. */
+.status-message {
+    margin: 3rem auto;
+    padding: 1.2rem 1.6rem;
+    max-width: 40rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+}
+
+.status-message.is-error {
+    color: #ffc9d1;
+    background: rgba(233, 69, 96, 0.12);
+    border-color: rgba(233, 69, 96, 0.5);
+}
+
 .header {
     background: rgba(0, 0, 0, 0.3);
     padding: 1.5rem 2rem;

@@ -10,8 +10,8 @@
     <div class="header">
         <h1>⚡ My Yu-Gi-Oh! Collection</h1>
         <div class="stats">
-            <div class="stat-item">📦 <span id="totalCardsCount">12</span> Cards</div>
-            <div class="stat-item">⭐ <span id="visibleCardsCount">12</span> Visible</div>
+            <div class="stat-item">📦 <span id="totalCardsCount">—</span> Cards</div>
+            <div class="stat-item">⭐ <span id="visibleCardsCount">—</span> Visible</div>
         </div>
     </div>
 
@@ -35,6 +35,9 @@
             <button class="view-btn" data-view="grid">Grid</button>
         </div>
     </div>
+
+    <!-- Data loading and failure states -->
+    <div class="status-message" id="statusMessage">Loading collection…</div>
 
     <!-- Carousel View -->
     <div class="carousel-view" id="carouselView">
@@ -68,6 +71,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
