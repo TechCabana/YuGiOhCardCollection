@@ -1,56 +1,20 @@
-// Card data
-const allCards = [
-    { name: 'Polymerization', type: 'spell', rarity: 'common', cardType: 'Normal Spell', serial: 'LOB-059', gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', emoji: '🌟', stats: [{label: 'Type', value: 'Spell'}, {label: 'Category', value: 'Fusion'}, {label: 'Serial', value: 'LOB-059'}] },
-    { name: 'Dark Magician', type: 'monster', rarity: 'ultra', cardType: 'Spellcaster / Effect', serial: 'LOB-005', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', emoji: '🐉', stats: [{label: 'ATK', value: '2500'}, {label: 'DEF', value: '2100'}, {label: 'Level', value: '⭐7'}] },
-    { name: 'Blue-Eyes White Dragon', type: 'monster', rarity: 'secret', cardType: 'Dragon / Normal', serial: 'SDK-001', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', emoji: '🐲', stats: [{label: 'ATK', value: '3000'}, {label: 'DEF', value: '2500'}, {label: 'Level', value: '⭐8'}] },
-    { name: 'Mirror Force', type: 'trap', rarity: 'rare', cardType: 'Normal Trap', serial: 'MRD-138', gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', emoji: '⚡', stats: [{label: 'Type', value: 'Trap'}, {label: 'Category', value: 'Normal'}, {label: 'Serial', value: 'MRD-138'}] },
-    { name: 'Red-Eyes Black Dragon', type: 'monster', rarity: 'super', cardType: 'Dragon / Normal', serial: 'LOB-070', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', emoji: '🔥', stats: [{label: 'ATK', value: '2400'}, {label: 'DEF', value: '2000'}, {label: 'Level', value: '⭐7'}] },
-    { name: 'Mystical Space Typhoon', type: 'spell', rarity: 'rare', cardType: 'Quick-Play Spell', serial: 'MRL-049', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)', emoji: '🎴', stats: [{label: 'Type', value: 'Spell'}, {label: 'Speed', value: 'Quick'}, {label: 'Serial', value: 'MRL-049'}] },
-    { name: 'Exodia the Forbidden One', type: 'monster', rarity: 'ultra', cardType: 'Spellcaster / Effect', serial: 'LOB-124', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', emoji: '👁️', stats: [{label: 'ATK', value: '1000'}, {label: 'DEF', value: '1000'}, {label: 'Level', value: '⭐3'}] },
-    { name: 'Pot of Greed', type: 'spell', rarity: 'common', cardType: 'Normal Spell', serial: 'LOB-119', gradient: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', emoji: '🏺', stats: [{label: 'Type', value: 'Spell'}, {label: 'Category', value: 'Draw'}, {label: 'Serial', value: 'LOB-119'}] },
-    { name: 'Torrential Tribute', type: 'trap', rarity: 'super', cardType: 'Normal Trap', serial: 'LON-025', gradient: 'linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%)', emoji: '🌊', stats: [{label: 'Type', value: 'Trap'}, {label: 'Category', value: 'Normal'}, {label: 'Serial', value: 'LON-025'}] },
-    { name: 'Summoned Skull', type: 'monster', rarity: 'rare', cardType: 'Fiend / Normal', serial: 'LOB-017', gradient: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)', emoji: '💀', stats: [{label: 'ATK', value: '2500'}, {label: 'DEF', value: '1200'}, {label: 'Level', value: '⭐6'}] },
-    { name: 'Monster Reborn', type: 'spell', rarity: 'ultra', cardType: 'Normal Spell', serial: 'LOB-118', gradient: 'linear-gradient(135deg, #faaca8 0%, #ddd6f3 100%)', emoji: '♻️', stats: [{label: 'Type', value: 'Spell'}, {label: 'Category', value: 'Revival'}, {label: 'Serial', value: 'LOB-118'}] },
-    { name: 'Call of the Haunted', type: 'trap', rarity: 'common', cardType: 'Continuous Trap', serial: 'PSV-012', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', emoji: '📞', stats: [{label: 'Type', value: 'Trap'}, {label: 'Category', value: 'Continuous'}, {label: 'Serial', value: 'PSV-012'}] }
-];
+import { loadCards } from './assets/js/data.js';
+import { buildCardHTML } from './assets/js/render.js';
+import { matchesSearch } from './assets/js/filters.js';
+import { debounce } from './assets/js/debounce.js';
 
-let filteredCards = [...allCards];
+// Populated from data/cards.json once the fetch resolves.
+let allCards = [];
+let filteredCards = [];
 let currentIndex = 0;
 let activeFilters = new Set();
 let currentView = 'carousel';
 let currentPage = 1;
 const cardsPerPage = 18;
 
-const rarityMap = {
-    'common': 'Common',
-    'rare': 'Rare',
-    'super': 'Super Rare',
-    'ultra': 'Ultra Rare',
-    'secret': 'Secret Rare'
-};
+// Free-text search term, combined on top of the pill filters in applyFilters().
+let searchQuery = '';
 
-function createCardHTML(card, isGrid = false) {
-    const statsHTML = card.stats.map(stat => `
-        <div class="stat-box">
-            <div class="stat-label">${stat.label}</div>
-            <div class="stat-value" style="${stat.label === 'Serial' ? 'font-size: 0.8rem;' : ''}">${stat.value}</div>
-        </div>
-    `).join('');
-
-    return `
-        <div class="card-image-area" style="background: ${card.gradient};">
-            ${card.emoji}
-            <div class="rarity-badge">${rarityMap[card.rarity]}</div>
-        </div>
-        <div class="card-info-area">
-            <div class="card-name">${card.name}</div>
-            <div class="card-type">${card.cardType}</div>
-            <div class="card-stats-grid">
-                ${statsHTML}
-            </div>
-        </div>
-    `;
-}
 
 function updateCarousel() {
     const stage = document.getElementById('carouselStage');
@@ -68,7 +32,7 @@ function updateCarousel() {
         const card = filteredCards[index];
         const cardEl = document.createElement('div');
         cardEl.className = `carousel-card ${positions[i + 2]}`;
-        cardEl.innerHTML = createCardHTML(card);
+        cardEl.innerHTML = buildCardHTML(card);
         cardEl.onclick = () => {
             if (i !== 0) {
                 currentIndex = index;
@@ -99,7 +63,7 @@ function updateGrid() {
     pageCards.forEach(card => {
         const cardEl = document.createElement('div');
         cardEl.className = 'grid-card';
-        cardEl.innerHTML = createCardHTML(card, true);
+        cardEl.innerHTML = buildCardHTML(card);
         grid.appendChild(cardEl);
     });
 
@@ -120,7 +84,9 @@ function applyFilters() {
             if (filter === 'rare') return ['rare', 'super', 'ultra', 'secret'].includes(card.rarity);
             return false;
         });
-    });
+    // The search term ANDs on top of whatever the pill logic above produced,
+    // it does not change how the pills combine with each other.
+    }).filter(card => matchesSearch(card, searchQuery));
 
     currentIndex = 0;
     currentPage = 1;
@@ -153,9 +119,16 @@ document.querySelectorAll('.pill').forEach(pill => {
 document.getElementById('clearFilters').addEventListener('click', () => {
     activeFilters.clear();
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
 });
+
+// Live search: debounced so filtering/re-render doesn't run on every keystroke.
+document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+    searchQuery = e.target.value;
+    applyFilters();
+}, 150));
 
 // View toggle
 document.querySelectorAll('.view-btn').forEach(btn => {
@@ -216,5 +189,65 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Initialize
-updateCarousel();
+// Bootstrap
+
+/**
+ * Show or hide the loading / error banner.
+ *
+ * @param {string|null} message - text to show, or null to hide the banner
+ * @param {boolean} [isError] - style the banner as a failure
+ */
+function setStatus(message, isError = false) {
+    const el = document.getElementById('statusMessage');
+    if (!el) return;
+
+    el.textContent = message ?? '';
+    el.classList.toggle('is-error', isError);
+    el.hidden = message === null;
+}
+
+/**
+ * Show or hide the card views.
+ *
+ * Views stay hidden until data resolves so the page never flashes empty
+ * controls over a blank stage.
+ *
+ * @param {boolean} visible - whether the active view should be shown
+ */
+function setViewsVisible(visible) {
+    document.getElementById('carouselView').hidden = !visible;
+    document.getElementById('gridView').hidden = !visible;
+}
+
+/**
+ * Load the collection, then render it.
+ *
+ * A failure leaves a readable message on screen rather than a blank page.
+ */
+async function init() {
+    setViewsVisible(false);
+    setStatus('Loading collection…');
+
+    try {
+        const { cards, skipped } = await loadCards();
+        allCards = cards;
+
+        if (skipped > 0) {
+            console.warn(`Skipped ${skipped} card record(s) missing required fields.`);
+        }
+
+        if (allCards.length === 0) {
+            setStatus('No cards found in the collection.');
+            return;
+        }
+
+        setStatus(null);
+        setViewsVisible(true);
+        applyFilters();
+    } catch (error) {
+        console.error(error);
+        setStatus(error.message, true);
+    }
+}
+
+init();
