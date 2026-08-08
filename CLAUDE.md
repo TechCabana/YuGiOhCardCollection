@@ -212,29 +212,34 @@ next session cannot find the work.
 
 ## 7. Asking questions on a card
 
-> ⚠️ **Tooling gap:** the connected Trello MCP has **no comment capability** — there is no
-> action to write a comment, and `trelloReadCard` does not return comments. Until this is
-> resolved (see §9), questions and answers use the **card description** instead.
+Comments work via the **Trello REST API**, not the MCP — the MCP has no comment support.
+Credentials come from `.env` (see §9). Verified working end to end on 2026-08-08.
 
-**To raise a question:** update the card description, appending:
+**To raise a question**, post a comment on the card:
 
-```markdown
----
-## ⛔ BLOCKED — awaiting @ankhitsharma1
-
-**Q1.** <question>
-**Q2.** <question>
-
-### Answers
-<!-- owner: write answers below this line -->
+```bash
+curl -s -X POST "https://api.trello.com/1/cards/$CARD_ID/actions/comments?key=$KEY&token=$TOKEN" \
+  --data-urlencode "text=@ankhitsharma1 BLOCKED — Q1. <question>  Q2. <question>"
 ```
 
-Then say in chat which cards are blocked and on what.
+Then move on to the next card and say in chat which cards are blocked and why.
 
-**To read answers:** re-read the card description under `### Answers`.
-The owner may also answer directly in chat — treat either as authoritative.
+**To read answers:**
 
-**Never assume. Never proceed on a guess.** A blocked card stays blocked.
+```bash
+curl -s "https://api.trello.com/1/cards/$CARD_ID/actions?filter=commentCard&key=$KEY&token=$TOKEN"
+```
+
+Returns newest first. Each entry has `data.text`, `memberCreator.username`, and `date`.
+
+**Card IDs:** the REST API takes the **raw 24-character id**, not the MCP's ARI. Strip the
+`ari:cloud:trello::card/workspace/<workspaceId>/` prefix — the trailing segment is the id.
+
+**Account note:** the API token is authorised as **`techcabana`**, so comments posted by
+this workflow appear under that account. The owner is **`@ankhitsharma1`** — always mention
+that handle, never `techcabana`, or the notification goes to the wrong account.
+
+**Never assume. Never proceed on a guess.** A blocked card stays blocked until answered.
 
 ---
 
@@ -268,23 +273,21 @@ if something fails, say so with the output.
 
 ---
 
-## 9. Known tooling gaps
+## 9. Tooling status
 
-Both of these block parts of §6 and need an owner decision.
+**✅ Trello comments — working.** Resolved 2026-08-08. The MCP cannot do comments, so the
+REST API is used instead, with credentials from `.env`. Post, read and delete were all
+verified against a live card. Use the MCP for cards, lists, labels and moves; use REST only
+for comments. §6 and §7 work exactly as specified.
 
-**1. Trello comments are unavailable.**
-The MCP exposes create / update / move / archive / mark_done / attach_label / detach_label —
-no comment read or write. This affects the question flow and the approval detection.
-*Fix:* provide a Trello API key + token as environment variables so the REST API can be
-called directly (`POST /1/cards/{id}/actions/comments` and
-`GET /1/cards/{id}/actions?filter=commentCard`), which makes §6 and §7 work exactly as
-originally specified. Until then, use the description convention in §7.
+**✅ `gh` CLI — installed**, v2.97.0, at `C:\Program Files\GitHub CLI\gh.exe`.
 
-**2. `gh` CLI is not installed.**
-PR creation in `process In-Progress` cannot complete. Node v24.16.0 and npm 11.13.0 are
-available; `gh` is not.
-*Fix:* install the GitHub CLI, or supply a token so PRs can be opened via the REST API.
-Fallback until then: push the branch and hand over the compare URL to open the PR manually.
+**⚠️ `gh` not authenticated.** `gh auth status` reports no logged-in host. PR creation in
+`process In-Progress` will fail until the owner runs `gh auth login` — it is interactive and
+cannot be automated. Fallback until then: push the branch and hand over the compare URL.
+
+**Environment:** Node v24.16.0, npm 11.13.0. No test runner installed yet — the Vitest
+harness is the first card in To Do.
 
 ### Credential handling
 
