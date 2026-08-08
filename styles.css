@@ -39,6 +39,48 @@ body {
     border-color: rgba(233, 69, 96, 0.5);
 }
 
+/* Shown in either view when no cards match the current filters. */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 3rem 1.5rem;
+    margin: 0 auto;
+    max-width: 32rem;
+    text-align: center;
+}
+
+.empty-state-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #e6e6e6;
+}
+
+.empty-state-hint {
+    font-size: 0.9rem;
+    color: #9a9a9a;
+}
+
+.empty-state-action {
+    margin-top: 0.4rem;
+    min-height: 44px;
+    padding: 0.6rem 1.4rem;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
+    color: #fff;
+    border-radius: 22px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.empty-state-action:hover {
+    background: rgba(233, 69, 96, 0.25);
+    border-color: #e94560;
+}
+
 .header {
     background: rgba(0, 0, 0, 0.3);
     padding: 1.5rem 2rem;
@@ -394,10 +436,17 @@ body {
     justify-content: center;
 }
 
-.nav-btn:hover {
+.nav-btn:hover:not(:disabled) {
     background: #e94560;
     border-color: #e94560;
     transform: scale(1.1);
+}
+
+/* Matches .page-btn:disabled — the carousel buttons previously had no
+   disabled treatment at all, so an empty result set still looked clickable. */
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 .card-counter {
