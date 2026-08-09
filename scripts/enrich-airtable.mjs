@@ -235,17 +235,48 @@ async function sendBatch(baseId, tableId, token, batch, fetchImpl) {
     }
 }
 
+/**
+ * Read `--limit N` from the command line.
+ *
+ * Enriching a small subset first is the safe way to try a change against real
+ * data: the untouched rows stay unprocessed and get picked up on the next run.
+ *
+ * @param {string[]} argv - process.argv
+ * @returns {number|null} the limit, or null for "no limit"
+ */
+export function parseLimit(argv) {
+    const index = argv.indexOf('--limit');
+    if (index === -1) return null;
+
+    const value = Number.parseInt(argv[index + 1], 10);
+    if (!Number.isInteger(value) || value < 1) {
+        throw new Error('--limit needs a positive whole number, e.g. --limit 3');
+    }
+
+    return value;
+}
+
 async function main() {
     const dryRun = process.argv.includes('--dry-run');
+    const limit = parseLimit(process.argv);
 
     const token = requireEnv('AIRTABLE_TOKEN');
     const baseId = requireEnv('AIRTABLE_BASE_ID', DEFAULT_BASE_ID);
     const tableId = requireEnv('AIRTABLE_TABLE_ID', DEFAULT_TABLE_ID);
 
     console.log(`Fetching records from base ${baseId}, table ${tableId}…`);
-    const records = await fetchAllRecords(baseId, tableId, token);
-    const unprocessedCount = records.filter(isUnprocessed).length;
-    console.log(`Fetched ${records.length} record(s), ${unprocessedCount} unprocessed.`);
+    const allRecords = await fetchAllRecords(baseId, tableId, token);
+    const unprocessedCount = allRecords.filter(isUnprocessed).length;
+    console.log(`Fetched ${allRecords.length} record(s), ${unprocessedCount} unprocessed.`);
+
+    // Trim to the first N unprocessed rows, keeping table order so "the first
+    // three" means the same thing here as it does in the Airtable view.
+    let records = allRecords;
+    if (limit !== null) {
+        const selected = allRecords.filter(isUnprocessed).slice(0, limit);
+        records = selected;
+        console.log(`--limit ${limit}: processing ${selected.length} row(s), leaving the rest unprocessed.`);
+    }
 
     console.log('Fetching live single-select options…');
     const selectOptions = await fetchSelectOptions(baseId, tableId, token);

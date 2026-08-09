@@ -3,9 +3,10 @@ import {
     isUnprocessed,
     collectEnrichedRows,
     buildPatchBatches,
-    fetchSelectOptions
+    fetchSelectOptions,
+    parseLimit
 } from '../scripts/enrich-airtable.mjs';
-import { HUMAN_OWNED_FIELDS } from '../scripts/enrich-ygoprodeck.mjs';
+import { HUMAN_OWNED_FIELDS, assertNoHumanOwnedFields } from '../scripts/enrich-ygoprodeck.mjs';
 import { PRIVATE_FIELDS } from '../scripts/map-airtable.mjs';
 
 /** Real cardsetsinfo response for SDJ-017. */
@@ -224,5 +225,38 @@ describe('fetchSelectOptions', () => {
 describe('PRIVATE_FIELDS', () => {
     it('includes Set Price, so price is written to Airtable but never published', () => {
         expect(PRIVATE_FIELDS).toContain('Set Price');
+    });
+});
+
+describe('parseLimit', () => {
+    it('returns null when no limit is given', () => {
+        expect(parseLimit(['node', 'script.mjs'])).toBeNull();
+        expect(parseLimit(['node', 'script.mjs', '--dry-run'])).toBeNull();
+    });
+
+    it('reads a positive limit', () => {
+        expect(parseLimit(['node', 'script.mjs', '--limit', '3'])).toBe(3);
+    });
+
+    it('works alongside other flags', () => {
+        expect(parseLimit(['node', 'script.mjs', '--dry-run', '--limit', '5'])).toBe(5);
+    });
+
+    it('rejects a value that is not a positive whole number', () => {
+        [['--limit', '0'], ['--limit', '-2'], ['--limit', 'all'], ['--limit']]
+            .forEach(args => expect(() => parseLimit(['node', 's', ...args])).toThrow(/positive whole number/));
+    });
+});
+
+describe('IsFirstEdition is owner-only', () => {
+    // Edition is not derivable: a 1st Edition and an Unlimited copy share the
+    // same set code, and neither YGOPRODeck endpoint reports it.
+    it('is listed as human-owned so a sync can never clear it', () => {
+        expect(HUMAN_OWNED_FIELDS).toContain('IsFirstEdition');
+    });
+
+    it('is rejected if it ever reaches a write payload', () => {
+        expect(() => assertNoHumanOwnedFields({ IsFirstEdition: true }))
+            .toThrow(/human-owned/);
     });
 });
