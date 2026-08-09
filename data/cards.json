@@ -60,6 +60,36 @@
     "type": "monster"
   },
   {
+    "atk": 300,
+    "attribute": "Water",
+    "cardType": "Fiend / Effect",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec1s8CxYJ9PVd1SG",
+    "level": 3,
+    "name": "Darkbishop Archfiend",
+    "passcode": "35798491",
+    "rarity": "common",
+    "serial": "DR1-EN231",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "300"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 100,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -140,6 +170,36 @@
       {
         "label": "DEF",
         "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Fire",
+    "cardType": "Warrior / Normal",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec57n7sJuZEUjJmG",
+    "level": 3,
+    "name": "Elemental HERO Burstinatrix",
+    "passcode": "58932616",
+    "rarity": "common",
+    "serial": "TLM-EN002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
       },
       {
         "label": "Level",
@@ -240,6 +300,65 @@
     "type": "monster"
   },
   {
+    "atk": null,
+    "attribute": null,
+    "cardType": "Fiend / Token",
+    "def": null,
+    "gradient": "linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)",
+    "id": "recAHuh2lwbCrHizI",
+    "level": null,
+    "name": "Phantasmal Martyr Token",
+    "passcode": "93224849",
+    "rarity": "common",
+    "serial": "SDSA-EN047",
+    "stats": [
+      {
+        "label": "Type",
+        "value": "Token"
+      },
+      {
+        "label": "Attribute",
+        "value": "—"
+      },
+      {
+        "label": "Serial",
+        "value": "SDSA-EN047"
+      }
+    ],
+    "summonType": null,
+    "type": "token"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Wind",
+    "cardType": "Dragon / Normal",
+    "def": 700,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recAw9gDTKiuDs8CL",
+    "level": 3,
+    "name": "Baby Dragon",
+    "passcode": "88819587",
+    "rarity": "common",
+    "serial": "SDJ-003",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "700"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 600,
     "attribute": "Earth",
     "cardType": "Rock / Effect",
@@ -270,6 +389,36 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recDlohw6MeGqfjXl",
+    "level": 3,
+    "name": "Silver Fang",
+    "passcode": "90357090",
+    "rarity": "common",
+    "serial": "SDY-012",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 400,
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
@@ -294,6 +443,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 900,
+    "attribute": "Water",
+    "cardType": "Aqua / Effect",
+    "def": 900,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recEXJcSMLuFBHGQg",
+    "level": 3,
+    "name": "Maryokutai",
+    "passcode": "71466592",
+    "rarity": "common",
+    "serial": "LON-076",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "900"
+      },
+      {
+        "label": "DEF",
+        "value": "900"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
@@ -360,6 +539,36 @@
     "type": "monster"
   },
   {
+    "atk": 500,
+    "attribute": "Fire",
+    "cardType": "Warrior / Effect",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recGRaePY2dOkbnAn",
+    "level": 3,
+    "name": "Ultimate Baseball Kid",
+    "passcode": "67934141",
+    "rarity": "common",
+    "serial": "SOD-EN021",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "500"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 0,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -390,6 +599,36 @@
     "type": "monster"
   },
   {
+    "atk": 800,
+    "attribute": "Wind",
+    "cardType": "Insect / Effect",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recHzPsBmopKXeHNh",
+    "level": 3,
+    "name": "4-Starred Ladybug of Doom",
+    "passcode": "83994646",
+    "rarity": "common",
+    "serial": "PSV-088",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "800"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 900,
     "attribute": "Earth",
     "cardType": "Insect / Normal",
@@ -414,6 +653,156 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 700,
+    "attribute": "Earth",
+    "cardType": "Warrior / Effect",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recIs3f3Hl1lUuCxq",
+    "level": 3,
+    "name": "Dragon Manipulator",
+    "passcode": "63018132",
+    "rarity": "common",
+    "serial": "LOD-026",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "700"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 800,
+    "attribute": "Earth",
+    "cardType": "Machine / Effect",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recKewEvNw4yA07yh",
+    "level": 3,
+    "name": "Wroughtweiler",
+    "passcode": "6480253",
+    "rarity": "common",
+    "serial": "DP1-EN007",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "800"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Wind",
+    "cardType": "Dragon / Effect",
+    "def": 900,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recKsKy6RENWoxWBh",
+    "level": 3,
+    "name": "Armed Dragon LV3",
+    "passcode": "980973",
+    "rarity": "common",
+    "serial": "SD1-EN005",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "900"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Rock / Effect",
+    "def": 2400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recL4sGz7Bsf3aeni",
+    "level": 6,
+    "name": "Criosphinx",
+    "passcode": "18654201",
+    "rarity": "ultimate",
+    "serial": "TLM-EN013",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "2400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐6"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Earth",
+    "cardType": "Rock / Normal",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recM4c2pT399FjQYJ",
+    "level": 3,
+    "name": "Giant Soldier of Stone",
+    "passcode": "13039848",
+    "rarity": "common",
+    "serial": "SDY-013",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
@@ -540,6 +929,66 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Warrior / Effect",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recQJIwAEXTJrb9yK",
+    "level": 3,
+    "name": "Marauding Captain",
+    "passcode": "2460565",
+    "rarity": "common",
+    "serial": "SD5-EN009",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 200,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Effect",
+    "def": 1300,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recQJUL274aEsa833",
+    "level": 3,
+    "name": "Jowgen the Spiritualist",
+    "passcode": "41855169",
+    "rarity": "rare",
+    "serial": "LON-061",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "200"
+      },
+      {
+        "label": "DEF",
+        "value": "1300"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 0,
     "attribute": "Light",
     "cardType": "Beast / Normal",
@@ -564,6 +1013,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Earth",
+    "cardType": "Rock / Normal",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recQhbYLreyAX7RdP",
+    "level": 3,
+    "name": "Giant Soldier of Stone",
+    "passcode": "13039848",
+    "rarity": "common",
+    "serial": "SDP-007",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
@@ -630,6 +1109,36 @@
     "type": "monster"
   },
   {
+    "atk": 100,
+    "attribute": "Light",
+    "cardType": "Fairy / Effect",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recS67eKoXRqSTX7F",
+    "level": 3,
+    "name": "Banisher of the Light",
+    "passcode": "61528025",
+    "rarity": "common",
+    "serial": "DB1-EN044",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "100"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1000,
     "attribute": "Wind",
     "cardType": "Fairy / Effect",
@@ -690,6 +1199,36 @@
     "type": "monster"
   },
   {
+    "atk": 1000,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 1900,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recSm36ZaYkHDA9OR",
+    "level": 3,
+    "name": "Farfa, Malebranche of the Burning Abyss",
+    "passcode": "36553319",
+    "rarity": "common",
+    "serial": "SDSA-EN016",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1000"
+      },
+      {
+        "label": "DEF",
+        "value": "1900"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 300,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -720,6 +1259,66 @@
     "type": "monster"
   },
   {
+    "atk": 700,
+    "attribute": "Dark",
+    "cardType": "Spellcaster / Effect",
+    "def": 500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recTKJvBHtsqYwRRI",
+    "level": 3,
+    "name": "Gravekeeper's Vassal",
+    "passcode": "99690140",
+    "rarity": "common",
+    "serial": "DR1-EN011",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "700"
+      },
+      {
+        "label": "DEF",
+        "value": "500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 0,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 0,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recTYxRPlKUFKNZv9",
+    "level": 3,
+    "name": "Chaos Core",
+    "passcode": "54040484",
+    "rarity": "common",
+    "serial": "SDSA-EN002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "0"
+      },
+      {
+        "label": "DEF",
+        "value": "0"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1000,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -740,6 +1339,66 @@
       {
         "label": "DEF",
         "value": "600"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 500,
+    "attribute": "Dark",
+    "cardType": "Machine / Effect",
+    "def": 500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recVjSO9N4jViSJ1A",
+    "level": 3,
+    "name": "Heavy Mech Support Platform",
+    "passcode": "23265594",
+    "rarity": "common",
+    "serial": "RDS-EN011",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "500"
+      },
+      {
+        "label": "DEF",
+        "value": "500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 600,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Effect",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recWwbjNrW9e9VISs",
+    "level": 3,
+    "name": "Emissary of the Oasis",
+    "passcode": "6103294",
+    "rarity": "common",
+    "serial": "AST-083",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "600"
+      },
+      {
+        "label": "DEF",
+        "value": "400"
       },
       {
         "label": "Level",
@@ -780,6 +1439,65 @@
     "type": "monster"
   },
   {
+    "atk": 1400,
+    "attribute": "Wind",
+    "cardType": "Insect / Effect",
+    "def": 900,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recahCX3c66SPrjOG",
+    "level": 3,
+    "name": "Ultimate Insect LV3",
+    "passcode": "34088136",
+    "rarity": "ultimate",
+    "serial": "RDS-EN007",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "900"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": null,
+    "attribute": null,
+    "cardType": "Fiend / Token",
+    "def": null,
+    "gradient": "linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)",
+    "id": "recb2htZzWobmijal",
+    "level": null,
+    "name": "Phantasm Token",
+    "passcode": "69890968",
+    "rarity": "common",
+    "serial": "SDSA-EN048",
+    "stats": [
+      {
+        "label": "Type",
+        "value": "Token"
+      },
+      {
+        "label": "Attribute",
+        "value": "—"
+      },
+      {
+        "label": "Serial",
+        "value": "SDSA-EN048"
+      }
+    ],
+    "summonType": null,
+    "type": "token"
+  },
+  {
     "atk": 300,
     "attribute": "Light",
     "cardType": "Fairy / Effect",
@@ -800,6 +1518,36 @@
       {
         "label": "DEF",
         "value": "200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐1"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 0,
+    "attribute": "Dark",
+    "cardType": "Spellcaster / Effect",
+    "def": 0,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reccebZ9abmpPgC0z",
+    "level": 1,
+    "name": "Golden-Eyes Idol",
+    "passcode": "78642798",
+    "rarity": "rare",
+    "serial": "KICO-EN011",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "0"
+      },
+      {
+        "label": "DEF",
+        "value": "0"
       },
       {
         "label": "Level",
@@ -870,6 +1618,36 @@
     "type": "monster"
   },
   {
+    "atk": 900,
+    "attribute": "Dark",
+    "cardType": "Dragon / Effect",
+    "def": 600,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recdokbgLA9ZuJ8Vu",
+    "level": 3,
+    "name": "Pitch-Dark Dragon",
+    "passcode": "47415292",
+    "rarity": "common",
+    "serial": "DR1-EN063",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "900"
+      },
+      {
+        "label": "DEF",
+        "value": "600"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 300,
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
@@ -930,6 +1708,66 @@
     "type": "monster"
   },
   {
+    "atk": 500,
+    "attribute": "Earth",
+    "cardType": "Warrior / Effect",
+    "def": 1100,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recgFMdwk9BNCClRC",
+    "level": 3,
+    "name": "Trap Master",
+    "passcode": "46461247",
+    "rarity": "common",
+    "serial": "SDK-044",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "500"
+      },
+      {
+        "label": "DEF",
+        "value": "1100"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1100,
+    "attribute": "Light",
+    "cardType": "Fiend / Effect",
+    "def": 1800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recgqrHS8TjTLuRWJ",
+    "level": 3,
+    "name": "Desrook Archfiend",
+    "passcode": "72192100",
+    "rarity": "common",
+    "serial": "DCR-070",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1100"
+      },
+      {
+        "label": "DEF",
+        "value": "1800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1200,
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
@@ -960,6 +1798,96 @@
     "type": "monster"
   },
   {
+    "atk": 2000,
+    "attribute": "Earth",
+    "cardType": "Insect / Effect",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rechfH4pgoN46vDei",
+    "level": 3,
+    "name": "Arsenal Bug",
+    "passcode": "42364374",
+    "rarity": "common",
+    "serial": "PGD-007",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "2000"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 100,
+    "attribute": "Fire",
+    "cardType": "Pyro / Effect",
+    "def": 200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reciDgTyojBCQtuww",
+    "level": 3,
+    "name": "Raging Flame Sprite",
+    "passcode": "90810762",
+    "rarity": "common",
+    "serial": "RDS-EN020",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "100"
+      },
+      {
+        "label": "DEF",
+        "value": "200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1000,
+    "attribute": "Earth",
+    "cardType": "Warrior / Effect",
+    "def": 700,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reciGMjEoIq1tiMUd",
+    "level": 3,
+    "name": "Hayabusa Knight",
+    "passcode": "21015833",
+    "rarity": "rare",
+    "serial": "PSV-086",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1000"
+      },
+      {
+        "label": "DEF",
+        "value": "700"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 0,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -984,6 +1912,66 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 850,
+    "attribute": "Earth",
+    "cardType": "Insect / Effect",
+    "def": 750,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reckBvMdrK8IScncy",
+    "level": 3,
+    "name": "Minar",
+    "passcode": "32539892",
+    "rarity": "common",
+    "serial": "MRL-015",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "850"
+      },
+      {
+        "label": "DEF",
+        "value": "750"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Fire",
+    "cardType": "Pyro / Effect",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reclyQ5dCPFGetnlB",
+    "level": 3,
+    "name": "Invasion of Flames",
+    "passcode": "26082229",
+    "rarity": "common",
+    "serial": "RDS-EN024",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
@@ -1050,6 +2038,66 @@
     "type": "monster"
   },
   {
+    "atk": 1000,
+    "attribute": "Wind",
+    "cardType": "Warrior / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reco54XHXfe4ahbVe",
+    "level": 3,
+    "name": "Elemental HERO Avian",
+    "passcode": "21844577",
+    "rarity": "common",
+    "serial": "TLM-EN001",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1000"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1400,
+    "attribute": "Earth",
+    "cardType": "Zombie / Effect",
+    "def": 1600,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recoH6fVtTAnt8JVo",
+    "level": 3,
+    "name": "Zombie Tiger",
+    "passcode": "47693640",
+    "rarity": "common",
+    "serial": "DR1-EN066",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "1600"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 100,
     "attribute": "Fire",
     "cardType": "Pyro / Normal",
@@ -1080,6 +2128,36 @@
     "type": "monster"
   },
   {
+    "atk": 850,
+    "attribute": "Water",
+    "cardType": "Aqua / Normal",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recr6JKzRstCDXInK",
+    "level": 3,
+    "name": "Boneheimer",
+    "passcode": "98456117",
+    "rarity": "common",
+    "serial": "LON-057",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "850"
+      },
+      {
+        "label": "DEF",
+        "value": "400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 450,
     "attribute": "Earth",
     "cardType": "Insect / Effect",
@@ -1104,6 +2182,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 900,
+    "attribute": "Fire",
+    "cardType": "Spellcaster / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recu1iYkff6fujJta",
+    "level": 3,
+    "name": "Flame Manipulator",
+    "passcode": "34460851",
+    "rarity": "common",
+    "serial": "SDJ-006",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "900"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
@@ -1170,6 +2278,96 @@
     "type": "monster"
   },
   {
+    "atk": 400,
+    "attribute": "Earth",
+    "cardType": "Rock / Normal",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recx7IkWdp9eazCzA",
+    "level": 3,
+    "name": "Spherous Lady",
+    "passcode": "52121290",
+    "rarity": "common",
+    "serial": "LON-059",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "400"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 350,
+    "attribute": "Water",
+    "cardType": "Thunder / Normal",
+    "def": 750,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recxAd7asQGtidtyG",
+    "level": 3,
+    "name": "Lightning Conger",
+    "passcode": "27671321",
+    "rarity": "common",
+    "serial": "LON-060",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "350"
+      },
+      {
+        "label": "DEF",
+        "value": "750"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 900,
+    "attribute": "Earth",
+    "cardType": "Winged Beast / Normal",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recyFXto4GJX7j8GJ",
+    "level": 3,
+    "name": "Niwatori",
+    "passcode": "7805359",
+    "rarity": "common",
+    "serial": "MRD-112",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "900"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1000,
     "attribute": "Light",
     "cardType": "Beast / Normal",
@@ -1194,6 +2392,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Earth",
+    "cardType": "Rock / Normal",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reczV6mACftKqmPGs",
+    "level": 3,
+    "name": "Giant Soldier of Stone",
+    "passcode": "13039848",
+    "rarity": "rare",
+    "serial": "LOB-068",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐3"
       }
     ],
     "summonType": null,
