@@ -20,7 +20,8 @@ export const PRIVATE_FIELDS = ['Condition', 'Quantity', 'Set Price'];
 const TYPE_MAP = {
     Monster: 'monster',
     Spell: 'spell',
-    Trap: 'trap'
+    Trap: 'trap',
+    Token: 'token'
 };
 
 /** Airtable Rarity display value to the lowercase key the filters use. */
@@ -47,10 +48,17 @@ const RARITY_MAP = {
 const TYPE_GRADIENTS = {
     monster: 'linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)',
     spell: 'linear-gradient(135deg, #1d9e8f 0%, #0d5f56 100%)',
-    trap: 'linear-gradient(135deg, #b0347f 0%, #6b1f4d 100%)'
+    trap: 'linear-gradient(135deg, #b0347f 0%, #6b1f4d 100%)',
+    token: 'linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)'
 };
 
-/** Placeholder glyph per card type, also pending the design rebuild. */
+/**
+ * Placeholder glyph per card type, also pending the design rebuild.
+ *
+ * Deliberately has no `token` entry: CLAUDE.md §4 already lists emoji-as-UI-chrome
+ * as a design smell to remove, not extend. render.js's escapeHtml(undefined)
+ * renders an empty string, so a missing entry degrades cleanly.
+ */
 const TYPE_EMOJI = {
     monster: '⚔️',
     spell: '✨',

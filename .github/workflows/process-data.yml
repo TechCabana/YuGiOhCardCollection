@@ -31,6 +31,14 @@ permissions:
 jobs:
   process:
     runs-on: ubuntu-latest
+    # Mirrors pages.yml's job exactly (see the Prepare/Set up/Upload/Deploy
+    # steps below). Both id-token: write and this environment binding are
+    # what the Pages OIDC deployment token is scoped against; omitting it
+    # here while pages.yml keeps it would be exactly the kind of drift that
+    # makes the two workflows deploy different sites.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Check out
@@ -133,8 +141,15 @@ jobs:
 
       # Deliberately last. The good rows have already been synced, committed
       # and deployed by this point; this only makes the run visibly red.
+      #
+      # always() is required here now that four more steps (Prepare site
+      # directory through Deploy to GitHub Pages) run between enrich and this
+      # step: without it, a plain `if: steps.enrich.outcome == 'failure'` is
+      # implicitly ANDed with success(), so a deploy-step failure would skip
+      # this step and swallow the blocked-rows diagnostic — the job would
+      # still go red, but for the wrong, less actionable reason.
       - name: Fail if any row was blocked
-        if: steps.enrich.outcome == 'failure'
+        if: always() && steps.enrich.outcome == 'failure'
         run: |
           echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
           exit 1
