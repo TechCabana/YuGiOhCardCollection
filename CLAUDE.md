@@ -188,6 +188,24 @@ Approval is **per card**, merging is **per batch**.
    are still waiting.
 7. Cards in a batch that is on hold stay in Review, except the one being reworked.
 
+### `process data`
+Runs the data pipeline. Manages the collection, not the code — no cards, no PRs, no merges.
+
+1. Trigger the **Process Data** workflow (`gh workflow run process-data.yml`).
+2. Watch the run and report the real outcome — enriched, skipped and blocked counts.
+3. If any row was **blocked**, say which serial, which field, and which value is missing
+   from the Airtable options. Never add a select option automatically — the owner keeps the
+   vocabulary deliberate. Airtable's API cannot add select options anyway: its field-update
+   endpoint accepts only `name` and `description`, so this is a manual step in the UI.
+4. Confirm the deploy finished and the live site reflects the change.
+
+The chain is enrich → sync → commit → deploy. A blocked row does **not** stop the others:
+enrichment is `continue-on-error`, the sync and commit still run, and the job fails at the
+end so the problem is visible without holding up good data.
+
+Rows are enriched only when `IsProcessed` is unticked, so a processed row is never re-fetched.
+The same workflow also runs on a daily schedule as a safety net.
+
 ### `audit project`
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
 
