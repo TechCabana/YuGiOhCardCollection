@@ -1,0 +1,98 @@
+name: Process Data
+
+# The whole data path in one run: enrich Airtable from YGOPRODeck, regenerate
+# data/cards.json, commit, and let the push to main trigger the Pages deploy.
+#
+# Replaces the earlier sync-only workflow. Two workflows both committing
+# data/cards.json to main would eventually race each other.
+
+on:
+  # On demand — this is what the `process data` chat trigger calls, and what
+  # you run yourself after adding rows to Airtable.
+  workflow_dispatch:
+
+  schedule:
+    # Daily sweep at 06:00 UTC. Airtable cannot push to GitHub without a paid
+    # automation, so a schedule means polling. Costs nothing when idle.
+    - cron: '0 6 * * *'
+
+# Never let two runs commit data/cards.json at the same time.
+concurrency:
+  group: process-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # A blocked row must not stop the other rows reaching the site, so this
+      # is allowed to fail. The job still goes red at the end — see the last
+      # step — so a missing select option gets noticed rather than swallowed.
+      - name: Enrich Airtable from YGOPRODeck
+        id: enrich
+        continue-on-error: true
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          AIRTABLE_TABLE_ID: ${{ secrets.AIRTABLE_TABLE_ID }}
+        run: node scripts/enrich-airtable.mjs
+
+      - name: Sync Airtable into data/cards.json
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          AIRTABLE_TABLE_ID: ${{ secrets.AIRTABLE_TABLE_ID }}
+        run: node scripts/sync-airtable.mjs
+
+      - name: Verify the result still loads
+        # A structurally wrong file would break the live site, so validate
+        # before committing rather than after.
+        run: |
+          node -e "
+            const cards = JSON.parse(require('fs').readFileSync('data/cards.json','utf8'));
+            if (!Array.isArray(cards)) throw new Error('cards.json is not an array');
+            if (cards.length === 0) throw new Error('cards.json is empty');
+            const bad = cards.filter(c => !c.name || !c.type || !c.rarity);
+            if (bad.length) throw new Error(bad.length + ' card(s) missing required fields');
+            const leaked = cards.filter(c =>
+              Object.keys(c).some(k => ['quantity','condition','set price','setprice'].includes(k.toLowerCase()))
+            );
+            if (leaked.length) throw new Error('private field leaked into published data');
+            console.log('Validated ' + cards.length + ' card(s).');
+          "
+
+      - name: Commit if changed
+        run: |
+          if [ -z "$(git status --porcelain data/cards.json)" ]; then
+            echo "No change to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/cards.json
+          # No [skip ci]: that string skips every push-triggered workflow for
+          # the commit, which would stop pages.yml deploying. ci.yml only
+          # listens on pull_request, so a direct push cannot retrigger it.
+          git commit -m "chore: sync collection from Airtable"
+          git push
+
+      # Deliberately last. The good rows have already been synced, committed
+      # and deployed by this point; this only makes the run visibly red.
+      - name: Fail if any row was blocked
+        if: steps.enrich.outcome == 'failure'
+        run: |
+          echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
+          exit 1
