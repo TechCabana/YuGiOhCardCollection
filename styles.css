@@ -244,10 +244,6 @@ body {
     --container-height: 650px;
 }
 
-.carousel-view.hidden {
-    display: none;
-}
-
 .carousel-container {
     position: relative;
     padding: 4rem 0;
@@ -324,11 +320,6 @@ body {
     opacity: 0.3;
     z-index: 1;
     filter: blur(3px);
-}
-
-.carousel-card.hidden-card {
-    opacity: 0;
-    pointer-events: none;
 }
 
 .card-image-area {
@@ -461,14 +452,16 @@ body {
     font-weight: bold;
 }
 
-/* Grid View */
+/*
+ * Grid View
+ *
+ * Both views declare their natural display and are switched with the [hidden]
+ * attribute alone. The rule at the top of this file gives [hidden] the
+ * !important it needs to outrank these declarations.
+ */
 .grid-view {
-    display: none;
-    padding: 2rem;
-}
-
-.grid-view.active {
     display: block;
+    padding: 2rem;
 }
 
 .card-grid {
