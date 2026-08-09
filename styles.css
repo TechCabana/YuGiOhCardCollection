@@ -260,12 +260,28 @@ body {
 .carousel-view {
     display: block;
 
-    --card-width: 350px;
-    --card-height: 500px;
     --offset-near: 380px;
     --offset-far: 500px;
-    --stage-height: 550px;
-    --container-height: 650px;
+
+    /*
+     * Height is derived, never typed. A real card is 59mm x 86mm, so the art
+     * box owns that ratio and the info block adds a fixed strip beneath it.
+     * A breakpoint only has to restate the width, and everything below follows.
+     */
+    --card-info-height: 10.5rem;
+
+    /*
+     * The true ratio makes a 350px card 678px tall, which overflows a laptop
+     * viewport. Cap the whole card by height and let the ratio decide the
+     * width, so the card is never taller than the screen it sits on.
+     */
+    --card-max-height: 70vh;
+    --card-width-cap: calc((var(--card-max-height) - var(--card-info-height)) * 59 / 86);
+    --card-width: min(350px, var(--card-width-cap));
+
+    --card-height: calc(var(--card-width) * 86 / 59 + var(--card-info-height));
+    --stage-height: calc(var(--card-height) + 50px);
+    --container-height: calc(var(--card-height) + 150px);
 }
 
 .carousel-container {
@@ -336,7 +352,8 @@ body {
  * inline, so this shows only while that value is missing.
  */
 .card-image-area {
-    height: 340px;
+    width: 100%;
+    aspect-ratio: 59 / 86;
     background: var(--surface-3);
     display: flex;
     align-items: center;
@@ -495,8 +512,8 @@ body {
     box-shadow: var(--shadow-2);
 }
 
+/* Height comes from the shared 59:86 ratio; only the placeholder glyph shrinks. */
 .grid-card .card-image-area {
-    height: 280px;
     font-size: 3.5rem;
 }
 
@@ -609,12 +626,12 @@ body {
      * longer applies anyway.
      */
     .carousel-view {
-        --card-width: 260px;
-        --card-height: 380px;
+        --card-width: min(260px, var(--card-width-cap));
         --offset-near: min(28vw, 285px);
         --offset-far: min(32vw, 380px);
-        --stage-height: 420px;
-        --container-height: 500px;
+
+        /* Info block is shorter here because .card-info-area padding drops to 1rem. */
+        --card-info-height: 9.5rem;
     }
 
     .carousel-container {
@@ -622,7 +639,6 @@ body {
     }
 
     .card-image-area {
-        height: 240px;
         font-size: 3rem;
     }
 
@@ -709,10 +725,7 @@ body {
      * card at this width without overlapping it.
      */
     .carousel-view {
-        --card-width: min(78vw, 300px);
-        --card-height: 420px;
-        --stage-height: 440px;
-        --container-height: 520px;
+        --card-width: min(78vw, 300px, var(--card-width-cap));
     }
 
     .carousel-card.pos-left,
@@ -726,10 +739,6 @@ body {
 
     .carousel-card.pos-center {
         transform: translateX(0) translateY(0) scale(1);
-    }
-
-    .card-image-area {
-        height: 260px;
     }
 
     .carousel-controls {
@@ -749,10 +758,6 @@ body {
 
     .grid-view {
         padding: 1rem;
-    }
-
-    .grid-card .card-image-area {
-        height: 260px;
     }
 
     .status-message {
