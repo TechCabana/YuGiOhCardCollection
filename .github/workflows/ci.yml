@@ -7,7 +7,7 @@ name: CI
 # protection.
 #
 # Loop guard: this workflow listens for `pull_request` only — there is no
-# `push` trigger. sync-airtable.yml commits straight to `main` on a
+# `push` trigger. process-data.yml commits straight to `main` on a
 # schedule/workflow_dispatch and never opens a PR, so that commit cannot
 # fire a `pull_request` event and this workflow never runs for it. The
 # sync commit deliberately carries no `[skip ci]` tag: that string skips
