@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yu-Gi-Oh! Collection</title>
+    <!-- Tokens first: styles.css resolves every colour, radius and space through them. -->
+    <link rel="stylesheet" href="assets/css/tokens.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -39,8 +41,8 @@
     <!-- Data loading and failure states -->
     <div class="status-message" id="statusMessage">Loading collection…</div>
 
-    <!-- Carousel View -->
-    <div class="carousel-view" id="carouselView">
+    <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
+    <div class="carousel-view" id="carouselView" hidden>
         <div class="carousel-container">
             <div class="carousel-stage" id="carouselStage">
                 <!-- Cards will be injected here -->
@@ -56,8 +58,8 @@
         </div>
     </div>
 
-    <!-- Grid View -->
-    <div class="grid-view" id="gridView">
+    <!-- Grid View. Hidden until the collection resolves; see applyViewVisibility(). -->
+    <div class="grid-view" id="gridView" hidden>
         <div class="card-grid" id="cardGrid">
             <!-- Cards will be injected here -->
         </div>

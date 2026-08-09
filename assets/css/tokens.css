@@ -1,0 +1,92 @@
+/*
+ * Design tokens.
+ *
+ * Every colour, radius, spacing step and shadow in the site is declared here and
+ * referenced by name everywhere else. styles.css holds no raw hex.
+ *
+ * The palette is deliberately flat. Depth comes from stacking surfaces and
+ * separating them with hairline borders, not from gradients or coloured glow.
+ * There is one interaction accent, and it is reserved for state the user caused:
+ * an active filter, the current view, the focused control, selected text.
+ * Everything else is a neutral.
+ */
+
+:root {
+    /* ---------------------------------------------------------------
+       Surfaces. A flat ladder from the page ground upward. Each step is
+       a small, even lift, so a stack of three still reads as layers
+       rather than as a wash.
+       --------------------------------------------------------------- */
+    --bg: #0b0b0d;
+    --surface-1: #131316;
+    --surface-2: #1b1b20;
+    --surface-3: #232329;
+
+    /* Sits over card art, so it is opaque enough to stay legible on any frame. */
+    --overlay: rgba(0, 0, 0, 0.72);
+
+    /* ---------------------------------------------------------------
+       Borders. Hairlines carry the separation that shadow used to.
+       --------------------------------------------------------------- */
+    --border-hairline: rgba(255, 255, 255, 0.07);
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.22);
+
+    /* ---------------------------------------------------------------
+       Text. Three weights of emphasis, all measured against --surface-1.
+       --------------------------------------------------------------- */
+    --text-primary: #f2f2f4;
+    --text-secondary: #b4b4bd;
+    --text-muted: #7c7c88;
+
+    /* ---------------------------------------------------------------
+       Accent. Muted gold, one step off the card-frame foil rather than a
+       UI theme colour, and far enough from the Effect-monster orange that
+       the two never get confused once card type carries colour.
+       --------------------------------------------------------------- */
+    --accent: #c8a54b;
+    --accent-fg: #0b0b0d;
+    --accent-wash: rgba(200, 165, 75, 0.14);
+    --accent-border: rgba(200, 165, 75, 0.55);
+
+    /* ---------------------------------------------------------------
+       Failure. Only ever used by the status banner.
+       --------------------------------------------------------------- */
+    --danger-text: #f0c3cb;
+    --danger-wash: rgba(194, 56, 79, 0.12);
+    --danger-border: rgba(194, 56, 79, 0.45);
+
+    /* ---------------------------------------------------------------
+       Radius. A range, so shape carries hierarchy: chrome is soft, cards
+       are squarer, and only genuine pills are fully round.
+       --------------------------------------------------------------- */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-pill: 999px;
+
+    /* ---------------------------------------------------------------
+       Spacing. A four-step rhythm for container padding and gaps.
+       --------------------------------------------------------------- */
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 1.5rem;
+    --space-4: 2rem;
+
+    /* ---------------------------------------------------------------
+       Shadow. Neutral black only. A coloured shadow is glow, and glow is
+       the thing this palette is replacing.
+       --------------------------------------------------------------- */
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.45);
+    --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+    /* ---------------------------------------------------------------
+       Motion. State changes are quick. The longer view-transition timing
+       belongs with the motion card, which also owns the transition: all
+       declarations still left in styles.css.
+       --------------------------------------------------------------- */
+    --duration-state: 160ms;
+    --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+}

@@ -6,10 +6,24 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #fff;
+    background: var(--bg);
+    color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
+}
+
+/*
+ * One focus treatment for the whole page. Keyboard users previously had
+ * nothing to follow outside the search field.
+ */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: var(--accent);
+    color: var(--accent-fg);
 }
 
 /*
@@ -27,16 +41,17 @@ body {
     max-width: 40rem;
     text-align: center;
     font-size: 0.95rem;
-    color: #ccc;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
+    color: var(--text-secondary);
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
 }
 
 .status-message.is-error {
-    color: #ffc9d1;
-    background: rgba(233, 69, 96, 0.12);
-    border-color: rgba(233, 69, 96, 0.5);
+    color: var(--danger-text);
+    background: var(--danger-wash);
+    border-color: var(--danger-border);
 }
 
 /* Shown in either view when no cards match the current filters. */
@@ -55,49 +70,50 @@ body {
 .empty-state-title {
     font-size: 1.15rem;
     font-weight: 600;
-    color: #e6e6e6;
+    color: var(--text-primary);
 }
 
 .empty-state-hint {
     font-size: 0.9rem;
-    color: #9a9a9a;
+    color: var(--text-muted);
 }
 
 .empty-state-action {
     margin-top: 0.4rem;
     min-height: 44px;
     padding: 0.6rem 1.4rem;
-    border: 2px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid var(--border-strong);
     background: transparent;
-    color: #fff;
-    border-radius: 22px;
+    color: var(--text-primary);
+    border-radius: var(--radius-pill);
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out);
 }
 
 .empty-state-action:hover {
-    background: rgba(233, 69, 96, 0.25);
-    border-color: #e94560;
+    background: var(--accent-wash);
+    border-color: var(--accent-border);
 }
 
 .header {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1.5rem 2rem;
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid #e94560;
+    background: var(--surface-1);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-hairline);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: var(--space-2);
 }
 
+/* Hierarchy from weight and tracking. The title was a gradient clipped to text. */
 .header h1 {
     font-size: 2rem;
-    background: linear-gradient(45deg, #e94560, #f39c12);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
 .stats {
@@ -108,15 +124,17 @@ body {
 }
 
 .stat-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-2);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-secondary);
     padding: 0.4rem 1rem;
-    border-radius: 20px;
+    border-radius: var(--radius-sm);
 }
 
 .controls {
-    padding: 1.5rem 2rem;
+    padding: var(--space-3) var(--space-4);
     display: flex;
-    gap: 1rem;
+    gap: var(--space-2);
     align-items: center;
     flex-wrap: wrap;
 }
@@ -129,43 +147,43 @@ body {
 .search-box input {
     width: 100%;
     padding: 0.7rem 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
-    color: #fff;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
     font-size: 0.95rem;
     transition: all 0.3s;
 }
 
-.search-box input:focus {
-    outline: none;
-    border-color: #e94560;
-    background: rgba(255, 255, 255, 0.15);
+.search-box input:focus-visible {
+    border-color: var(--accent-border);
+    background: var(--surface-3);
 }
 
 .search-box input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-muted);
 }
 
 .filter-section {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-1);
     flex-wrap: wrap;
     align-items: center;
 }
 
 .filter-pills {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-1);
     flex-wrap: wrap;
 }
 
+/* A pill is one of the few things that earns the fully round radius. */
 .pill {
     padding: 0.5rem 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-radius: 20px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition: all 0.3s;
     font-size: 0.85rem;
@@ -173,23 +191,26 @@ body {
 }
 
 .pill:hover {
-    background: rgba(233, 69, 96, 0.3);
-    border-color: #e94560;
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
     transform: translateY(-2px);
 }
 
+/* Active filter is state the user caused, so it takes the accent. */
 .pill.active {
-    background: #e94560;
-    border-color: #e94560;
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
 }
 
 .clear-btn {
     padding: 0.5rem 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-subtle);
     background: transparent;
-    color: #aaa;
-    border-radius: 20px;
+    color: var(--text-muted);
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition: all 0.3s;
     font-size: 0.85rem;
@@ -197,33 +218,36 @@ body {
 }
 
 .clear-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #fff;
-    color: #fff;
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
 }
 
 .view-toggle {
     display: flex;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    gap: 0.3rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border-hairline);
     padding: 0.3rem;
-    border-radius: 25px;
+    border-radius: var(--radius-md);
 }
 
 .view-btn {
     padding: 0.5rem 1.2rem;
     border: none;
     background: transparent;
-    color: #aaa;
-    border-radius: 20px;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.3s;
     font-size: 0.85rem;
 }
 
+/* The current view is state, so it takes the accent like an active filter. */
 .view-btn.active {
-    background: #e94560;
-    color: #fff;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
 }
 
 /* Carousel View */
@@ -236,16 +260,28 @@ body {
 .carousel-view {
     display: block;
 
-    --card-width: 350px;
-    --card-height: 500px;
     --offset-near: 380px;
     --offset-far: 500px;
-    --stage-height: 550px;
-    --container-height: 650px;
-}
 
-.carousel-view.hidden {
-    display: none;
+    /*
+     * Height is derived, never typed. A real card is 59mm x 86mm, so the art
+     * box owns that ratio and the info block adds a fixed strip beneath it.
+     * A breakpoint only has to restate the width, and everything below follows.
+     */
+    --card-info-height: 10.5rem;
+
+    /*
+     * The true ratio makes a 350px card 678px tall, which overflows a laptop
+     * viewport. Cap the whole card by height and let the ratio decide the
+     * width, so the card is never taller than the screen it sits on.
+     */
+    --card-max-height: 70vh;
+    --card-width-cap: calc((var(--card-max-height) - var(--card-info-height)) * 59 / 86);
+    --card-width: min(350px, var(--card-width-cap));
+
+    --card-height: calc(var(--card-width) * 86 / 59 + var(--card-info-height));
+    --stage-height: calc(var(--card-height) + 50px);
+    --container-height: calc(var(--card-height) + 150px);
 }
 
 .carousel-container {
@@ -268,28 +304,13 @@ body {
     position: absolute;
     width: var(--card-width);
     height: var(--card-height);
-    background: #1a1a2e;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    background: var(--surface-1);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
     overflow: hidden;
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-}
-
-.carousel-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transform: rotate(45deg);
-    transition: all 0.6s;
-}
-
-.carousel-card:hover::before {
-    left: 100%;
 }
 
 .carousel-card.pos-left {
@@ -305,11 +326,11 @@ body {
     z-index: 2;
 }
 
+/* The centre card is lifted by a neutral shadow and a brighter hairline. */
 .carousel-card.pos-center {
     transform: translateX(0) translateY(-10px) scale(1.05);
-    border-color: #e94560;
-    box-shadow: 0 30px 60px rgba(233, 69, 96, 0.4), 
-                0 0 80px rgba(233, 69, 96, 0.2);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-3);
     z-index: 10;
 }
 
@@ -326,14 +347,14 @@ body {
     filter: blur(3px);
 }
 
-.carousel-card.hidden-card {
-    opacity: 0;
-    pointer-events: none;
-}
-
+/*
+ * Fallback ground for the art area. render.js sets a per-card background
+ * inline, so this shows only while that value is missing.
+ */
 .card-image-area {
-    height: 340px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 100%;
+    aspect-ratio: 59 / 86;
+    background: var(--surface-3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -342,29 +363,19 @@ body {
     overflow: hidden;
 }
 
-.card-image-area::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent);
-}
-
 .rarity-badge {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    background: var(--overlay);
+    color: var(--text-primary);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-xs);
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 1px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-subtle);
     z-index: 1;
 }
 
@@ -372,18 +383,18 @@ body {
     padding: 1.5rem;
 }
 
+/* Also previously a clipped gradient; weight and tracking carry it instead. */
 .card-name {
     font-size: 1.3rem;
-    font-weight: bold;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, #f39c12, #e94560);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .card-type {
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--text-muted);
     margin-bottom: 1rem;
 }
 
@@ -394,23 +405,27 @@ body {
 }
 
 .stat-box {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-2);
     padding: 0.6rem;
-    border-radius: 8px;
+    border-radius: var(--radius-xs);
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-hairline);
 }
 
 .stat-label {
     font-size: 0.7rem;
-    color: #888;
+    color: var(--text-muted);
     margin-bottom: 0.2rem;
 }
 
+/*
+ * A stat is data, not interaction state, so it stays neutral. Emphasis comes
+ * from weight against the muted label above it.
+ */
 .stat-value {
     font-size: 1rem;
-    font-weight: bold;
-    color: #f39c12;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .carousel-controls {
@@ -424,10 +439,10 @@ body {
 .nav-btn {
     width: 60px;
     height: 60px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
     border-radius: 50%;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.3s;
@@ -437,8 +452,8 @@ body {
 }
 
 .nav-btn:hover:not(:disabled) {
-    background: #e94560;
-    border-color: #e94560;
+    background: var(--surface-3);
+    border-color: var(--border-strong);
     transform: scale(1.1);
 }
 
@@ -451,24 +466,27 @@ body {
 
 .card-counter {
     font-size: 1.2rem;
-    color: #fff;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
+/* The current index is the one thing here that tracks user position. */
 .card-counter .current {
-    color: #e94560;
+    color: var(--accent);
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-/* Grid View */
+/*
+ * Grid View
+ *
+ * Both views declare their natural display and are switched with the [hidden]
+ * attribute alone. The rule at the top of this file gives [hidden] the
+ * !important it needs to outrank these declarations.
+ */
 .grid-view {
-    display: none;
-    padding: 2rem;
-}
-
-.grid-view.active {
     display: block;
+    padding: var(--space-4);
 }
 
 .card-grid {
@@ -480,9 +498,9 @@ body {
 }
 
 .grid-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    background: var(--surface-1);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-md);
     overflow: hidden;
     transition: all 0.3s;
     cursor: pointer;
@@ -490,12 +508,12 @@ body {
 
 .grid-card:hover {
     transform: translateY(-10px);
-    border-color: #e94560;
-    box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-2);
 }
 
+/* Height comes from the shared 59:86 ratio; only the placeholder glyph shrinks. */
 .grid-card .card-image-area {
-    height: 280px;
     font-size: 3.5rem;
 }
 
@@ -539,10 +557,10 @@ body {
 .page-btn {
     width: 45px;
     height: 45px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
     border-radius: 50%;
-    color: #fff;
+    color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
@@ -552,8 +570,8 @@ body {
 }
 
 .page-btn:hover:not(:disabled) {
-    background: #e94560;
-    border-color: #e94560;
+    background: var(--surface-3);
+    border-color: var(--border-strong);
     transform: scale(1.05);
 }
 
@@ -564,7 +582,7 @@ body {
 
 .page-info {
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-secondary);
 }
 
 @keyframes float {
@@ -608,12 +626,12 @@ body {
      * longer applies anyway.
      */
     .carousel-view {
-        --card-width: 260px;
-        --card-height: 380px;
+        --card-width: min(260px, var(--card-width-cap));
         --offset-near: min(28vw, 285px);
         --offset-far: min(32vw, 380px);
-        --stage-height: 420px;
-        --container-height: 500px;
+
+        /* Info block is shorter here because .card-info-area padding drops to 1rem. */
+        --card-info-height: 9.5rem;
     }
 
     .carousel-container {
@@ -621,7 +639,6 @@ body {
     }
 
     .card-image-area {
-        height: 240px;
         font-size: 3rem;
     }
 
@@ -708,10 +725,7 @@ body {
      * card at this width without overlapping it.
      */
     .carousel-view {
-        --card-width: min(78vw, 300px);
-        --card-height: 420px;
-        --stage-height: 440px;
-        --container-height: 520px;
+        --card-width: min(78vw, 300px, var(--card-width-cap));
     }
 
     .carousel-card.pos-left,
@@ -725,10 +739,6 @@ body {
 
     .carousel-card.pos-center {
         transform: translateX(0) translateY(0) scale(1);
-    }
-
-    .card-image-area {
-        height: 260px;
     }
 
     .carousel-controls {
@@ -748,10 +758,6 @@ body {
 
     .grid-view {
         padding: 1rem;
-    }
-
-    .grid-card .card-image-area {
-        height: 260px;
     }
 
     .status-message {
