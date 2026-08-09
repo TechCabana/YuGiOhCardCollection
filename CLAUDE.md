@@ -384,6 +384,18 @@ Returns newest first. Each entry has `data.text`, `memberCreator.username`, and 
 this workflow appear under that account. The owner is **`@ankhitsharma1`** — always mention
 that handle, never `techcabana`, or the notification goes to the wrong account.
 
+**Every comment written by the assistant MUST begin with `Claude:`.**
+
+```
+Claude: <the comment>
+```
+
+Trello shows the account name, not who actually typed it, and the token authenticates as the
+owner's own account. Without the prefix an assistant-written comment is indistinguishable
+from one the owner typed — which matters most for approvals, since the approval gate would
+otherwise be forgeable by the thing it is meant to gate. The owner's own comments carry no
+prefix, so anything unprefixed is theirs.
+
 **Never assume. Never proceed on a guess.** A blocked card stays blocked until answered.
 
 ---
