@@ -11,6 +11,7 @@ import {
 } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
+import { VIEW_CAROUSEL, normaliseView, getViewVisibility } from './assets/js/view.js';
 
 // Populated from data/cards.json once the fetch resolves.
 let allCards = [];
@@ -20,9 +21,14 @@ let currentIndex = 0;
 // group (monster OR spell) — see filterCards() in assets/js/filters.js.
 let activeTypeFilters = new Set();
 let activeRarityFilters = new Set();
-let currentView = 'carousel';
+let currentView = VIEW_CAROUSEL;
 let currentPage = 1;
 const cardsPerPage = 18;
+
+// Views stay hidden until the fetch resolves, so the page never flashes empty
+// controls over a blank stage. Held here because view visibility depends on it
+// as much as it depends on which view is selected.
+let isDataReady = false;
 
 // Free-text search term, combined on top of the pill filters in applyFilters().
 let searchQuery = '';
@@ -224,15 +230,13 @@ document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentView = btn.dataset.view;
+        currentView = normaliseView(btn.dataset.view);
 
-        if (currentView === 'carousel') {
-            document.getElementById('carouselView').classList.remove('hidden');
-            document.getElementById('gridView').classList.remove('active');
+        applyViewVisibility();
+
+        if (currentView === VIEW_CAROUSEL) {
             updateCarousel();
         } else {
-            document.getElementById('carouselView').classList.add('hidden');
-            document.getElementById('gridView').classList.add('active');
             updateGrid();
         }
     });
@@ -322,16 +326,27 @@ function setStatus(message, isError = false) {
 }
 
 /**
- * Show or hide the card views.
+ * Push the current visibility decision onto the two view containers.
  *
- * Views stay hidden until data resolves so the page never flashes empty
- * controls over a blank stage.
- *
- * @param {boolean} visible - whether the active view should be shown
+ * The decision itself lives in assets/js/view.js. Visibility is expressed with
+ * the `hidden` attribute alone: it is the one mechanism assistive technology
+ * reads, and a single convention cannot contradict itself the way the old
+ * class pair could.
  */
-function setViewsVisible(visible) {
-    document.getElementById('carouselView').hidden = !visible;
-    document.getElementById('gridView').hidden = !visible;
+function applyViewVisibility() {
+    const visibility = getViewVisibility(currentView, isDataReady);
+    document.getElementById('carouselView').hidden = !visibility.carousel;
+    document.getElementById('gridView').hidden = !visibility.grid;
+}
+
+/**
+ * Record whether the collection has resolved, then refresh what is on screen.
+ *
+ * @param {boolean} ready - whether the collection has loaded
+ */
+function setDataReady(ready) {
+    isDataReady = ready;
+    applyViewVisibility();
 }
 
 /**
@@ -340,7 +355,7 @@ function setViewsVisible(visible) {
  * A failure leaves a readable message on screen rather than a blank page.
  */
 async function init() {
-    setViewsVisible(false);
+    setDataReady(false);
     setStatus('Loading collection…');
 
     try {
@@ -357,7 +372,7 @@ async function init() {
         }
 
         setStatus(null);
-        setViewsVisible(true);
+        setDataReady(true);
         applyFilters();
     } catch (error) {
         console.error(error);
