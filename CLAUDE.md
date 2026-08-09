@@ -375,14 +375,52 @@ tested and audited — the owner's review is the final check, not the first.
 Comments work via the **Trello REST API**, not the MCP — the MCP has no comment support.
 Credentials come from `.env` (see §9). Verified working end to end on 2026-08-08.
 
-**To raise a question**, post a comment on the card:
+**To raise a question**, post a comment on the card. Use a JSON body — it is the only
+form that cannot be double-encoded:
 
 ```bash
 curl -s -X POST "https://api.trello.com/1/cards/$CARD_ID/actions/comments?key=$KEY&token=$TOKEN" \
-  --data-urlencode "text=@ankhitsharma1 BLOCKED — Q1. <question>  Q2. <question>"
+  -H "Content-Type: application/json" \
+  --data-binary @comment.json     # {"text": "Claude: @ankhitsharma1 BLOCKED — Q1. ..."}
 ```
 
+Write `comment.json` with the Write tool, never with a shell heredoc or an inline
+`-d '...'` string. A single quote inside the text breaks shell quoting and leaves
+`'\''` in the comment body.
+
 Then move on to the next card and say in chat which cards are blocked and why.
+
+### Encoding: the one way to get this wrong
+
+**Never percent-encode the text yourself.** On 2026-08-09 eleven comments across the
+board had to be repaired because they were stored as literal escape sequences:
+
+```
+%3F%3F audit project %282026-08-08%29 %97 stale evidence%2C card still valid.
+```
+
+Two separate faults produced that:
+
+1. **Double encoding.** The text was percent-encoded by hand and then encoded again by
+   `--data-urlencode`. Trello stores whatever it receives, so the escapes became the
+   comment.
+2. **A cp1252 console.** The first pass ran through a Windows console that is not UTF-8,
+   so `—` became `%97`, `§` became `%A7`, and emoji became `??`. `%97` is not valid
+   UTF-8, so the text could not even be decoded back in one pass.
+
+Rules that prevent both:
+
+- Send a **JSON body**, as above. JSON escaping is handled by `JSON.stringify`, so no
+  percent-encoding is involved at any point.
+- If `--data-urlencode` is used instead, pass **raw UTF-8 text** and let curl encode it
+  **exactly once**. Text that already contains `%28` or `%2C` is a bug, not input.
+- Never pipe comment text through PowerShell. Use the Bash tool, or Node's `fetch` with
+  a `JSON.stringify` body.
+- **Verify after posting.** Read the comment back and check it for `%[0-9A-Fa-f]{2}`.
+  Escapes in the stored text mean it was double-encoded and must be repaired.
+- Prefer plain ASCII punctuation in comments. An em dash or an emoji is what turns a
+  console-encoding problem into an unrecoverable one, because `??` cannot be decoded
+  back to the character it replaced.
 
 **To read answers:**
 
@@ -405,11 +443,21 @@ that handle, never `techcabana`, or the notification goes to the wrong account.
 Claude: <the comment>
 ```
 
+No exceptions, and no shorter form. It applies to every comment the assistant posts —
+questions, status notes, merge records, gate results, scope changes, anything. Build the
+prefix into the text before the request is made, so a comment cannot be posted without it.
+
 Trello shows the account name, not who actually typed it, and the token authenticates as the
 owner's own account. Without the prefix an assistant-written comment is indistinguishable
 from one the owner typed — which matters most for approvals, since the approval gate would
 otherwise be forgeable by the thing it is meant to gate. The owner's own comments carry no
 prefix, so anything unprefixed is theirs.
+
+**Never add the prefix to an existing unprefixed comment.** Unprefixed means the owner
+wrote it, so relabelling one would falsify authorship — the exact failure the rule exists
+to prevent. Assistant comments written before this rule was enforced stay as they are; only
+comments being repaired for the encoding fault above are rewritten, because the percent
+escapes prove a script wrote them.
 
 **Never assume. Never proceed on a guess.** A blocked card stays blocked until answered.
 
