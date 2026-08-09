@@ -16,17 +16,29 @@ on:
     # automation, so a schedule means polling. Costs nothing when idle.
     - cron: '0 6 * * *'
 
-# Never let two runs commit data/cards.json at the same time.
+# Shares the "pages" group with pages.yml because this workflow now deploys
+# Pages itself. Two concurrent deploys would fight; GitHub also rejects
+# overlapping Pages deployments.
 concurrency:
-  group: process-data
+  group: pages
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: write   # commit data/cards.json
+  pages: write      # deploy the site
+  id-token: write   # OIDC token deploy-pages requires
 
 jobs:
   process:
     runs-on: ubuntu-latest
+    # Mirrors pages.yml's job exactly (see the Prepare/Set up/Upload/Deploy
+    # steps below). Both id-token: write and this environment binding are
+    # what the Pages OIDC deployment token is scoped against; omitting it
+    # here while pages.yml keeps it would be exactly the kind of drift that
+    # makes the two workflows deploy different sites.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Check out
@@ -74,25 +86,70 @@ jobs:
           "
 
       - name: Commit if changed
+        id: commit
         run: |
           if [ -z "$(git status --porcelain data/cards.json)" ]; then
             echo "No change to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/cards.json
-          # No [skip ci]: that string skips every push-triggered workflow for
-          # the commit, which would stop pages.yml deploying. ci.yml only
-          # listens on pull_request, so a direct push cannot retrigger it.
           git commit -m "chore: sync collection from Airtable"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # This workflow deploys Pages itself rather than relying on the push
+      # above to wake pages.yml.
+      #
+      # GitHub deliberately does not let a push made with GITHUB_TOKEN trigger
+      # further workflow runs — a recursion guard. So the commit lands and
+      # pages.yml, which listens on push to main, never fires. Before this,
+      # the daily sweep would enrich, commit, and never publish: green runs
+      # and a stale site, with no signal anything was wrong.
+      #
+      # The concurrency: pages group below stops this racing pages.yml when a
+      # human push happens at the same time.
+
+      - name: Prepare site directory
+        if: steps.commit.outputs.changed == 'true'
+        # Mirrors the same step in pages.yml. Copies only what is actually
+        # served, so node_modules/, tests/, scripts/, .github/ and repo
+        # metadata never reach the deployed artifact.
+        run: |
+          mkdir _site
+          cp index.html styles.css script.js _site/
+          cp -r assets _site/assets
+          cp -r data _site/data
+
+      - name: Set up Pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       # Deliberately last. The good rows have already been synced, committed
       # and deployed by this point; this only makes the run visibly red.
+      #
+      # always() is required here now that four more steps (Prepare site
+      # directory through Deploy to GitHub Pages) run between enrich and this
+      # step: without it, a plain `if: steps.enrich.outcome == 'failure'` is
+      # implicitly ANDed with success(), so a deploy-step failure would skip
+      # this step and swallow the blocked-rows diagnostic — the job would
+      # still go red, but for the wrong, less actionable reason.
       - name: Fail if any row was blocked
-        if: steps.enrich.outcome == 'failure'
+        if: always() && steps.enrich.outcome == 'failure'
         run: |
           echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
           exit 1
