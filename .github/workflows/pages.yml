@@ -6,7 +6,7 @@ name: Deploy Pages
 #
 # Loop guard: this workflow only checks out the repo and calls the Pages
 # deploy actions; it never commits or pushes anything. It cannot retrigger
-# sync-airtable.yml (that workflow only runs on `schedule` and
+# process-data.yml (that workflow only runs on `schedule` and
 # `workflow_dispatch`, never on `push`) and it cannot retrigger itself.
 #
 # NOTE: GitHub Pages for this repo is still configured as a legacy

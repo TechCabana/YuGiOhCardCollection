@@ -66,6 +66,38 @@ Do not hotlink per page view. Do not use Airtable attachment URLs directly — t
 
 **Design = full visual system rebuild**, not a patch of the existing styles.
 
+### Airtable data model
+
+Base `appjNtbcGFFAu0FIn`, table `tblsz5RrZGC7BnesJ`.
+
+The owner types a **Serial** (set code, e.g. `SDJ-017`) plus their own `Quantity` and
+`Condition`. Everything else is fetched from YGOPRODeck and written back.
+
+The serial is the lookup key rather than the name: it identifies a single printing, which
+is how the collection is actually kept, and name lookup needs an exact match that
+punctuation makes fragile.
+
+**Field ownership.** A sync writes only machine-owned fields:
+
+| Machine-owned | Human-owned — never written |
+|---|---|
+| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition** |
+
+`Set Price`, `Quantity` and `Condition` are in `PRIVATE_FIELDS` — held in Airtable but never
+published to `data/cards.json`, because the repo is public and those are inventory data.
+
+**Pendulum is a boolean, not a Summon Type.** A card can be both Pendulum and Fusion
+("Pendulum Effect Fusion Monster"), so a single-select could only record one facet.
+`Summon Type` holds Fusion / Synchro / XYZ / Ritual / Link / None; `IsPendulum` is separate.
+
+**Serials are trimmed before lookup.** `Serial` is a `multilineText` field, so a pasted
+value can carry a trailing newline that is invisible in the Airtable UI but URL-encodes to
+`%0A` and fails the lookup.
+
+**Select options are never created automatically.** An unmapped value blocks that row and is
+reported with the field, the value and the current options. Airtable's field-update endpoint
+accepts only `name` and `description`, so adding an option is necessarily a manual UI step.
+
 **Target structure**
 ```
 index.html  404.html
@@ -75,7 +107,7 @@ assets/fonts/
 data/cards.json          <- Airtable output, committed
 scripts/sync-airtable.mjs
 tests/
-.github/workflows/       sync-airtable.yml, pages.yml
+.github/workflows/       process-data.yml, pages.yml, ci.yml
 ```
 
 ---
@@ -187,6 +219,24 @@ Approval is **per card**, merging is **per batch**.
 6. If some cards are approved and others have no verdict yet, do nothing and say which cards
    are still waiting.
 7. Cards in a batch that is on hold stay in Review, except the one being reworked.
+
+### `process data`
+Runs the data pipeline. Manages the collection, not the code — no cards, no PRs, no merges.
+
+1. Trigger the **Process Data** workflow (`gh workflow run process-data.yml`).
+2. Watch the run and report the real outcome — enriched, skipped and blocked counts.
+3. If any row was **blocked**, say which serial, which field, and which value is missing
+   from the Airtable options. Never add a select option automatically — the owner keeps the
+   vocabulary deliberate. Airtable's API cannot add select options anyway: its field-update
+   endpoint accepts only `name` and `description`, so this is a manual step in the UI.
+4. Confirm the deploy finished and the live site reflects the change.
+
+The chain is enrich → sync → commit → deploy. A blocked row does **not** stop the others:
+enrichment is `continue-on-error`, the sync and commit still run, and the job fails at the
+end so the problem is visible without holding up good data.
+
+Rows are enriched only when `IsProcessed` is unticked, so a processed row is never re-fetched.
+The same workflow also runs on a daily schedule as a safety net.
 
 ### `audit project`
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
