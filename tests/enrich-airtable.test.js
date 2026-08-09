@@ -145,6 +145,42 @@ describe('collectEnrichedRows', () => {
         expect(result.blocked[0].problems[0]).toMatchObject({ field: 'Card Type', value: 'Fiend' });
     });
 
+    // The bug behind real rows SDSA-EN047/048: an unrecognised YGOPRODeck
+    // type must block the row rather than write it half-empty with
+    // IsProcessed: true, which sync-airtable.mjs would then silently drop.
+    it('blocks a row whose card type cannot be mapped, instead of writing it half-empty', async () => {
+        const records = [unprocessedRecord('rec1', 'SKILL-001')];
+        const resolveSerialImpl = () =>
+            Promise.resolve({ ok: true, setInfo, cardInfo: { ...cardInfo, type: 'Skill Card', race: undefined } });
+
+        const result = await collectEnrichedRows(records, { resolveSerialImpl, selectOptions });
+
+        expect(result.rows).toHaveLength(0);
+        expect(result.blocked).toHaveLength(1);
+        expect(result.blocked[0].serial).toBe('SKILL-001');
+        expect(result.blocked[0].problems.some(p => p.field === 'Type')).toBe(true);
+    });
+
+    it('a blocked row for an unmappable type never appears in the rows to be written', async () => {
+        const records = [
+            unprocessedRecord('rec1', 'SDJ-017'),
+            unprocessedRecord('rec2', 'SKILL-001')
+        ];
+        const resolveSerialImpl = serial => {
+            if (serial === 'SKILL-001') {
+                return Promise.resolve({ ok: true, setInfo, cardInfo: { ...cardInfo, type: 'Skill Card' } });
+            }
+            return alwaysResolves();
+        };
+
+        const result = await collectEnrichedRows(records, { resolveSerialImpl, selectOptions });
+
+        expect(result.rows).toHaveLength(1);
+        expect(result.rows[0].id).toBe('rec1');
+        expect(result.rows.some(row => row.id === 'rec2')).toBe(false);
+        expect(result.blocked).toHaveLength(1);
+    });
+
     it('already-processed rows are never resolved or collected', async () => {
         const records = [{ id: 'rec1', fields: { Serial: 'SDJ-017', IsProcessed: true } }];
         const resolveSerialImpl = vi.fn(alwaysResolves);

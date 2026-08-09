@@ -13,6 +13,7 @@
 const TYPE_MONSTER = 'Monster';
 const TYPE_SPELL = 'Spell';
 const TYPE_TRAP = 'Trap';
+const TYPE_TOKEN = 'Token';
 
 /**
  * YGOPRODeck summon-type keywords, mapped to Airtable's Summon Type options.
@@ -51,14 +52,16 @@ export const HUMAN_OWNED_FIELDS = ['Serial', 'Quantity', 'Condition'];
 /**
  * Derive Airtable's Type from YGOPRODeck's `type` string.
  *
- * YGOPRODeck uses values like "Flip Effect Monster", "Spell Card", "Trap Card".
+ * YGOPRODeck uses values like "Flip Effect Monster", "Spell Card", "Trap Card",
+ * and plain "Token" for token cards (no Monster/Spell/Trap suffix at all).
  *
  * @param {string} ygoType - the `type` field from cardinfo
- * @returns {string|null} Monster, Spell, Trap, or null when unrecognised
+ * @returns {string|null} Monster, Spell, Trap, Token, or null when unrecognised
  */
 export function deriveType(ygoType) {
     if (typeof ygoType !== 'string') return null;
 
+    if (ygoType.includes('Token')) return TYPE_TOKEN;
     if (ygoType.includes('Monster')) return TYPE_MONSTER;
     if (ygoType.includes('Spell')) return TYPE_SPELL;
     if (ygoType.includes('Trap')) return TYPE_TRAP;
@@ -242,4 +245,48 @@ export function assertNoHumanOwnedFields(fields) {
 export function describeProblem(serial, problem) {
     return `${serial}: "${problem.value}" is not an option for ${problem.field}. ` +
         `Add it in Airtable, or correct the serial. Current options: ${problem.allowed.join(', ')}.`;
+}
+
+/**
+ * Fields the renderer and sync both depend on. A row missing any of these
+ * must never be written — it would either fail to render or be silently
+ * dropped later by sync-airtable.mjs's own "missing Name, Type or Rarity"
+ * filter, but only after IsProcessed had already been set to true.
+ */
+export const REQUIRED_FIELDS = ['Name', 'Passcode', 'Rarity', 'Type'];
+
+/**
+ * Find which required fields a built payload is missing.
+ *
+ * The main case this catches is a `type` string deriveType cannot map (e.g.
+ * an unreleased "Skill Card" or a new YGOPRODeck category): buildEnrichedFields
+ * simply omits Type rather than guessing, and this is what turns that
+ * omission into a blocking condition instead of a silent half-empty write.
+ *
+ * @param {object} fields - output of buildEnrichedFields
+ * @returns {string[]} required field names absent (undefined, null or '') from the payload
+ */
+export function findMissingRequiredFields(fields) {
+    return REQUIRED_FIELDS.filter(field => {
+        const value = fields?.[field];
+        return value === undefined || value === null || value === '';
+    });
+}
+
+/**
+ * Format a missing-required-field problem as an instruction the owner can act on.
+ *
+ * Named separately from describeProblem because the underlying problem is
+ * different: not an option Airtable rejected, but a value that was never
+ * derived in the first place, most often because deriveType did not
+ * recognise YGOPRODeck's raw `type` string.
+ *
+ * @param {string} serial - the row's serial, for locating it
+ * @param {string[]} missingFields - required field names absent from the payload
+ * @param {string|undefined} rawType - the raw YGOPRODeck `type` value, for diagnosing an unmapped Type
+ * @returns {string} a readable message
+ */
+export function describeMissingFields(serial, missingFields, rawType) {
+    return `${serial}: missing required field(s) ${missingFields.join(', ')}. ` +
+        `Raw YGOPRODeck type: "${rawType ?? 'unknown'}". Row left unprocessed for re-run.`;
 }

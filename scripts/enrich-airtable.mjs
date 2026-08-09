@@ -25,7 +25,9 @@ import {
     buildEnrichedFields,
     assertNoHumanOwnedFields,
     validateSelectOptions,
-    describeProblem
+    describeProblem,
+    findMissingRequiredFields,
+    describeMissingFields
 } from './enrich-ygoprodeck.mjs';
 
 /** Airtable's per-request limit for record PATCH/POST bodies. */
@@ -169,6 +171,23 @@ export async function collectEnrichedRows(records, { resolveSerialImpl, selectOp
         // never emit a human-owned field. A throw here means something is
         // structurally wrong and the whole run should stop, not just this row.
         assertNoHumanOwnedFields(fields);
+
+        // A card type deriveType cannot map (e.g. an unreleased "Skill Card")
+        // leaves Type undefined rather than guessed. That must block the row,
+        // not write it half-empty — a half-empty row still gets IsProcessed:
+        // true and is then silently dropped by sync-airtable.mjs's own
+        // "missing Name, Type or Rarity" filter, so the real card never
+        // reaches the site and the run reports success.
+        const missingFields = findMissingRequiredFields(fields);
+        if (missingFields.length > 0) {
+            const rawType = resolved.cardInfo?.type;
+            console.log(describeMissingFields(serial, missingFields, rawType));
+            blocked.push({
+                serial,
+                problems: missingFields.map(field => ({ field, value: fields[field] ?? null, rawType }))
+            });
+            continue;
+        }
 
         const validation = validateSelectOptions(fields, selectOptions);
         if (!validation.ok) {
