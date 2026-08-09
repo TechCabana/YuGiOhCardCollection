@@ -298,10 +298,25 @@ run the test suite locally before moving a card to Review and state the result i
 body. Once CI exists, a red build blocks the merge in `process Review` regardless of an
 approval.
 
-**5. `main` is protected.**
-Never commit or push directly to `main`. Every change reaches `main` through a PR merge,
-including trivial ones. The only exception is this file and other pure-documentation
-changes, and only when the owner explicitly asks for a direct commit.
+**5. Branch and open a PR. It is a working practice, not a gate.**
+Default to a branch and a PR for every change. Not because GitHub forces it — it does not —
+but because a PR is where the diff gets read, the Fable gate runs, and the Trello card gets
+its link. It is what keeps the history reviewable.
+
+**What GitHub actually enforces on `main`:** force pushes blocked, branch deletion blocked.
+Nothing else. The pull-request requirement was removed on 2026-08-09.
+
+*Why:* `github-actions[bot]` has to push `data/cards.json`, and **a personal repository cannot
+grant a bot a bypass**. Confirmed three ways — classic protection's `bypass_pull_request_allowances`
+and rulesets' `Integration` bypass actor are both organisation-only. So "require a PR" and
+"the bot can commit data" were mutually exclusive. Moving the repo to an organisation would
+lift that; until then, this is the trade.
+
+**Skipping the PR is allowed when it genuinely adds nothing** — a one-line documentation fix,
+or an urgent revert. Say so and why, rather than doing it quietly. When in doubt, open the PR;
+it costs almost nothing.
+
+The bot's own `data/cards.json` commits never use a PR by design.
 
 **6. Merge is deploy; rollback is a revert.**
 A merge to `main` triggers the Pages deploy — there is no separate release step. If a
