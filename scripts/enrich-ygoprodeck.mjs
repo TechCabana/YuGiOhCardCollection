@@ -37,6 +37,7 @@ export const MACHINE_OWNED_FIELDS = [
     'Card Sign',
     'Summon Type',
     'HasEffect',
+    'IsPendulum',
     'Attack',
     'Defense',
     'Level',
@@ -97,6 +98,21 @@ export function deriveSummonType(ygoType) {
 export function hasEffect(ygoType) {
     if (typeof ygoType !== 'string') return false;
     return ygoType.includes('Monster') && ygoType.includes('Effect');
+}
+
+/**
+ * Whether a card is a Pendulum monster.
+ *
+ * Pendulum is a separate flag rather than a Summon Type value because it is
+ * not mutually exclusive with the others — "Pendulum Effect Fusion Monster"
+ * is both Pendulum and Fusion, and a single-select could only record one.
+ *
+ * @param {string} ygoType - the `type` field from cardinfo
+ * @returns {boolean} true when the card is a Pendulum monster
+ */
+export function isPendulum(ygoType) {
+    if (typeof ygoType !== 'string') return false;
+    return ygoType.includes('Pendulum');
 }
 
 /**
@@ -163,6 +179,7 @@ export function buildEnrichedFields(setInfo, cardInfo) {
     if (type === TYPE_MONSTER) {
         fields['Summon Type'] = deriveSummonType(cardInfo?.type);
         fields['HasEffect'] = hasEffect(cardInfo?.type);
+        fields['IsPendulum'] = isPendulum(cardInfo?.type);
 
         if (typeof cardInfo?.atk === 'number') fields['Attack'] = cardInfo.atk;
         if (typeof cardInfo?.def === 'number') fields['Defense'] = cardInfo.def;

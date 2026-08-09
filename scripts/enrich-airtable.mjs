@@ -127,13 +127,35 @@ export async function fetchSelectOptions(baseId, tableId, token, fetchImpl = glo
  *   blocked: {serial: string, problems: object[]}[]
  * }>}
  */
+/**
+ * Clean a Serial value read from Airtable.
+ *
+ * The field is multilineText, so a pasted value can carry a trailing newline
+ * or stray spaces that look invisible in the Airtable UI but break the lookup.
+ *
+ * @param {unknown} serial - the raw Serial field value
+ * @returns {string} the trimmed serial, or an empty string when absent
+ */
+export function normaliseSerial(serial) {
+    if (serial === null || serial === undefined) return '';
+    return String(serial).trim();
+}
+
 export async function collectEnrichedRows(records, { resolveSerialImpl, selectOptions }) {
     const rows = [];
     const skipped = [];
     const blocked = [];
 
     for (const record of records.filter(isUnprocessed)) {
-        const serial = record.fields?.Serial;
+        // Serial is a multilineText field in Airtable, so it happily keeps a
+        // trailing newline from a paste. Untrimmed, that gets URL-encoded as
+        // %0A and the lookup fails on a serial that looks correct in the UI.
+        const serial = normaliseSerial(record.fields?.Serial);
+
+        if (serial === '') {
+            skipped.push({ id: record.id, serial: '', reason: 'Row has no Serial, so there is nothing to look up' });
+            continue;
+        }
 
         const resolved = await resolveSerialImpl(serial);
         if (!resolved.ok) {
