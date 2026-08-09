@@ -166,7 +166,7 @@ function applyFilters() {
     document.getElementById('visibleCardsCount').textContent = filteredCards.length;
     document.getElementById('totalCardsCount').textContent = allCards.length;
 
-    if (currentView === 'carousel') {
+    if (currentView === VIEW_CAROUSEL) {
         updateCarousel();
     } else {
         updateGrid();
@@ -284,7 +284,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    if (currentView !== 'carousel' || filteredCards.length === 0) return;
+    if (currentView !== VIEW_CAROUSEL || filteredCards.length === 0) return;
 
     switch (e.key) {
         case 'ArrowLeft':
