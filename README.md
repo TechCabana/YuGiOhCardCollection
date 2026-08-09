@@ -263,7 +263,7 @@ Airtable. Airtable scripting needs a Team plan, and the code would live outside
 the repo with no tests or review.
 
 `.env` is gitignored and must never be committed. If a token is ever exposed,
-**revoke it immediately** at https://airtable.com/create/tokens. Removing the
+revoke it immediately at https://airtable.com/create/tokens. Removing the
 commit is not sufficient.
 
 ---
