@@ -146,8 +146,46 @@ describe('mapRecord', () => {
     });
 
     it('returns null for an unrecognised type or rarity', () => {
-        expect(mapRecord({ id: 'r', fields: { Name: 'X', Type: 'Token', Rarity: 'Common' } })).toBeNull();
+        // "Skill Card" mirrors deriveType's own unmapped-type example in
+        // enrich-ygoprodeck.mjs — Token is now a recognised Type (see below),
+        // so it must not be used here as the "unmapped" example any more.
+        expect(mapRecord({ id: 'r', fields: { Name: 'X', Type: 'Skill Card', Rarity: 'Common' } })).toBeNull();
         expect(mapRecord({ id: 'r', fields: { Name: 'X', Type: 'Monster', Rarity: 'Promo' } })).toBeNull();
+    });
+
+    // The owner added Token as a fourth Airtable Type option after
+    // SDSA-EN047/048 (real Tokens) exposed deriveType not recognising it.
+    // TYPE_MAP must stay in step with that option, or a Token row that
+    // enrich-airtable.mjs now happily writes (Type: 'Token' present, so it
+    // clears the required-fields guard) gets silently dropped right back out
+    // here, at sync time, with no serial reported — the same "reports success,
+    // card never reaches the site" failure the required-fields guard exists
+    // to prevent, just moved one stage later.
+    it('maps a Token record, keeping Card Type but with no combat stats', () => {
+        const tokenRecord = {
+            id: 'rec004',
+            fields: {
+                Name: 'Phantasmal Martyr Token',
+                Passcode: '93224849',
+                Type: 'Token',
+                'Card Type': 'Fiend',
+                Rarity: 'Common',
+                Serial: 'SDSA-EN047'
+            }
+        };
+
+        const card = mapRecord(tokenRecord);
+
+        expect(card).toMatchObject({
+            type: 'token',
+            rarity: 'common',
+            cardType: 'Fiend / Token',
+            attribute: null,
+            atk: null,
+            def: null,
+            level: null,
+            summonType: null
+        });
     });
 
     it('returns null for a malformed record', () => {
@@ -157,7 +195,7 @@ describe('mapRecord', () => {
     });
 
     it('produces a gradient the renderer will accept', () => {
-        ['Monster', 'Spell', 'Trap'].forEach(type => {
+        ['Monster', 'Spell', 'Trap', 'Token'].forEach(type => {
             const card = mapRecord({ id: 'r', fields: { Name: 'X', Type: type, Rarity: 'Common' } });
             expect(safeGradient(card.gradient)).toBe(card.gradient);
         });
