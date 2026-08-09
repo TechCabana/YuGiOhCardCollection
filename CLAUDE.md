@@ -75,7 +75,7 @@ assets/fonts/
 data/cards.json          <- Airtable output, committed
 scripts/sync-airtable.mjs
 tests/
-.github/workflows/       sync-airtable.yml, pages.yml
+.github/workflows/       process-data.yml, pages.yml, ci.yml
 ```
 
 ---

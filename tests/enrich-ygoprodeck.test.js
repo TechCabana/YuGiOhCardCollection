@@ -174,6 +174,28 @@ describe('buildEnrichedFields', () => {
         expect(fields.Defense).toBe(0);
     });
 
+    // Level 0 is real (e.g. some Level/Rank-0 monsters) and must survive
+    // alongside the other falsy-but-valid numeric stats.
+    it('keeps a zero level rather than dropping it', () => {
+        const fields = buildEnrichedFields(setInfo, { ...cardInfo, level: 0 });
+        expect(fields.Level).toBe(0);
+    });
+
+    // HasEffect is a plain boolean write, not a presence check — false must
+    // reach the payload the same as true, or Normal Monsters would silently
+    // keep whatever HasEffect value a row already had.
+    it('writes HasEffect: false for a Normal Monster rather than omitting it', () => {
+        const fields = buildEnrichedFields(setInfo, { ...cardInfo, type: 'Normal Monster' });
+        expect(fields).toHaveProperty('HasEffect', false);
+    });
+
+    // A card genuinely worth $0.00 must still overwrite a stale price, not
+    // be treated as "no price data" and silently skipped.
+    it('keeps a zero set price rather than dropping it', () => {
+        const fields = buildEnrichedFields({ ...setInfo, set_price: '0.00' }, cardInfo);
+        expect(fields).toHaveProperty('Set Price', 0);
+    });
+
     // A partial response must not blank a field that already held a good value.
     it('omits absent values instead of writing null', () => {
         const fields = buildEnrichedFields({}, {});
