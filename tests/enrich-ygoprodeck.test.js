@@ -10,8 +10,11 @@ import {
     validateSelectOptions,
     assertNoHumanOwnedFields,
     describeProblem,
+    findMissingRequiredFields,
+    describeMissingFields,
     MACHINE_OWNED_FIELDS,
-    HUMAN_OWNED_FIELDS
+    HUMAN_OWNED_FIELDS,
+    REQUIRED_FIELDS
 } from '../scripts/enrich-ygoprodeck.mjs';
 
 /** Real cardsetsinfo response for SDJ-017, captured from the live API. */
@@ -59,6 +62,12 @@ describe('deriveType', () => {
     it('returns null for an unrecognised or missing type', () => {
         expect(deriveType('Skill Card')).toBeNull();
         expect(deriveType(undefined)).toBeNull();
+    });
+
+    // SDSA-EN047 / SDSA-EN048: YGOPRODeck returns plain "Token" for token
+    // cards, with no Monster/Spell/Trap suffix to match against.
+    it('maps Token to Token', () => {
+        expect(deriveType('Token')).toBe('Token');
     });
 });
 
@@ -211,6 +220,37 @@ describe('buildEnrichedFields', () => {
             expect(HUMAN_OWNED_FIELDS).not.toContain(field);
         });
     });
+
+    // Real SDSA-EN047 payload: YGOPRODeck tokens have no attribute/atk/def/level,
+    // only a race, which still maps to Card Type like any other monster line.
+    it('maps a real Token, keeping Card Type but omitting the monster-only fields', () => {
+        const tokenSetInfo = {
+            id: 93224849,
+            name: 'Phantasmal Martyr Token',
+            set_name: 'Structure Deck: Sacred Beasts',
+            set_rarity: 'Common',
+            set_price: '1.47'
+        };
+        const tokenCardInfo = { name: 'Phantasmal Martyr Token', type: 'Token', race: 'Fiend' };
+
+        const fields = buildEnrichedFields(tokenSetInfo, tokenCardInfo);
+
+        expect(fields).toEqual({
+            Name: 'Phantasmal Martyr Token',
+            Passcode: '93224849',
+            Rarity: 'Common',
+            'Set Name': 'Structure Deck: Sacred Beasts',
+            'Set Price': 1.47,
+            Type: 'Token',
+            'Card Type': 'Fiend'
+        });
+        expect(fields).not.toHaveProperty('Summon Type');
+        expect(fields).not.toHaveProperty('HasEffect');
+        expect(fields).not.toHaveProperty('IsPendulum');
+        expect(fields).not.toHaveProperty('Attack');
+        expect(fields).not.toHaveProperty('Defense');
+        expect(fields).not.toHaveProperty('Level');
+    });
 });
 
 describe('validateSelectOptions', () => {
@@ -269,6 +309,42 @@ describe('describeProblem', () => {
         expect(message).toContain('Fiend');
         expect(message).toContain('Card Type');
         expect(message).toContain('Spellcaster, Warrior');
+    });
+});
+
+describe('findMissingRequiredFields', () => {
+    it('reports nothing missing for a fully mapped card', () => {
+        expect(findMissingRequiredFields(buildEnrichedFields(setInfo, cardInfo))).toEqual([]);
+    });
+
+    // The bug behind SDSA-EN047/048: an unrecognised type leaves Type undefined
+    // rather than guessed, and that must be caught here.
+    it('reports Type missing when the raw YGOPRODeck type cannot be mapped', () => {
+        const fields = buildEnrichedFields(setInfo, { ...cardInfo, type: 'Skill Card' });
+        expect(findMissingRequiredFields(fields)).toEqual(['Type']);
+    });
+
+    it('reports every absent required field, not just the first', () => {
+        expect(findMissingRequiredFields({})).toEqual(REQUIRED_FIELDS);
+    });
+
+    it('treats an empty string the same as absent', () => {
+        expect(findMissingRequiredFields({ Name: '', Passcode: '1', Rarity: 'Common', Type: 'Monster' }))
+            .toEqual(['Name']);
+    });
+});
+
+describe('describeMissingFields', () => {
+    it('names the serial, the missing fields and the raw type', () => {
+        const message = describeMissingFields('SDSA-EN047', ['Type'], 'Token that YGOPRODeck did not describe');
+
+        expect(message).toContain('SDSA-EN047');
+        expect(message).toContain('Type');
+        expect(message).toContain('Token that YGOPRODeck did not describe');
+    });
+
+    it('falls back to "unknown" when no raw type is available', () => {
+        expect(describeMissingFields('SDSA-EN047', ['Type'], undefined)).toContain('unknown');
     });
 });
 
