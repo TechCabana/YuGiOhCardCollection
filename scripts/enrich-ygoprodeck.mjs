@@ -45,8 +45,15 @@ export const MACHINE_OWNED_FIELDS = [
     'Set Price'
 ];
 
-/** Fields the owner controls. A write must never include these. */
-export const HUMAN_OWNED_FIELDS = ['Serial', 'Quantity', 'Condition'];
+/**
+ * Fields the owner controls. A write must never include these.
+ *
+ * `IsFirstEdition` is here because edition is not derivable from YGOPRODeck:
+ * a 1st Edition and an Unlimited copy share the same set code, and neither
+ * endpoint reports edition. It describes the physical copy owned, so only the
+ * owner can set it — and a sync must never clear it.
+ */
+export const HUMAN_OWNED_FIELDS = ['Serial', 'Quantity', 'Condition', 'IsFirstEdition'];
 
 /**
  * Derive Airtable's Type from YGOPRODeck's `type` string.
