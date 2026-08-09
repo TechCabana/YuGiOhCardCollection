@@ -3,6 +3,7 @@ import {
     deriveType,
     deriveSummonType,
     hasEffect,
+    isPendulum,
     deriveAttribute,
     parsePrice,
     buildEnrichedFields,
@@ -144,6 +145,7 @@ describe('buildEnrichedFields', () => {
             'Card Sign': 'Light',
             'Summon Type': 'None',
             HasEffect: true,
+            IsPendulum: false,
             Attack: 300,
             Defense: 400,
             Level: 1
@@ -267,5 +269,40 @@ describe('describeProblem', () => {
         expect(message).toContain('Fiend');
         expect(message).toContain('Card Type');
         expect(message).toContain('Spellcaster, Warrior');
+    });
+});
+
+describe('isPendulum', () => {
+    it('detects every Pendulum variant', () => {
+        ['Pendulum Effect Monster', 'Pendulum Normal Monster', 'Pendulum Effect Fusion Monster']
+            .forEach(type => expect(isPendulum(type)).toBe(true));
+    });
+
+    it('is false for non-Pendulum monsters, spells and traps', () => {
+        ['Flip Effect Monster', 'Fusion Monster', 'Spell Card', 'Trap Card', undefined]
+            .forEach(type => expect(isPendulum(type)).toBe(false));
+    });
+});
+
+describe('Pendulum is tracked separately from Summon Type', () => {
+    // A Pendulum can also be a Fusion, so a single-select could only record
+    // one of the two. The flag and the Summon Type must both survive.
+    it('records both facets of a Pendulum Effect Fusion Monster', () => {
+        const fields = buildEnrichedFields(setInfo, {
+            ...cardInfo, type: 'Pendulum Effect Fusion Monster'
+        });
+
+        expect(fields.IsPendulum).toBe(true);
+        expect(fields['Summon Type']).toBe('Fusion');
+        expect(fields.HasEffect).toBe(true);
+    });
+
+    it('writes IsPendulum false for an ordinary monster rather than omitting it', () => {
+        expect(buildEnrichedFields(setInfo, cardInfo)).toHaveProperty('IsPendulum', false);
+    });
+
+    it('omits IsPendulum for spells and traps, which cannot be Pendulum', () => {
+        const fields = buildEnrichedFields(setInfo, { type: 'Spell Card', race: 'Normal' });
+        expect(fields).not.toHaveProperty('IsPendulum');
     });
 });
