@@ -109,10 +109,15 @@ npm install          # only needed to run the test suite
 Everything except your own inventory data is fetched, not typed.
 
 1. Open the Airtable base and add a row.
-2. Fill in **three fields only**:
+2. Fill in the fields you own — everything else is fetched:
    - `Serial` — the set code, e.g. `SDJ-017`. This is the lookup key.
    - `Quantity` — how many copies you own.
    - `Condition` — your grading.
+   - `IsFirstEdition` — optional. Whether the copy is 1st Edition. A 1st
+     Edition and an Unlimited copy share the same set code and neither
+     YGOPRODeck endpoint reports edition, so this can't be derived — only
+     you can set it, and a sync will never touch it. It isn't published to
+     `data/cards.json` yet.
 3. Leave `IsProcessed` **unticked**.
 4. Run the pipeline (below), or wait for the daily sweep at 06:00 UTC.
 
@@ -127,7 +132,7 @@ A sync overwrites machine-owned fields freely and never touches the rest.
 
 | Machine-owned — do not type these | Human-owned — never overwritten |
 | --- | --- |
-| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition** |
+| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition, IsFirstEdition** |
 
 `Quantity`, `Condition` and `Set Price` are also **private**: they are held in
 Airtable but stripped before `data/cards.json` is written, because this repo is
@@ -223,8 +228,8 @@ lose a printing from the collection.
 | --- | --- | --- |
 | `id` | string | The Airtable record id. |
 | `name` | string | **Required.** A record without it is dropped. |
-| `type` | string | **Required.** `monster` / `spell` / `trap`. |
-| `rarity` | string | **Required.** `common` / `rare` / `super` / `ultra` / `secret`. |
+| `type` | string | **Required.** `monster` / `spell` / `trap` / `token`. |
+| `rarity` | string | **Required.** `common` / `rare` / `super` / `ultra` / `secret` / `ultimate` / `collector` / `ghost` / `prismatic` / `starlight` (`RARITY_MAP` in `scripts/map-airtable.mjs`). |
 | `passcode` | string | 8 digits, stored as text — leading zeros are significant. Drives the card image URL. |
 | `serial` | string | Set code, trimmed. `Serial` is a multiline field in Airtable, so a pasted value can carry an invisible trailing newline that URL-encodes to `%0A` and breaks the lookup. |
 | `cardType` | string | e.g. `Insect / Effect`. |
