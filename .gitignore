@@ -11,6 +11,10 @@ coverage/
 dist/
 *.log
 
+# Machine-readable pipeline reports, written by the enrich and sync steps and
+# read back by scripts/pipeline-report.mjs. Run artefacts, not source.
+.pipeline/
+
 # OS / editor
 .DS_Store
 Thumbs.db
