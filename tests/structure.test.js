@@ -193,6 +193,18 @@ describe('control labelling', () => {
         expect(indexHtml).toMatch(/class="page-info" aria-live="polite"/);
     });
 
+    // Raised by the 2026-08-08 audit as an extension of this card: the banner
+    // and the empty state are dynamic regions that shipped after the card was
+    // written, and a screen reader was told nothing when the collection
+    // finished loading, failed, or a filter emptied the results.
+    it('announces the loading and failure banner', () => {
+        expect(indexHtml).toMatch(/id="statusMessage" role="status"/);
+    });
+
+    it('marks the empty state as a status region too', () => {
+        expect(scriptJs).toMatch(/wrapper\.setAttribute\('role', 'status'\)/);
+    });
+
     // Sets both halves of the state in one call. Two call sites setting the
     // class and the attribute separately is how they drift apart.
     it('routes every state change through the toggle helper', () => {

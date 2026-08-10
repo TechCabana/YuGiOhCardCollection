@@ -79,8 +79,13 @@
       and the landmark does not change when the view does.
     -->
     <main id="mainContent">
-        <!-- Data loading and failure states -->
-        <div class="status-message" id="statusMessage">Loading collection…</div>
+        <!--
+          role="status" carries an implicit aria-live="polite". It is on the
+          element in the served HTML rather than added when the message
+          changes, because a live region has to exist before its content
+          changes to be announced reliably.
+        -->
+        <div class="status-message" id="statusMessage" role="status">Loading collection…</div>
 
         <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
         <div class="carousel-view" id="carouselView" hidden>
