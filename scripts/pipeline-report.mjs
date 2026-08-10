@@ -308,6 +308,28 @@ function main() {
         return;
     }
 
+    // The mirror case: sync died before it could write which rows it dropped —
+    // a missing secret, a network failure, or its own "refusing to publish an
+    // empty collection" guard. sync-airtable.mjs writes its report as one of
+    // its first acts on every path that gets past fetching, so a missing
+    // report plus a failed step means the run stopped even earlier than that.
+    // Treating the absence as "0 dropped" would print "Pipeline clean" for a
+    // run that is failing for a reason this step never names — exactly the
+    // wrong-cause bug this script exists to remove, just moved one step over.
+    if (syncReport === null && (process.env.SYNC_OUTCOME ?? 'unknown') === 'failure') {
+        console.log(
+            formatAnnotation({
+                level: 'error',
+                title: 'Sync failed before it could report',
+                message:
+                    'The sync step failed without writing a report, so which rows (if any) were left ' +
+                    'out of data/cards.json is unknown. Read the Sync step log directly.'
+            })
+        );
+        process.exitCode = 1;
+        return;
+    }
+
     const report = buildPipelineReport({
         enriched: enrichReport.enriched,
         skipped: enrichReport.skipped,

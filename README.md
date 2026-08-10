@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-367%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-372%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Sixteen files, 367 tests, all passing. If that is what you see, the checkout is
+Sixteen files, 372 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -385,7 +385,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Sixteen files, 367 tests, all passing as of the last run on Node 24.16.0.
+Sixteen files, 372 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |

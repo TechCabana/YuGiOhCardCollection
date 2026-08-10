@@ -64,6 +64,7 @@ jobs:
         run: node scripts/enrich-airtable.mjs
 
       - name: Sync Airtable into data/cards.json
+        id: sync
         env:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
@@ -174,10 +175,16 @@ jobs:
       # missing-select-option text, so a run whose only problem was an
       # unresolvable serial sent the owner looking for a blank Airtable field
       # that was never the cause.
+      #
+      # SYNC_OUTCOME lets the script tell "sync ran clean" from "sync died
+      # before it could write which rows it dropped" (missing secret, network
+      # failure) — otherwise a hard sync failure prints "Pipeline clean" here
+      # while the job fails for a reason this step never names.
       - name: Report blocked, skipped and dropped rows
         if: always()
         env:
           ENRICH_OUTCOME: ${{ steps.enrich.outcome }}
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
         run: node scripts/pipeline-report.mjs
 
       # Separate from the step above so the two causes stay distinguishable in
