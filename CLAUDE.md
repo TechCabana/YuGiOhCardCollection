@@ -28,27 +28,27 @@ code — see §3.
 
 ## 2. Current state
 
-**As of 2026-08-10, after PR #17.** Restate this section rather than trusting it once it is
+**As of 2026-08-10, after PR #18.** Restate this section rather than trusting it once it is
 more than a few PRs old — a stale briefing here causes real errors, not cosmetic drift.
 
-16 PRs merged, 35 cards Done. The site is live, data comes from Airtable through the
+17 PRs merged, 38 cards Done. The site is live, data comes from Airtable through the
 build-time pipeline, every card renders its real art mirrored from YGOPRODeck, and card
 colour now carries the card's type rather than decorating it.
 
 ```
 index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
 script.js        383 lines   DOM wiring only; logic lives in assets/js/
-styles.css       872 lines   responsive, tokenised colour, true 59:86 card geometry
+styles.css       940 lines   responsive, tokenised colour, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
 assets/js/        7 files    data, filters, render, frames, view, debounce, keyboard
 assets/cards/   111 files    mirrored card art, ~16 MB, committed by the pipeline
 scripts/         7 files     enrich, sync, map, mirror, YGOPRODeck client, pipeline report
-tests/          16 files     372 Vitest tests, all passing
+tests/          17 files     403 Vitest tests, all passing
 .github/         3 workflows ci.yml, pages.yml, process-data.yml
 data/cards.json 128 cards    generated from Airtable, committed, served
 ```
 
-Roughly 3,700 lines of source, 3,100 of tests, 315 of workflow.
+Roughly 3,800 lines of source, 3,400 of tests, 315 of workflow.
 
 **What the 2026-08-05 audit found has been fixed**: search is wired, `@media` rules exist,
 the carousel no longer duplicates cards, and every rendered field is escaped. Only one
@@ -71,14 +71,25 @@ went with the gradient.
 3. **Workflows run on Node 24** with every action bumped past the Node 20 runtime.
    `tests/workflows.test.js` enforces the pin floor, so a slip backwards fails CI.
 
-**What is still open.** Two cards in To Do, both UI Design System and both follow-ons from
-the frame work: self-hosted typography, and the motion pass. Then in Backlog order:
-grid-first layout with sort, the four accessibility cards, repo hygiene files, meta tags,
-a refresh button, collection-value tracking, and the licence decision. Each has a Trello
-card with `file:line` evidence.
+**PR #18 added two more things worth knowing before reading the code:**
 
-**Not yet seen by a human**: the frame colour system was verified by tests and by reading
-the CSS, never by eye or by screenshot.
+4. **Nothing animates on its own.** The `@keyframes float` bounce is deleted, and every
+   transition names its own properties on one of two duration tokens — `--duration-state`
+   for hover and focus, `--duration-view` for a carousel position change. There is no
+   `transition: all` and no duration literal left in `styles.css`, and
+   `tests/motion.test.js` enforces both.
+5. **A card states its edition.** `isFirstEdition` is published to `data/cards.json` and
+   rendered as a badge beside the rarity one. See §3 for why that field is published while
+   `Quantity` and `Condition` are not.
+
+**What is still open.** Six cards in To Do: self-hosted typography, two accessibility cards
+(landmarks, and labelling controls for assistive technology), grid-first layout with sort, a
+refresh button, and the licence decision. Backlog holds five more. Each has a Trello card
+with `file:line` evidence.
+
+**Not yet seen by a human**: the frame colour system, the badge layout and the motion pass
+were all verified by tests, by measurement and by reading the CSS — never by eye or by
+screenshot. Three merged PRs of visual change now rest on that.
 
 ---
 
@@ -112,10 +123,19 @@ punctuation makes fragile.
 
 | Machine-owned | Human-owned — never written |
 |---|---|
-| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition** |
+| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition, IsFirstEdition** |
 
 `Set Price`, `Quantity` and `Condition` are in `PRIVATE_FIELDS` — held in Airtable but never
 published to `data/cards.json`, because the repo is public and those are inventory data.
+
+**Human-owned and private are different questions.** `IsFirstEdition` is owner-typed and is
+never written by a sync — `assertNoHumanOwnedFields` throws if one tries — but it *is*
+published, as the `isFirstEdition` boolean in `data/cards.json` (PR #18, at the owner's
+request). The line is what the field describes: an edition describes the printing anyone is
+looking at, while quantity, condition and price describe what the owner holds and what it is
+worth. Only a literal `true` publishes as true, because an unticked Airtable checkbox arrives
+as `undefined` and would otherwise serialise as a missing key rather than a published "no".
+Reversing this would need a data regeneration, not just a code change.
 
 **Pendulum is a boolean, not a Summon Type.** A card can be both Pendulum and Fusion
 ("Pendulum Effect Fusion Monster"), so a single-select could only record one facet.
@@ -184,17 +204,17 @@ Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST A
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
-**47 cards as of 2026-08-10**, split Backlog 10, To Do 2, In-Progress 0, Review 0, Done 35.
+**49 cards as of 2026-08-10**, split Backlog 5, To Do 6, In-Progress 0, Review 0, Done 38.
 Read the board rather than this table for anything that matters — the count moves every
 session, and the split below is a snapshot, not a source of truth.
 
 | Colour | Label name | Cards |
 |---|---|---|
-| Blue | Data & Airtable | 14 |
+| Blue | Data & Airtable | 15 |
 | Red | Bugs & Correctness | 10 |
 | Yellow | Responsive & Layout | 3 |
 | Purple | Accessibility | 4 |
-| Orange | UI Design System | 5 |
+| Orange | UI Design System | 6 |
 | Green | Repo & Tooling | 11 |
 
 Every new card must carry exactly one domain label. Cards created by `audit project` follow
@@ -276,17 +296,22 @@ The same workflow also runs on a daily schedule as a safety net.
 ### `audit project`
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
 
-1. Read the current repo state, the merged PRs, and every card across all five lists.
-2. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
+1. Load the audit skill set (§6.3) before reading anything.
+2. Read the current repo state, the merged PRs, and every card across all five lists.
+3. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
    and the design rules (§4).
-3. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
+4. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
    regressions, dropped follow-ups, missing tests, and anything a merged PR promised but did
    not actually deliver.
-4. For each real gap, create a card in **Backlog** with a domain label (§5), a description
+5. **Verify every finding before writing it down.** Run the suite, open the file, read the
+   workflow run. A claim that was not checked is not a finding — it is a guess with a card
+   number attached, and it costs more to disprove later than it saved now.
+6. For each real gap, create a card in **Backlog** with a domain label (§5), a description
    carrying `file:line` evidence, and a `**Done when:**` line.
-5. Do **not** duplicate an existing card — check all five lists first, and extend the
+7. Do **not** duplicate an existing card — check all five lists first, and extend the
    existing card instead where one already covers the ground.
-6. Report a summary in chat: what is on track, what has drifted, which cards were created.
+8. Report a summary in chat: what is on track, what has drifted, which cards were created,
+   and which skills from §6.3 were actually loaded.
 
 Creates cards only. Never edits code, never moves cards between lists, never merges.
 
@@ -382,6 +407,9 @@ Choose Opus vs Sonnet per task. Default to Opus when the card is ambiguous, span
 files, or involves a design decision; Sonnet when the card reads like a spec and the diff is
 predictable. State which model was used in the PR body.
 
+Both Fable stages carry a named skill set, not a free choice: `audit project` loads the
+subset in §6.3, and the review gate loads the two marked below.
+
 ### The Fable review gate
 
 Runs when a card is finished and its PR is open, **before** the card moves to Review.
@@ -400,8 +428,47 @@ Fable's remit:
    `@ankhitsharma1`, per §7. Never guess.
 6. Report findings in chat: what was checked, what was fixed, what still needs the owner.
 
+The gate loads `superpowers:requesting-code-review` and
+`superpowers:verification-before-completion` before it starts, and
+`superpowers:systematic-debugging` if a test fails. It does **not** load the wider suite, for
+the reason given in §6.3. Unlike the audit, the gate does write code, so
+`superpowers:test-driven-development` is fair game when step 4 means adding a missing test.
+
 Only once the gate passes does the card move to Review. A PR reaching Review has already been
 tested and audited — the owner's review is the final check, not the first.
+
+---
+
+## 6.3 The audit skill set
+
+The `superpowers` plugin is installed. Most of it is implementation tooling, so `audit project`
+loads a **named subset** rather than the whole suite. Load these by name with the `Skill` tool
+before step 2 of the audit.
+
+| Skill | What it contributes |
+|---|---|
+| `superpowers:verification-before-completion` | Evidence before assertion. The audit's only value is that its claims were checked, so this is the one skill it cannot skip. |
+| `superpowers:requesting-code-review` | The "does this actually meet the requirement" pass, run against each merged PR's `**Done when:**` line rather than against a diff. |
+| `superpowers:systematic-debugging` | Only when a regression surfaces. Establish the cause before writing the card, so the card describes the fault rather than the symptom. |
+| `superpowers:dispatching-parallel-agents` | Optional. Repo state, merged PRs and the five lists are independent reads. Use it only when a serial pass would be shallow, and never on a quiet board — the cost is real. |
+
+**Deliberately not loaded:** `brainstorming`, `writing-plans`, `executing-plans`,
+`test-driven-development`, `subagent-driven-development`, `using-git-worktrees`,
+`finishing-a-development-branch`, `receiving-code-review`, `writing-skills`, and
+`using-superpowers`.
+
+*Why this is a subset and not "use superpowers".* Every excluded skill exists to produce or
+land code, and the audit does neither — it writes cards. `brainstorming` and
+`test-driven-development` are explicitly pre-implementation, so loading them pushes the
+auditor toward designing the fix it is forbidden to write. A gap the audit spots becomes a
+Backlog card; the skills for building it belong to whoever pulls that card, not to the audit.
+
+**If a named skill is unavailable** in the session — the plugin is disabled, or a subagent
+cannot see it — say so in the report and continue without it. Never claim a skill ran when it
+did not. Same rule as the test suite: report the real result.
+
+These skills inform the audit. They do not override §6 or §7. The audit still creates cards
+only, still never moves a card between lists, and still asks rather than guesses.
 
 ---
 
@@ -558,8 +625,8 @@ https://techcabana.github.io/YuGiOhCardCollection/
 | Conversation resolution | not required | dropped with the PR requirement |
 | Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 372 tests
-across 16 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 403 tests
+across 17 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
 `tests/workflows.test.js` fails if that pin or an action version slips backwards.
 
 **Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
