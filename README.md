@@ -385,7 +385,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Thirteen files, 291 tests, all passing as of the last run on Node 24.16.0.
+Thirteen files, 292 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
