@@ -42,12 +42,14 @@ jobs:
 
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          # Kept in step with ci.yml so the pipeline scripts run on the same
+          # Node the tests were green on.
+          node-version: '24'
 
       # A blocked row must not stop the other rows reaching the site, so this
       # is allowed to fail. The job still goes red at the end — see the last
@@ -62,6 +64,7 @@ jobs:
         run: node scripts/enrich-airtable.mjs
 
       - name: Sync Airtable into data/cards.json
+        id: sync
         env:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
@@ -142,18 +145,19 @@ jobs:
 
       - name: Set up Pages
         if: steps.commit.outputs.changed == 'true'
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
+      # Matched pair with deploy-pages below — see the same note in pages.yml.
       - name: Upload artifact
         if: steps.commit.outputs.changed == 'true'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
         if: steps.commit.outputs.changed == 'true'
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       # Deliberately last. The good rows have already been synced, committed
       # and deployed by this point; this only makes the run visibly red.
@@ -162,13 +166,26 @@ jobs:
       # directory through Deploy to GitHub Pages) run between enrich and this
       # step: without it, a plain `if: steps.enrich.outcome == 'failure'` is
       # implicitly ANDed with success(), so a deploy-step failure would skip
-      # this step and swallow the blocked-rows diagnostic — the job would
-      # still go red, but for the wrong, less actionable reason.
-      - name: Fail if any row was blocked
-        if: always() && steps.enrich.outcome == 'failure'
-        run: |
-          echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
-          exit 1
+      # this step and swallow the diagnostic — the job would still go red, but
+      # for the wrong, less actionable reason.
+      #
+      # The step name and the message both come from the reports the enrich and
+      # sync steps wrote, rather than a fixed string. This step used to be
+      # called "Fail if any row was blocked" and always printed the
+      # missing-select-option text, so a run whose only problem was an
+      # unresolvable serial sent the owner looking for a blank Airtable field
+      # that was never the cause.
+      #
+      # SYNC_OUTCOME lets the script tell "sync ran clean" from "sync died
+      # before it could write which rows it dropped" (missing secret, network
+      # failure) — otherwise a hard sync failure prints "Pipeline clean" here
+      # while the job fails for a reason this step never names.
+      - name: Report blocked, skipped and dropped rows
+        if: always()
+        env:
+          ENRICH_OUTCOME: ${{ steps.enrich.outcome }}
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
+        run: node scripts/pipeline-report.mjs
 
       # Separate from the step above so the two causes stay distinguishable in
       # the run summary. A warning rather than a failure: a card missing its art

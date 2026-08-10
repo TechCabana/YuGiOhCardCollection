@@ -41,21 +41,6 @@ const RARITY_MAP = {
 };
 
 /**
- * Background gradient per card type.
- *
- * Now a fallback rather than the main treatment: it shows only for a card whose
- * art is missing, or behind an image that fails to load. The design system
- * rebuild replaces these with the real card-frame colours. Each value matches
- * the allowlist pattern that render.js validates against.
- */
-const TYPE_GRADIENTS = {
-    monster: 'linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)',
-    spell: 'linear-gradient(135deg, #1d9e8f 0%, #0d5f56 100%)',
-    trap: 'linear-gradient(135deg, #b0347f 0%, #6b1f4d 100%)',
-    token: 'linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)'
-};
-
-/**
  * Build the descriptive type line shown under a card name.
  *
  * Composes the Airtable race, summon type and effect flag into a single
@@ -95,7 +80,9 @@ export function buildStats(fields) {
         return [
             { label: 'ATK', value: String(fields['Attack'] ?? '—') },
             { label: 'DEF', value: String(fields['Defense'] ?? '—') },
-            { label: 'Level', value: fields['Level'] ? `⭐${fields['Level']}` : '—' }
+            // No star: emoji as UI chrome is one of the tells the design rules
+            // rule out, and the label already says what the number is.
+            { label: 'Level', value: fields['Level'] ? String(fields['Level']) : '—' }
         ];
     }
 
@@ -104,6 +91,29 @@ export function buildStats(fields) {
         { label: 'Attribute', value: fields['Card Sign'] || '—' },
         { label: 'Serial', value: fields['Serial'] ?? '—' }
     ];
+}
+
+/**
+ * Which renderer-required fields a record cannot supply.
+ *
+ * Kept separate from mapRecord so a dropped row can be reported by name and by
+ * cause. A count alone ("Skipped 1 record(s)") tells the owner a card is
+ * missing from the site but not which one, which is exactly the gap that makes
+ * a failed pipeline run read as "the pipeline missed a row".
+ *
+ * @param {{id: string, fields: object}} record - an Airtable record
+ * @returns {string[]} the missing field names, empty when the record maps
+ */
+export function missingRequiredFields(record) {
+    const fields = record?.fields;
+    if (!fields) return ['Name', 'Type', 'Rarity'];
+
+    const missing = [];
+    if (!(typeof fields['Name'] === 'string' && fields['Name'].trim())) missing.push('Name');
+    if (!TYPE_MAP[fields['Type']]) missing.push('Type');
+    if (!RARITY_MAP[fields['Rarity']]) missing.push('Rarity');
+
+    return missing;
 }
 
 /**
@@ -123,8 +133,10 @@ export function mapRecord(record) {
     const type = TYPE_MAP[fields['Type']];
     const rarity = RARITY_MAP[fields['Rarity']];
 
-    // name, type and rarity are what the filters and renderer require.
-    if (!name || !type || !rarity) return null;
+    // name, type and rarity are what the filters and renderer require. Asked
+    // through missingRequiredFields so the drop rule has exactly one
+    // definition and the reported cause can never disagree with the filter.
+    if (missingRequiredFields(record).length > 0) return null;
 
     const passcode = fields['Passcode'] ? String(fields['Passcode']).trim() : '';
 
@@ -143,7 +155,9 @@ export function mapRecord(record) {
         atk: typeof fields['Attack'] === 'number' ? fields['Attack'] : null,
         def: typeof fields['Defense'] === 'number' ? fields['Defense'] : null,
         level: typeof fields['Level'] === 'number' ? fields['Level'] : null,
-        gradient: TYPE_GRADIENTS[type],
+        // No colour is published: assets/js/frames.js derives the card frame
+        // from type, summonType and cardType at render time, so a card can
+        // never carry a colour that disagrees with what it is.
         // Repo-relative path to the mirrored art, or null when the passcode is
         // missing or malformed. The renderer falls back to a type-coloured
         // block for a null, so an unmatched card still lays out correctly.
@@ -160,7 +174,8 @@ export function mapRecord(record) {
  * printing from the collection.
  *
  * @param {{id: string, fields: object}[]} records - raw Airtable records
- * @returns {{cards: object[], skipped: number}} mapped cards and a skip count
+ * @returns {{cards: object[], skipped: number, dropped: {id: string, serial: string, missing: string[]}[]}}
+ *   mapped cards, a skip count, and the identity and cause of each dropped row
  */
 export function mapRecords(records) {
     if (!Array.isArray(records)) {
@@ -169,7 +184,15 @@ export function mapRecords(records) {
 
     const cards = records.map(mapRecord).filter(Boolean);
 
-    return { cards, skipped: records.length - cards.length };
+    const dropped = records
+        .filter(record => missingRequiredFields(record).length > 0)
+        .map(record => ({
+            id: record?.id ?? '',
+            serial: record?.fields?.['Serial'] ? String(record.fields['Serial']).trim() : '',
+            missing: missingRequiredFields(record)
+        }));
+
+    return { cards, skipped: records.length - cards.length, dropped };
 }
 
 /**
