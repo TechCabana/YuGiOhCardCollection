@@ -294,6 +294,7 @@ quietly delete a printing from the collection.
   "atk": 450,
   "def": 600,
   "level": 2,
+  "isFirstEdition": false,
   "image": "assets/cards/54652250.jpg",
   "stats": [
     { "label": "ATK",   "value": "450" },
@@ -316,6 +317,7 @@ quietly delete a printing from the collection.
 | `attribute` | string or null | Earth, Fire, and so on. |
 | `atk`, `def`, `level` | number or null | Null for spells and traps. |
 | `image` | string or null | Path to the mirrored art, `assets/cards/<passcode>.jpg`. Null when the passcode is missing or malformed, which is what makes the renderer fall back to a plain type-coloured block. |
+| `isFirstEdition` | boolean | Whether the owner's copy is a 1st Edition print. Always present and always a boolean — an unticked Airtable checkbox arrives as `undefined`, so it is published as `false` rather than omitted. |
 | `stats` | array | Three pre-built display rows. Monsters and spell or trap cards use different labels. |
 
 #### Field ownership
@@ -328,7 +330,11 @@ A sync overwrites machine-owned fields freely and never touches the rest.
 
 `IsFirstEdition` is yours because it cannot be derived. A 1st Edition and an
 Unlimited copy share the same set code, and neither YGOPRODeck endpoint reports
-edition. It is not published to `data/cards.json` yet.
+edition. It **is** published, as the `isFirstEdition` boolean above: the edition
+describes the printing anyone is looking at rather than what the copy is worth or
+how many are held, so it is not inventory data. Being human-owned and being
+published are separate questions — the enrichment guard still refuses to write
+this field back to Airtable.
 
 `Quantity`, `Condition` and `Set Price` are private. They are held in Airtable and
 stripped before the JSON is written, because this repository is public and those
