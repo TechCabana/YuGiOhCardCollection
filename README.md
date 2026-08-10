@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-396%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-456%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Seventeen files, 396 tests, all passing. If that is what you see, the checkout is
+Twenty files, 456 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -367,6 +367,7 @@ YuGiOhCardCollection/
 | `assets/js/frames.js` | Derives a card frame (Normal, Effect, Ritual, Fusion, Synchro, XYZ, Link, Spell, Trap, Token) from the card type, so colour states what a card is |
 | `assets/js/view.js` | Pure rules for which view is visible, given the selected view and whether the data has loaded |
 | `assets/js/debounce.js` | Debounces the search input |
+| `assets/js/toggle.js` | Sets a toggle's class and its `aria-pressed` together, so the announced state cannot drift from the visible one |
 | `assets/js/keyboard.js` | Detects text-entry targets so global shortcuts do not hijack typing |
 | `scripts/ygoprodeck-client.mjs` | YGOPRODeck API client, `db.ygoprodeck.com/api/v7` |
 | `scripts/enrich-ygoprodeck.mjs` | Pure mapping from a YGOPRODeck response to Airtable fields |
@@ -391,7 +392,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Seventeen files, 396 tests, all passing as of the last run on Node 24.16.0.
+Twenty files, 456 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -400,6 +401,9 @@ Seventeen files, 396 tests, all passing as of the last run on Node 24.16.0.
 | `render.test.js` | Card markup and escaping |
 | `frames.test.js` | Card type to card frame, including a Fusion effect monster reading as Fusion rather than Effect |
 | `motion.test.js` | Reads styles.css as text to enforce named transition properties, tokenised durations, and no idle animation |
+| `structure.test.js` | Landmarks, the skip link, the card lists, the heading outline, and every control having a name and a state |
+| `toggle.test.js` | The toggle helper, against a DOM-free stub |
+| `typography.test.js` | The font is committed and self-hosted, the preload matches the @font-face, and nothing sets type outside the scale |
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
