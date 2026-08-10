@@ -161,18 +161,18 @@ Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST A
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
-**45 cards as of 2026-08-10**, across all five lists. Read the board rather than this table
+**47 cards as of 2026-08-10**, across all five lists. Read the board rather than this table
 for anything that matters — the count moves every session, and the split below is a
 snapshot, not a source of truth.
 
 | Colour | Label name | Cards |
 |---|---|---|
 | Blue | Data & Airtable | 14 |
-| Red | Bugs & Correctness | 9 |
+| Red | Bugs & Correctness | 10 |
 | Yellow | Responsive & Layout | 3 |
 | Purple | Accessibility | 4 |
 | Orange | UI Design System | 5 |
-| Green | Repo & Tooling | 10 |
+| Green | Repo & Tooling | 11 |
 
 Every new card must carry exactly one domain label. Cards created by `audit project` follow
 the same rule.
