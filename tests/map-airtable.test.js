@@ -131,6 +131,24 @@ describe('mapRecord', () => {
         expect(card.passcode).toBe('00123456');
     });
 
+    it('points the card at its mirrored art', () => {
+        expect(mapRecord(monsterRecord).image).toBe('assets/cards/31560081.jpg');
+    });
+
+    // A null image is what makes the renderer fall back to the placeholder,
+    // so it must survive rather than becoming a broken path.
+    it('leaves the image null when the passcode is missing or malformed', () => {
+        const noPasscode = mapRecord({ id: 'r', fields: { ...monsterRecord.fields, Passcode: undefined } });
+        const badPasscode = mapRecord({ id: 'r', fields: { ...monsterRecord.fields, Passcode: 'not-a-code' } });
+
+        expect(noPasscode.image).toBeNull();
+        expect(badPasscode.image).toBeNull();
+    });
+
+    it('no longer emits a placeholder emoji', () => {
+        expect(mapRecord(monsterRecord)).not.toHaveProperty('emoji');
+    });
+
     it('never carries a private field through', () => {
         const card = mapRecord(monsterRecord);
         PRIVATE_FIELDS.forEach(field => {
