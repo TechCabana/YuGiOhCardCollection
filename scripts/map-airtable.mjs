@@ -8,6 +8,8 @@
  * Field names here must match the Airtable base exactly, including spaces.
  */
 
+import { imagePath } from './mirror-images.mjs';
+
 /**
  * Airtable columns that must never reach data/cards.json.
  *
@@ -41,28 +43,16 @@ const RARITY_MAP = {
 /**
  * Background gradient per card type.
  *
- * Placeholder styling until the design system rebuild replaces this with the
- * real card-frame colours. Each value matches the allowlist pattern that
- * render.js validates against.
+ * Now a fallback rather than the main treatment: it shows only for a card whose
+ * art is missing, or behind an image that fails to load. The design system
+ * rebuild replaces these with the real card-frame colours. Each value matches
+ * the allowlist pattern that render.js validates against.
  */
 const TYPE_GRADIENTS = {
     monster: 'linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)',
     spell: 'linear-gradient(135deg, #1d9e8f 0%, #0d5f56 100%)',
     trap: 'linear-gradient(135deg, #b0347f 0%, #6b1f4d 100%)',
     token: 'linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)'
-};
-
-/**
- * Placeholder glyph per card type, also pending the design rebuild.
- *
- * Deliberately has no `token` entry: CLAUDE.md §4 already lists emoji-as-UI-chrome
- * as a design smell to remove, not extend. render.js's escapeHtml(undefined)
- * renders an empty string, so a missing entry degrades cleanly.
- */
-const TYPE_EMOJI = {
-    monster: '⚔️',
-    spell: '✨',
-    trap: '🌀'
 };
 
 /**
@@ -154,7 +144,10 @@ export function mapRecord(record) {
         def: typeof fields['Defense'] === 'number' ? fields['Defense'] : null,
         level: typeof fields['Level'] === 'number' ? fields['Level'] : null,
         gradient: TYPE_GRADIENTS[type],
-        emoji: TYPE_EMOJI[type],
+        // Repo-relative path to the mirrored art, or null when the passcode is
+        // missing or malformed. The renderer falls back to a type-coloured
+        // block for a null, so an unmatched card still lays out correctly.
+        image: imagePath(passcode),
         stats: buildStats(fields)
     };
 }
