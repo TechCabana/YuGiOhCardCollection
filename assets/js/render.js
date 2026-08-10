@@ -120,6 +120,26 @@ export function buildCardImageHTML(card) {
 }
 
 /**
+ * Build the 1st Edition badge for a card.
+ *
+ * Strict === true, matching how the field is published: anything else — false,
+ * a missing field on data written before the field existed, a truthy string —
+ * renders nothing. A card that is not a 1st Edition print says nothing at all
+ * rather than carrying a greyed badge, so the art stays uncovered on most
+ * cards and the badge means something when it does appear.
+ *
+ * The label is a fixed string, never card data, so there is nothing to escape.
+ *
+ * @param {object} card - a card record
+ * @returns {string} the badge markup, or an empty string
+ */
+export function buildEditionBadgeHTML(card) {
+    return card?.isFirstEdition === true
+        ? '<div class="edition-badge">1st Edition</div>'
+        : '';
+}
+
+/**
  * Map a rarity value to its display label.
  *
  * Unknown values are echoed back escaped rather than dropped, so a new Airtable
@@ -174,6 +194,7 @@ export function buildCardHTML(card) {
     return `
         <div class="card-image-area"${frameAttr}>
             ${buildCardImageHTML(card)}
+            ${buildEditionBadgeHTML(card)}
             <div class="rarity-badge">${rarityLabel(card.rarity)}</div>
         </div>
         <div class="card-info-area"${frameAttr}>

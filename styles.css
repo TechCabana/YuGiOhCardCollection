@@ -463,10 +463,19 @@ body {
     object-fit: cover;
 }
 
-.rarity-badge {
+/*
+ * Two badges sit over the art and must never argue: rarity is pinned right,
+ * edition left, so neither can grow into the other however long its text runs.
+ *
+ * They share one treatment on purpose. Both state a fact about the printing,
+ * so both are neutral over --overlay — no colour. Colour on a card means card
+ * type since the frame system landed, and a second colour system competing
+ * with it is exactly what the design rules rule out.
+ */
+.rarity-badge,
+.edition-badge {
     position: absolute;
     top: 15px;
-    right: 15px;
     background: var(--overlay);
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
@@ -477,6 +486,23 @@ body {
     letter-spacing: 1px;
     border: 1px solid var(--border-subtle);
     z-index: 1;
+}
+
+.rarity-badge {
+    right: 15px;
+}
+
+/*
+ * Rendered only for a card the owner holds as a 1st Edition print. An
+ * Unlimited copy carries no badge at all rather than a greyed one: absence is
+ * the clearer statement, and it keeps the art uncovered on most cards.
+ *
+ * A brighter hairline than the rarity badge, because on two otherwise
+ * identical rows this is the thing that tells them apart.
+ */
+.edition-badge {
+    left: 15px;
+    border-color: var(--border-strong);
 }
 
 /*

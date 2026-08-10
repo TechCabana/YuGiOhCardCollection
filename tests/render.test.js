@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
     buildCardHTML,
     buildCardImageHTML,
+    buildEditionBadgeHTML,
     buildStatsHTML,
     frameAttribute,
     safeImagePath,
@@ -21,6 +22,18 @@ const baseCard = {
         { label: 'Serial', value: 'LOB-005' }
     ]
 };
+
+describe('buildEditionBadgeHTML', () => {
+    it('returns the badge only for a literal true', () => {
+        expect(buildEditionBadgeHTML({ isFirstEdition: true })).toContain('edition-badge');
+    });
+
+    it('returns nothing for anything else', () => {
+        for (const card of [{ isFirstEdition: false }, {}, null, undefined, { isFirstEdition: 1 }]) {
+            expect(buildEditionBadgeHTML(card)).toBe('');
+        }
+    });
+});
 
 describe('frameAttribute', () => {
     it('emits the attribute for a declared frame', () => {
@@ -236,6 +249,44 @@ describe('buildCardHTML', () => {
         expect(html).not.toContain('data-frame');
         expect(html).not.toContain('type-chip');
         expect(html).toContain('Dark Magician');
+    });
+
+    describe('the 1st Edition badge', () => {
+        it('marks a 1st Edition card', () => {
+            const html = buildCardHTML({ ...baseCard, isFirstEdition: true });
+
+            expect(html).toContain('<div class="edition-badge">1st Edition</div>');
+        });
+
+        it('says nothing at all on an Unlimited card', () => {
+            const html = buildCardHTML({ ...baseCard, isFirstEdition: false });
+
+            expect(html).not.toContain('edition-badge');
+            expect(html).not.toContain('1st Edition');
+        });
+
+        // Data written before the field existed has no isFirstEdition key. It
+        // must render as "not a 1st Edition", never as a badge.
+        it('says nothing when the field is missing entirely', () => {
+            expect(buildCardHTML(baseCard)).not.toContain('edition-badge');
+        });
+
+        it('treats a truthy non-boolean as not a 1st Edition', () => {
+            for (const value of ['true', 1, 'yes', {}]) {
+                expect(buildCardHTML({ ...baseCard, isFirstEdition: value }))
+                    .not.toContain('edition-badge');
+            }
+        });
+
+        // The two badges are pinned to opposite corners so neither can grow
+        // into the other. Both must be present for that to be worth anything.
+        it('sits alongside the rarity badge, both inside the art area', () => {
+            const html = buildCardHTML({ ...baseCard, isFirstEdition: true });
+
+            expect(html).toContain('rarity-badge');
+            expect(html.indexOf('edition-badge')).toBeGreaterThan(html.indexOf('card-image-area'));
+            expect(html.indexOf('edition-badge')).toBeLessThan(html.indexOf('card-info-area'));
+        });
     });
 
     it('keeps the surrounding markup structure intact', () => {
