@@ -152,7 +152,8 @@ body {
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-size: 0.95rem;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out);
 }
 
 .search-box input:focus-visible {
@@ -185,7 +186,11 @@ body {
     color: var(--text-secondary);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all 0.3s;
+    /* transform is named explicitly because :hover lifts the pill 2px. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
     user-select: none;
 }
@@ -212,7 +217,9 @@ body {
     color: var(--text-muted);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
     white-space: nowrap;
 }
@@ -239,7 +246,8 @@ body {
     color: var(--text-muted);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
 }
 
@@ -309,7 +317,17 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-2);
     overflow: hidden;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    /*
+     * The position classes below change transform, opacity, filter, border
+     * and shadow, so all five are named. `all` at 0.8s was both sluggish and
+     * indiscriminate: it animated layout properties too, forcing a reflow on
+     * every carousel step.
+     */
+    transition: transform var(--duration-view) var(--ease-out),
+                opacity var(--duration-view) var(--ease-out),
+                filter var(--duration-view) var(--ease-out),
+                border-color var(--duration-view) var(--ease-out),
+                box-shadow var(--duration-view) var(--ease-out);
     cursor: pointer;
 }
 
@@ -553,7 +571,11 @@ body {
     color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
-    transition: all 0.3s;
+    /* opacity is named for the :disabled state, transform for the hover scale. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                opacity var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -610,7 +632,9 @@ body {
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-md);
     overflow: hidden;
-    transition: all 0.3s;
+    transition: transform var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                box-shadow var(--duration-state) var(--ease-out);
     cursor: pointer;
 }
 
@@ -665,7 +689,11 @@ body {
     border-radius: 50%;
     color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s;
+    /* Same set as .nav-btn — the two buttons share hover and disabled states. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                opacity var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -688,14 +716,6 @@ body {
     color: var(--text-secondary);
 }
 
-@keyframes float {
-    0%, 100% { transform: translateX(0) translateY(-10px) scale(1.05); }
-    50% { transform: translateX(0) translateY(-20px) scale(1.05); }
-}
-
-.carousel-card.pos-center .card-image-area {
-    animation: float 3s ease-in-out infinite;
-}
 /* ==========================================================================
    Responsive breakpoints
 
@@ -861,12 +881,5 @@ body {
 
     .status-message {
         margin: 2rem 1rem;
-    }
-}
-
-/* The float animation assumes the desktop centre transform; skip it on phones. */
-@media (max-width: 640px) {
-    .carousel-card.pos-center .card-image-area {
-        animation: none;
     }
 }
