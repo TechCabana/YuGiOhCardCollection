@@ -28,26 +28,35 @@ code — see §3.
 
 ## 2. Current state
 
-Audited 2026-08-05. At that point the repo was 5 files, ~780 lines of hand-written code,
-with everything hardcoded. **No code from the audit has been written yet** — the full
-remediation plan lives as 31 cards in the Trello Backlog.
+**As of 2026-08-10.** Restate this section rather than trusting it once it is more than a
+few PRs old — a stale briefing here causes real errors, not cosmetic drift.
+
+14 PRs merged, 30 cards Done. The site is live, data comes from Airtable through the
+build-time pipeline, and every card renders its real art mirrored from YGOPRODeck.
 
 ```
-index.html   72 lines   no semantic tags, no aria, no meta beyond charset/viewport/title
-script.js   219 lines   12-card array hardcoded at :2-15, all rendering via innerHTML
-styles.css  487 lines   zero @media rules, zero CSS variables, transition:all x9
-README.md     1 line
-LICENSE               GPL-3 (under review, see the licence card)
+index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
+script.js        383 lines   DOM wiring only; logic lives in assets/js/
+styles.css       778 lines   responsive, tokenised colour, true 59:86 card geometry
+assets/css/       1 file     tokens.css, the only place a colour value is written
+assets/js/        6 files    data, filters, render, view, debounce, keyboard
+assets/cards/    77 files    mirrored card art, ~10.6 MB, committed by the pipeline
+scripts/         6 files     enrich, sync, map, mirror, YGOPRODeck client
+tests/          13 files     291 Vitest tests, all passing
+.github/         3 workflows ci.yml, pages.yml, process-data.yml
+data/cards.json  81 cards    generated from Airtable, committed, served
 ```
 
-**Blocker-severity findings** (each has a Trello card):
-- `#searchInput` has no listener — search is a dead feature
-- Zero `@media` rules — the site is desktop-only
-- Carousel duplicates cards whenever the filtered set is under 5
-- All card fields rendered via unescaped `innerHTML` — inert today, an XSS hole the
-  moment Airtable becomes the data source
+Roughly 3,400 lines of source, 2,400 of tests, 290 of workflow.
 
-Full findings are in the card descriptions, each with `file:line` references.
+**What the 2026-08-05 audit found has been fixed**: search is wired, `@media` rules exist,
+the carousel no longer duplicates cards, and every rendered field is escaped — the
+allowlist for the style attribute and the image src is in `assets/js/render.js`.
+
+**What is still open**, in Backlog order: the card-frame colour system, self-hosted
+typography, a motion pass, grid-first layout with sort, the four accessibility cards,
+repo hygiene files, meta tags, and the licence decision. Each has a Trello card with
+`file:line` evidence.
 
 ---
 
@@ -104,8 +113,9 @@ index.html  404.html
 assets/css/   tokens.css, base.css, components.css
 assets/js/    data.js, filters.js, render.js, main.js
 assets/fonts/
+assets/cards/            <- mirrored card art, one JPEG per passcode, committed
 data/cards.json          <- Airtable output, committed
-scripts/sync-airtable.mjs
+scripts/                 sync-airtable.mjs, mirror-images.mjs, enrich-*.mjs
 tests/
 .github/workflows/       process-data.yml, pages.yml, ci.yml
 ```
@@ -144,30 +154,32 @@ The owner's explicit brief: dark theme that **does not look AI-generated**.
 
 Lists: **Backlog → To Do → In-Progress → Review → Done**
 
-All 31 cards start in Backlog, ordered by build sequence (position 1 → 31).
-Dependencies point backwards only, so pulling from the top never blocks.
+Backlog is ordered by build sequence. Dependencies point backwards only, so pulling from
+the top never blocks.
 
 Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST API
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
+**45 cards as of 2026-08-10**, across all five lists. Read the board rather than this table
+for anything that matters — the count moves every session, and the split below is a
+snapshot, not a source of truth.
+
 | Colour | Label name | Cards |
 |---|---|---|
-| Blue | Data & Airtable | 5 |
-| Red | Bugs & Correctness | 8 |
+| Blue | Data & Airtable | 14 |
+| Red | Bugs & Correctness | 9 |
 | Yellow | Responsive & Layout | 3 |
 | Purple | Accessibility | 4 |
 | Orange | UI Design System | 5 |
-| Green | Repo & Tooling | 6 |
+| Green | Repo & Tooling | 10 |
 
 Every new card must carry exactly one domain label. Cards created by `audit project` follow
 the same rule.
 
-**Gating cards** — these unblock others, do them early:
-1. Extract card data to `data/cards.json`
-2. Escape all rendered output (must land before the Airtable sync goes live)
-3. Define Airtable schema + passcode column (**manual, owner-only**)
-21. Build the design token layer (foundation for all other design work)
+**Gating cards** — all four are now Done: `data/cards.json`, output escaping, the Airtable
+schema, and the design token layer. Nothing on the board is blocked on an unbuilt
+foundation; the remaining dependencies are ordinary Backlog ordering.
 
 ---
 
@@ -508,25 +520,26 @@ The token lives in the **Windows keyring**, not `hosts.yml` — that file does n
 absence proves nothing. Always check with `gh auth status`, never by looking for the file.
 
 **✅ GitHub Pages — enabled** 2026-08-08. Source: branch `main`, path `/`, HTTPS enforced,
-`build_type: legacy`. Serving at https://techcabana.github.io/YuGiOhCardCollection/
-When the Actions-based deploy workflow lands, switch `build_type` to `workflow`.
+`build_type: workflow` — the Actions deploy has landed, so both `pages.yml` and
+`process-data.yml` publish through `actions/deploy-pages`. Serving at
+https://techcabana.github.io/YuGiOhCardCollection/
 
-**✅ Branch protection on `main` — enabled** 2026-08-08:
+**Branch protection on `main`** — verified against the API on 2026-08-10:
 
 | Setting | Value | Why |
 |---|---|---|
-| Require a PR before merging | yes | enforces §6.1 rule 5 |
-| Required approving reviews | **0** | GitHub forbids self-approval and `TechCabana` is the only account; requiring 1 would deadlock every PR. Approval lives in Trello, not GitHub. |
+| Require a PR before merging | **no** | removed 2026-08-09. `github-actions[bot]` must push `data/cards.json` and `assets/cards/`, and a personal repository cannot grant a bot a bypass — see §6.1 rule 5 for the full reasoning. The PR remains the working practice; it is simply not enforced. |
+| Required approving reviews | none | GitHub forbids self-approval and `TechCabana` is the only account. Approval lives in Trello, not GitHub. |
 | Enforce for admins | **false** | prevents lockout; admins can bypass in an emergency |
 | Force pushes / deletions | blocked | protects history, supports the revert-based rollback in rule 6 |
-| Conversation resolution | required | review threads must be resolved before merge |
-| Required status checks | none yet | add once the CI workflow exists — see §6.1 rule 4 |
+| Conversation resolution | not required | dropped with the PR requirement |
+| Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0. No test runner installed yet — the Vitest
-harness is the first card in To Do.
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 291 tests
+across 13 files; all pass as of 2026-08-10.
 
-**Nothing is blocking work.** Trello comments, PR creation, git, Pages and branch protection
-are all functional as of 2026-08-08.
+**Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
+are all functional.
 
 ### Credential handling
 
