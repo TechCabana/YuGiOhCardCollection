@@ -107,6 +107,29 @@ export function buildStats(fields) {
 }
 
 /**
+ * Which renderer-required fields a record cannot supply.
+ *
+ * Kept separate from mapRecord so a dropped row can be reported by name and by
+ * cause. A count alone ("Skipped 1 record(s)") tells the owner a card is
+ * missing from the site but not which one, which is exactly the gap that makes
+ * a failed pipeline run read as "the pipeline missed a row".
+ *
+ * @param {{id: string, fields: object}} record - an Airtable record
+ * @returns {string[]} the missing field names, empty when the record maps
+ */
+export function missingRequiredFields(record) {
+    const fields = record?.fields;
+    if (!fields) return ['Name', 'Type', 'Rarity'];
+
+    const missing = [];
+    if (!(typeof fields['Name'] === 'string' && fields['Name'].trim())) missing.push('Name');
+    if (!TYPE_MAP[fields['Type']]) missing.push('Type');
+    if (!RARITY_MAP[fields['Rarity']]) missing.push('Rarity');
+
+    return missing;
+}
+
+/**
  * Map one Airtable record to a renderable card.
  *
  * Returns null for a record missing the fields the renderer depends on, so the
@@ -123,8 +146,10 @@ export function mapRecord(record) {
     const type = TYPE_MAP[fields['Type']];
     const rarity = RARITY_MAP[fields['Rarity']];
 
-    // name, type and rarity are what the filters and renderer require.
-    if (!name || !type || !rarity) return null;
+    // name, type and rarity are what the filters and renderer require. Asked
+    // through missingRequiredFields so the drop rule has exactly one
+    // definition and the reported cause can never disagree with the filter.
+    if (missingRequiredFields(record).length > 0) return null;
 
     const passcode = fields['Passcode'] ? String(fields['Passcode']).trim() : '';
 
@@ -160,7 +185,8 @@ export function mapRecord(record) {
  * printing from the collection.
  *
  * @param {{id: string, fields: object}[]} records - raw Airtable records
- * @returns {{cards: object[], skipped: number}} mapped cards and a skip count
+ * @returns {{cards: object[], skipped: number, dropped: {id: string, serial: string, missing: string[]}[]}}
+ *   mapped cards, a skip count, and the identity and cause of each dropped row
  */
 export function mapRecords(records) {
     if (!Array.isArray(records)) {
@@ -169,7 +195,15 @@ export function mapRecords(records) {
 
     const cards = records.map(mapRecord).filter(Boolean);
 
-    return { cards, skipped: records.length - cards.length };
+    const dropped = records
+        .filter(record => missingRequiredFields(record).length > 0)
+        .map(record => ({
+            id: record?.id ?? '',
+            serial: record?.fields?.['Serial'] ? String(record.fields['Serial']).trim() : '',
+            missing: missingRequiredFields(record)
+        }));
+
+    return { cards, skipped: records.length - cards.length, dropped };
 }
 
 /**

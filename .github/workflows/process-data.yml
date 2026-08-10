@@ -165,13 +165,20 @@ jobs:
       # directory through Deploy to GitHub Pages) run between enrich and this
       # step: without it, a plain `if: steps.enrich.outcome == 'failure'` is
       # implicitly ANDed with success(), so a deploy-step failure would skip
-      # this step and swallow the blocked-rows diagnostic — the job would
-      # still go red, but for the wrong, less actionable reason.
-      - name: Fail if any row was blocked
-        if: always() && steps.enrich.outcome == 'failure'
-        run: |
-          echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
-          exit 1
+      # this step and swallow the diagnostic — the job would still go red, but
+      # for the wrong, less actionable reason.
+      #
+      # The step name and the message both come from the reports the enrich and
+      # sync steps wrote, rather than a fixed string. This step used to be
+      # called "Fail if any row was blocked" and always printed the
+      # missing-select-option text, so a run whose only problem was an
+      # unresolvable serial sent the owner looking for a blank Airtable field
+      # that was never the cause.
+      - name: Report blocked, skipped and dropped rows
+        if: always()
+        env:
+          ENRICH_OUTCOME: ${{ steps.enrich.outcome }}
+        run: node scripts/pipeline-report.mjs
 
       # Separate from the step above so the two causes stay distinguishable in
       # the run summary. A warning rather than a failure: a card missing its art
