@@ -179,6 +179,10 @@ export function buildStatsHTML(stats) {
 /**
  * Build the inner markup for a single card.
  *
+ * The name is an h3, under the h2 each view carries: a card is a section of
+ * the collection, and a document whose only heading is the page title has no
+ * outline to navigate by.
+ *
  * @param {object} card - a card record
  * @returns {string} escaped HTML, safe to assign to innerHTML
  */
@@ -203,7 +207,7 @@ export function buildCardHTML(card) {
             </div>
         </div>
         <div class="card-info-area"${frameAttr}>
-            <div class="card-name">${escapeHtml(card.name)}</div>
+            <h3 class="card-name">${escapeHtml(card.name)}</h3>
             <div class="card-type">${chip}${escapeHtml(card.cardType)}</div>
             <div class="card-stats-grid">
                 ${buildStatsHTML(card.stats)}

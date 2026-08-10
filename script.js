@@ -65,6 +65,23 @@ function buildEmptyState() {
 }
 
 /**
+ * Wrap the empty state in a list item.
+ *
+ * Both views render into a <ul> now, and only <li> is valid there. A bare
+ * <div> child would put the block outside the list as far as assistive
+ * technology is concerned, which is precisely the message that must not be
+ * missed.
+ *
+ * @returns {HTMLElement} an li containing the empty-state block
+ */
+function buildEmptyStateItem() {
+    const item = document.createElement('li');
+    item.className = 'empty-state-item';
+    item.appendChild(buildEmptyState());
+    return item;
+}
+
+/**
  * Put the carousel counters and navigation into their empty state.
  *
  * Both renderers previously returned before touching their counters, leaving
@@ -90,7 +107,7 @@ function updateCarousel() {
     stage.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        stage.appendChild(buildEmptyState());
+        stage.appendChild(buildEmptyStateItem());
         resetCarouselControls();
         return;
     }
@@ -102,7 +119,10 @@ function updateCarousel() {
     const slots = getCarouselSlots(filteredCards, currentIndex);
 
     slots.forEach(({ card, index, position, isCenter }) => {
-        const cardEl = document.createElement('div');
+        // li, not div: the stage is a <ul> now, so assistive technology can
+        // announce how many cards are in the window rather than reading a
+        // wall of unrelated groups.
+        const cardEl = document.createElement('li');
         cardEl.className = `carousel-card ${position}`;
         cardEl.innerHTML = buildCardHTML(card);
         cardEl.onclick = () => {
@@ -123,7 +143,7 @@ function updateGrid() {
     grid.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        const empty = buildEmptyState();
+        const empty = buildEmptyStateItem();
         // The grid is a CSS grid; span the full row so the block centres.
         empty.style.gridColumn = '1 / -1';
         grid.appendChild(empty);
@@ -139,7 +159,7 @@ function updateGrid() {
     const pageCards = getPageSlice(filteredCards, currentPage, cardsPerPage);
 
     pageCards.forEach(card => {
-        const cardEl = document.createElement('div');
+        const cardEl = document.createElement('li');
         cardEl.className = 'grid-card';
         cardEl.innerHTML = buildCardHTML(card);
         grid.appendChild(cardEl);
