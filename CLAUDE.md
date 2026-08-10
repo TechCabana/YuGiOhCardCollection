@@ -28,27 +28,27 @@ code — see §3.
 
 ## 2. Current state
 
-**As of 2026-08-10, after PR #17.** Restate this section rather than trusting it once it is
+**As of 2026-08-10, after PR #18.** Restate this section rather than trusting it once it is
 more than a few PRs old — a stale briefing here causes real errors, not cosmetic drift.
 
-16 PRs merged, 35 cards Done. The site is live, data comes from Airtable through the
+17 PRs merged, 38 cards Done. The site is live, data comes from Airtable through the
 build-time pipeline, every card renders its real art mirrored from YGOPRODeck, and card
 colour now carries the card's type rather than decorating it.
 
 ```
 index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
 script.js        383 lines   DOM wiring only; logic lives in assets/js/
-styles.css       872 lines   responsive, tokenised colour, true 59:86 card geometry
+styles.css       940 lines   responsive, tokenised colour, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
 assets/js/        7 files    data, filters, render, frames, view, debounce, keyboard
 assets/cards/   111 files    mirrored card art, ~16 MB, committed by the pipeline
 scripts/         7 files     enrich, sync, map, mirror, YGOPRODeck client, pipeline report
-tests/          16 files     372 Vitest tests, all passing
+tests/          17 files     403 Vitest tests, all passing
 .github/         3 workflows ci.yml, pages.yml, process-data.yml
 data/cards.json 128 cards    generated from Airtable, committed, served
 ```
 
-Roughly 3,700 lines of source, 3,100 of tests, 315 of workflow.
+Roughly 3,800 lines of source, 3,400 of tests, 315 of workflow.
 
 **What the 2026-08-05 audit found has been fixed**: search is wired, `@media` rules exist,
 the carousel no longer duplicates cards, and every rendered field is escaped. Only one
@@ -71,14 +71,25 @@ went with the gradient.
 3. **Workflows run on Node 24** with every action bumped past the Node 20 runtime.
    `tests/workflows.test.js` enforces the pin floor, so a slip backwards fails CI.
 
-**What is still open.** Two cards in To Do, both UI Design System and both follow-ons from
-the frame work: self-hosted typography, and the motion pass. Then in Backlog order:
-grid-first layout with sort, the four accessibility cards, repo hygiene files, meta tags,
-a refresh button, collection-value tracking, and the licence decision. Each has a Trello
-card with `file:line` evidence.
+**PR #18 added two more things worth knowing before reading the code:**
 
-**Not yet seen by a human**: the frame colour system was verified by tests and by reading
-the CSS, never by eye or by screenshot.
+4. **Nothing animates on its own.** The `@keyframes float` bounce is deleted, and every
+   transition names its own properties on one of two duration tokens — `--duration-state`
+   for hover and focus, `--duration-view` for a carousel position change. There is no
+   `transition: all` and no duration literal left in `styles.css`, and
+   `tests/motion.test.js` enforces both.
+5. **A card states its edition.** `isFirstEdition` is published to `data/cards.json` and
+   rendered as a badge beside the rarity one. See §3 for why that field is published while
+   `Quantity` and `Condition` are not.
+
+**What is still open.** Six cards in To Do: self-hosted typography, two accessibility cards
+(landmarks, and labelling controls for assistive technology), grid-first layout with sort, a
+refresh button, and the licence decision. Backlog holds five more. Each has a Trello card
+with `file:line` evidence.
+
+**Not yet seen by a human**: the frame colour system, the badge layout and the motion pass
+were all verified by tests, by measurement and by reading the CSS — never by eye or by
+screenshot. Three merged PRs of visual change now rest on that.
 
 ---
 
@@ -112,10 +123,19 @@ punctuation makes fragile.
 
 | Machine-owned | Human-owned — never written |
 |---|---|
-| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition** |
+| Name, Passcode, Rarity, Type, Card Type, Card Sign, Summon Type, HasEffect, IsPendulum, Attack, Defense, Level, Set Name, Set Price | **Serial, Quantity, Condition, IsFirstEdition** |
 
 `Set Price`, `Quantity` and `Condition` are in `PRIVATE_FIELDS` — held in Airtable but never
 published to `data/cards.json`, because the repo is public and those are inventory data.
+
+**Human-owned and private are different questions.** `IsFirstEdition` is owner-typed and is
+never written by a sync — `assertNoHumanOwnedFields` throws if one tries — but it *is*
+published, as the `isFirstEdition` boolean in `data/cards.json` (PR #18, at the owner's
+request). The line is what the field describes: an edition describes the printing anyone is
+looking at, while quantity, condition and price describe what the owner holds and what it is
+worth. Only a literal `true` publishes as true, because an unticked Airtable checkbox arrives
+as `undefined` and would otherwise serialise as a missing key rather than a published "no".
+Reversing this would need a data regeneration, not just a code change.
 
 **Pendulum is a boolean, not a Summon Type.** A card can be both Pendulum and Fusion
 ("Pendulum Effect Fusion Monster"), so a single-select could only record one facet.
@@ -184,17 +204,17 @@ Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST A
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
-**47 cards as of 2026-08-10**, split Backlog 10, To Do 2, In-Progress 0, Review 0, Done 35.
+**49 cards as of 2026-08-10**, split Backlog 5, To Do 6, In-Progress 0, Review 0, Done 38.
 Read the board rather than this table for anything that matters — the count moves every
 session, and the split below is a snapshot, not a source of truth.
 
 | Colour | Label name | Cards |
 |---|---|---|
-| Blue | Data & Airtable | 14 |
+| Blue | Data & Airtable | 15 |
 | Red | Bugs & Correctness | 10 |
 | Yellow | Responsive & Layout | 3 |
 | Purple | Accessibility | 4 |
-| Orange | UI Design System | 5 |
+| Orange | UI Design System | 6 |
 | Green | Repo & Tooling | 11 |
 
 Every new card must carry exactly one domain label. Cards created by `audit project` follow
@@ -605,8 +625,8 @@ https://techcabana.github.io/YuGiOhCardCollection/
 | Conversation resolution | not required | dropped with the PR requirement |
 | Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 372 tests
-across 16 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 403 tests
+across 17 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
 `tests/workflows.test.js` fails if that pin or an action version slips backwards.
 
 **Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
