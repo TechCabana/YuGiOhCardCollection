@@ -46,6 +46,13 @@ let searchQuery = '';
 function buildEmptyState() {
     const wrapper = document.createElement('div');
     wrapper.className = 'empty-state';
+    // Belt and braces. This element is injected after the filter runs, and a
+    // live region created at the same moment as its content is announced
+    // inconsistently across screen readers — so the reliable announcement is
+    // the visible-count region going to 0, which is already live and already
+    // in the document. This helps where it does work and costs nothing where
+    // it does not.
+    wrapper.setAttribute('role', 'status');
 
     const title = document.createElement('p');
     title.className = 'empty-state-title';
