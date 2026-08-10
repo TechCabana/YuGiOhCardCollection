@@ -276,17 +276,22 @@ The same workflow also runs on a daily schedule as a safety net.
 ### `audit project`
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
 
-1. Read the current repo state, the merged PRs, and every card across all five lists.
-2. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
+1. Load the audit skill set (§6.3) before reading anything.
+2. Read the current repo state, the merged PRs, and every card across all five lists.
+3. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
    and the design rules (§4).
-3. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
+4. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
    regressions, dropped follow-ups, missing tests, and anything a merged PR promised but did
    not actually deliver.
-4. For each real gap, create a card in **Backlog** with a domain label (§5), a description
+5. **Verify every finding before writing it down.** Run the suite, open the file, read the
+   workflow run. A claim that was not checked is not a finding — it is a guess with a card
+   number attached, and it costs more to disprove later than it saved now.
+6. For each real gap, create a card in **Backlog** with a domain label (§5), a description
    carrying `file:line` evidence, and a `**Done when:**` line.
-5. Do **not** duplicate an existing card — check all five lists first, and extend the
+7. Do **not** duplicate an existing card — check all five lists first, and extend the
    existing card instead where one already covers the ground.
-6. Report a summary in chat: what is on track, what has drifted, which cards were created.
+8. Report a summary in chat: what is on track, what has drifted, which cards were created,
+   and which skills from §6.3 were actually loaded.
 
 Creates cards only. Never edits code, never moves cards between lists, never merges.
 
@@ -382,6 +387,9 @@ Choose Opus vs Sonnet per task. Default to Opus when the card is ambiguous, span
 files, or involves a design decision; Sonnet when the card reads like a spec and the diff is
 predictable. State which model was used in the PR body.
 
+Both Fable stages carry a named skill set, not a free choice: `audit project` loads the
+subset in §6.3, and the review gate loads the two marked below.
+
 ### The Fable review gate
 
 Runs when a card is finished and its PR is open, **before** the card moves to Review.
@@ -400,8 +408,47 @@ Fable's remit:
    `@ankhitsharma1`, per §7. Never guess.
 6. Report findings in chat: what was checked, what was fixed, what still needs the owner.
 
+The gate loads `superpowers:requesting-code-review` and
+`superpowers:verification-before-completion` before it starts, and
+`superpowers:systematic-debugging` if a test fails. It does **not** load the wider suite, for
+the reason given in §6.3. Unlike the audit, the gate does write code, so
+`superpowers:test-driven-development` is fair game when step 4 means adding a missing test.
+
 Only once the gate passes does the card move to Review. A PR reaching Review has already been
 tested and audited — the owner's review is the final check, not the first.
+
+---
+
+## 6.3 The audit skill set
+
+The `superpowers` plugin is installed. Most of it is implementation tooling, so `audit project`
+loads a **named subset** rather than the whole suite. Load these by name with the `Skill` tool
+before step 2 of the audit.
+
+| Skill | What it contributes |
+|---|---|
+| `superpowers:verification-before-completion` | Evidence before assertion. The audit's only value is that its claims were checked, so this is the one skill it cannot skip. |
+| `superpowers:requesting-code-review` | The "does this actually meet the requirement" pass, run against each merged PR's `**Done when:**` line rather than against a diff. |
+| `superpowers:systematic-debugging` | Only when a regression surfaces. Establish the cause before writing the card, so the card describes the fault rather than the symptom. |
+| `superpowers:dispatching-parallel-agents` | Optional. Repo state, merged PRs and the five lists are independent reads. Use it only when a serial pass would be shallow, and never on a quiet board — the cost is real. |
+
+**Deliberately not loaded:** `brainstorming`, `writing-plans`, `executing-plans`,
+`test-driven-development`, `subagent-driven-development`, `using-git-worktrees`,
+`finishing-a-development-branch`, `receiving-code-review`, `writing-skills`, and
+`using-superpowers`.
+
+*Why this is a subset and not "use superpowers".* Every excluded skill exists to produce or
+land code, and the audit does neither — it writes cards. `brainstorming` and
+`test-driven-development` are explicitly pre-implementation, so loading them pushes the
+auditor toward designing the fix it is forbidden to write. A gap the audit spots becomes a
+Backlog card; the skills for building it belong to whoever pulls that card, not to the audit.
+
+**If a named skill is unavailable** in the session — the plugin is disabled, or a subagent
+cannot see it — say so in the report and continue without it. Never claim a skill ran when it
+did not. Same rule as the test suite: report the real result.
+
+These skills inform the audit. They do not override §6 or §7. The audit still creates cards
+only, still never moves a card between lists, and still asks rather than guesses.
 
 ---
 
