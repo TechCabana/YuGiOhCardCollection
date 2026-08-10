@@ -28,35 +28,57 @@ code — see §3.
 
 ## 2. Current state
 
-**As of 2026-08-10.** Restate this section rather than trusting it once it is more than a
-few PRs old — a stale briefing here causes real errors, not cosmetic drift.
+**As of 2026-08-10, after PR #17.** Restate this section rather than trusting it once it is
+more than a few PRs old — a stale briefing here causes real errors, not cosmetic drift.
 
-14 PRs merged, 30 cards Done. The site is live, data comes from Airtable through the
-build-time pipeline, and every card renders its real art mirrored from YGOPRODeck.
+16 PRs merged, 35 cards Done. The site is live, data comes from Airtable through the
+build-time pipeline, every card renders its real art mirrored from YGOPRODeck, and card
+colour now carries the card's type rather than decorating it.
 
 ```
 index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
 script.js        383 lines   DOM wiring only; logic lives in assets/js/
-styles.css       778 lines   responsive, tokenised colour, true 59:86 card geometry
+styles.css       872 lines   responsive, tokenised colour, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
-assets/js/        6 files    data, filters, render, view, debounce, keyboard
+assets/js/        7 files    data, filters, render, frames, view, debounce, keyboard
 assets/cards/   111 files    mirrored card art, ~16 MB, committed by the pipeline
-scripts/         6 files     enrich, sync, map, mirror, YGOPRODeck client
-tests/          13 files     291 Vitest tests, all passing
+scripts/         7 files     enrich, sync, map, mirror, YGOPRODeck client, pipeline report
+tests/          16 files     372 Vitest tests, all passing
 .github/         3 workflows ci.yml, pages.yml, process-data.yml
 data/cards.json 128 cards    generated from Airtable, committed, served
 ```
 
-Roughly 3,400 lines of source, 2,400 of tests, 290 of workflow.
+Roughly 3,700 lines of source, 3,100 of tests, 315 of workflow.
 
 **What the 2026-08-05 audit found has been fixed**: search is wired, `@media` rules exist,
-the carousel no longer duplicates cards, and every rendered field is escaped — the
-allowlist for the style attribute and the image src is in `assets/js/render.js`.
+the carousel no longer duplicates cards, and every rendered field is escaped. Only one
+allowlist remains, for the image src in `assets/js/render.js` — the style-attribute one
+went with the gradient.
 
-**What is still open**, in Backlog order: the card-frame colour system, self-hosted
-typography, a motion pass, grid-first layout with sort, the four accessibility cards,
-repo hygiene files, meta tags, and the licence decision. Each has a Trello card with
-`file:line` evidence.
+**Three things landed in PR #17 that change how the code reads:**
+
+1. **Card colour is derived, never stored.** `assets/js/frames.js` maps a card to one of
+   ten real card-frame keys from `type`, `summonType` and `cardType`; `styles.css` resolves
+   the key to a colour. The `gradient` field is gone from the schema and from
+   `data/cards.json`. Markup carries a key, not a colour, so no card data reaches a style
+   attribute at all. Contrast is enforced by a test that computes the WCAG ratio of every
+   frame ink rather than asserting one was checked.
+2. **The pipeline names its own failures.** `scripts/pipeline-report.mjs` tells three causes
+   apart — a missing Airtable select option, a field the mapping code cannot derive, and a
+   serial that does not resolve at YGOPRODeck — and says which rows were left out of
+   `data/cards.json` as a result. Enrich and sync write machine-readable reports into a
+   gitignored `.pipeline/`; the workflow step reads them.
+3. **Workflows run on Node 24** with every action bumped past the Node 20 runtime.
+   `tests/workflows.test.js` enforces the pin floor, so a slip backwards fails CI.
+
+**What is still open.** Two cards in To Do, both UI Design System and both follow-ons from
+the frame work: self-hosted typography, and the motion pass. Then in Backlog order:
+grid-first layout with sort, the four accessibility cards, repo hygiene files, meta tags,
+a refresh button, collection-value tracking, and the licence decision. Each has a Trello
+card with `file:line` evidence.
+
+**Not yet seen by a human**: the frame colour system was verified by tests and by reading
+the CSS, never by eye or by screenshot.
 
 ---
 
@@ -111,11 +133,12 @@ accepts only `name` and `description`, so adding an option is necessarily a manu
 ```
 index.html  404.html
 assets/css/   tokens.css, base.css, components.css
-assets/js/    data.js, filters.js, render.js, main.js
+assets/js/    data.js, filters.js, render.js, frames.js, main.js
 assets/fonts/
 assets/cards/            <- mirrored card art, one JPEG per passcode, committed
 data/cards.json          <- Airtable output, committed
-scripts/                 sync-airtable.mjs, mirror-images.mjs, enrich-*.mjs
+scripts/                 sync-airtable.mjs, mirror-images.mjs, enrich-*.mjs,
+                         map-airtable.mjs, pipeline-report.mjs
 tests/
 .github/workflows/       process-data.yml, pages.yml, ci.yml
 ```
@@ -161,9 +184,9 @@ Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST A
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
-**47 cards as of 2026-08-10**, across all five lists. Read the board rather than this table
-for anything that matters — the count moves every session, and the split below is a
-snapshot, not a source of truth.
+**47 cards as of 2026-08-10**, split Backlog 10, To Do 2, In-Progress 0, Review 0, Done 35.
+Read the board rather than this table for anything that matters — the count moves every
+session, and the split below is a snapshot, not a source of truth.
 
 | Colour | Label name | Cards |
 |---|---|---|
@@ -535,8 +558,9 @@ https://techcabana.github.io/YuGiOhCardCollection/
 | Conversation resolution | not required | dropped with the PR requirement |
 | Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 292 tests
-across 13 files; all pass as of 2026-08-10.
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 372 tests
+across 16 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
+`tests/workflows.test.js` fails if that pin or an action version slips backwards.
 
 **Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
 are all functional.
