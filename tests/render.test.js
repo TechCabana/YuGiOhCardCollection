@@ -97,6 +97,15 @@ describe('buildCardImageHTML', () => {
         expect(buildCardImageHTML(baseCard)).toContain('alt=""');
     });
 
+    // mirror-images.mjs assigns the path from the passcode before the download
+    // runs, and a failed download is deliberately non-fatal, so a src that
+    // passes safeImagePath is not a guarantee the file exists on disk. This is
+    // the client-side half of the placeholder fallback: it must fire on a 404
+    // exactly like the missing-passcode case does.
+    it('drops itself on a load failure instead of leaving a broken-image icon', () => {
+        expect(buildCardImageHTML(baseCard)).toContain('onerror="this.remove()"');
+    });
+
     it('emits nothing when the card has no art, leaving the placeholder ground', () => {
         expect(buildCardImageHTML({ ...baseCard, image: null })).toBe('');
         expect(buildCardImageHTML({ ...baseCard, image: undefined })).toBe('');
@@ -166,13 +175,16 @@ describe('buildCardHTML', () => {
     it('neutralises an img onerror payload in the card name', () => {
         const html = buildCardHTML({ ...baseCard, name: '<img src=x onerror="alert(1)">' });
 
-        // The card art is itself an img now, so the assertion is that the only
-        // img in the output is that one, and the name became literal text.
+        // The card art is itself an img now, and it legitimately carries its own
+        // fixed onerror handler (see buildCardImageHTML), so the assertion is
+        // that the only img in the output is that one, wired to that exact
+        // fixed handler, and the name became literal text rather than a second
+        // live attribute built from attacker-controlled input.
         expect(html.match(/<img/g)).toHaveLength(1);
         expect(html).toContain('<img class="card-image"');
-        // The word survives inside the escaped text; what must not survive is
-        // the live attribute, whose quote is now &quot;.
-        expect(html).not.toContain('onerror="');
+        expect(html.match(/onerror="/g)).toHaveLength(1);
+        expect(html).toContain('onerror="this.remove()"');
+        expect(html).not.toContain('onerror="alert(1)"');
         expect(html).toContain('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
     });
 

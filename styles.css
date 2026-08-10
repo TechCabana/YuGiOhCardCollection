@@ -349,9 +349,11 @@ body {
 
 /*
  * The art area is also the placeholder. render.js sets a per-card type colour
- * inline and lays the mirrored image over it, so a card with no passcode — or
- * one whose file fails to load — shows that colour instead of a broken image,
- * with no error handler involved.
+ * inline and lays the mirrored image over it, so a card with no passcode shows
+ * that colour with no <img> present at all. A card whose file fails to load
+ * (a stale path from a failed mirror, a client-side network hiccup) gets the
+ * same result via the img's onerror handler in render.js, which removes the
+ * broken element rather than leaving a broken-image icon on top of this ground.
  */
 .card-image-area {
     width: 100%;
