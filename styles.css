@@ -464,9 +464,31 @@ body {
 }
 
 /*
- * Two badges sit over the art and must never argue: rarity is pinned right,
- * edition left, so neither can grow into the other however long its text runs.
+ * Two badges sit over the art and must never argue. They used to be
+ * independently `position: absolute; left/right: 15px`, each guessing at
+ * how much room the other needed — fine for "Rare" next to "1st Edition",
+ * but "Prismatic Secret Rare" (a real Airtable option, see RARITY_LABELS in
+ * render.js) is wider than half the card at every width below ~320px, so
+ * the two badges overlapped on phones and the 641-900px tablet band.
  *
+ * Flex fixes that structurally instead of by breakpoint arithmetic: the
+ * badges are children of .card-badges and only give up width to each other
+ * once their combined natural size exceeds what is available, at which
+ * point they shrink and truncate rather than collide. `gap` guarantees a
+ * minimum seam between them even when both are maxed out.
+ */
+.card-badges {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/*
  * They share one treatment on purpose. Both state a fact about the printing,
  * so both are neutral over --overlay — no colour. Colour on a card means card
  * type since the frame system landed, and a second colour system competing
@@ -474,8 +496,6 @@ body {
  */
 .rarity-badge,
 .edition-badge {
-    position: absolute;
-    top: 15px;
     background: var(--overlay);
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
@@ -485,11 +505,21 @@ body {
     font-weight: 600;
     letter-spacing: 1px;
     border: 1px solid var(--border-subtle);
-    z-index: 1;
+    /* Flex items default to a min-width that equals their unshrunk content,
+       which would defeat the shrink above; 0 lets ellipsis take over instead. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+/*
+ * margin-left: auto pins rarity to the right edge of .card-badges whether or
+ * not the edition badge is present (an Unlimited card renders no edition
+ * badge at all), without either badge needing to know the other exists.
+ */
 .rarity-badge {
-    right: 15px;
+    margin-left: auto;
 }
 
 /*
@@ -501,7 +531,6 @@ body {
  * identical rows this is the thing that tells them apart.
  */
 .edition-badge {
-    left: 15px;
     border-color: var(--border-strong);
 }
 
