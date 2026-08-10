@@ -9,19 +9,32 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="header">
+    <!--
+      First focusable thing on the page. Every visit starts on the same long
+      run of filters and pills, so a keyboard user otherwise tabs through all
+      of them before reaching a single card. Visible only when focused — see
+      .skip-link in styles.css.
+    -->
+    <a class="skip-link" href="#mainContent">Skip to the collection</a>
+
+    <header class="header">
         <h1>My Yu-Gi-Oh! Collection</h1>
         <div class="stats">
             <div class="stat-item"><span id="totalCardsCount">—</span> Cards</div>
             <div class="stat-item"><span id="visibleCardsCount">—</span> Visible</div>
         </div>
-    </div>
+    </header>
 
-    <div class="controls">
+    <!--
+      <search> is the landmark for exactly this: a group of controls that
+      filters a set. It carries an implicit search role, so the pills and the
+      view toggle are reachable as one region rather than as loose buttons.
+    -->
+    <search class="controls" aria-label="Filter the collection">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search by name, type, or serial…">
         </div>
-        
+
         <div class="filter-section">
             <div class="filter-pills">
                 <button class="pill" data-filter="monster">Monster</button>
@@ -36,42 +49,58 @@
             <button class="view-btn active" data-view="carousel">Carousel</button>
             <button class="view-btn" data-view="grid">Grid</button>
         </div>
-    </div>
+    </search>
 
-    <!-- Data loading and failure states -->
-    <div class="status-message" id="statusMessage">Loading collection…</div>
+    <!--
+      Both views live inside one <main> so the skip link has a single target
+      and the landmark does not change when the view does.
+    -->
+    <main id="mainContent">
+        <!-- Data loading and failure states -->
+        <div class="status-message" id="statusMessage">Loading collection…</div>
 
-    <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
-    <div class="carousel-view" id="carouselView" hidden>
-        <div class="carousel-container">
-            <div class="carousel-stage" id="carouselStage">
+        <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
+        <div class="carousel-view" id="carouselView" hidden>
+            <h2 class="visually-hidden">Collection, showcase view</h2>
+
+            <div class="carousel-container">
+                <!--
+                  A <ul> for the same reason the grid is one: it is a list of
+                  cards, and the count is the useful part. The carousel shows a
+                  five-card window rather than the whole collection, so the
+                  heading above names the view and the list carries the window.
+                -->
+                <ul class="carousel-stage" id="carouselStage">
+                    <!-- Cards will be injected here -->
+                </ul>
+
+                <nav class="carousel-controls" aria-label="Carousel">
+                    <button class="nav-btn" id="prevBtn">‹</button>
+                    <div class="card-counter">
+                        <span class="current" id="currentCard">1</span> / <span id="totalCardsCarousel">12</span>
+                    </div>
+                    <button class="nav-btn" id="nextBtn">›</button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Grid View. Hidden until the collection resolves; see applyViewVisibility(). -->
+        <div class="grid-view" id="gridView" hidden>
+            <h2 class="visually-hidden">Collection, grid view</h2>
+
+            <ul class="card-grid" id="cardGrid">
                 <!-- Cards will be injected here -->
-            </div>
+            </ul>
 
-            <div class="carousel-controls">
-                <button class="nav-btn" id="prevBtn">‹</button>
-                <div class="card-counter">
-                    <span class="current" id="currentCard">1</span> / <span id="totalCardsCarousel">12</span>
+            <nav class="pagination" aria-label="Pagination">
+                <button class="page-btn" id="prevPage">‹</button>
+                <div class="page-info">
+                    Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
                 </div>
-                <button class="nav-btn" id="nextBtn">›</button>
-            </div>
+                <button class="page-btn" id="nextPage">›</button>
+            </nav>
         </div>
-    </div>
-
-    <!-- Grid View. Hidden until the collection resolves; see applyViewVisibility(). -->
-    <div class="grid-view" id="gridView" hidden>
-        <div class="card-grid" id="cardGrid">
-            <!-- Cards will be injected here -->
-        </div>
-
-        <div class="pagination">
-            <button class="page-btn" id="prevPage">‹</button>
-            <div class="page-info">
-                Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
-            </div>
-            <button class="page-btn" id="nextPage">›</button>
-        </div>
-    </div>
+    </main>
 
     <script type="module" src="script.js"></script>
 </body>

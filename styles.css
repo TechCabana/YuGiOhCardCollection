@@ -27,6 +27,56 @@ body {
 }
 
 /*
+ * Both views are lists of cards now, for the count assistive technology reads
+ * out. The bullets and indent that come with that are not wanted.
+ */
+.carousel-stage,
+.card-grid {
+    list-style: none;
+}
+
+/*
+ * Present to assistive technology, invisible on screen. The clip-path pairs
+ * with the 1px box because a screen reader skips an element with no size at
+ * all, and `display: none` would remove it from the tree entirely.
+ */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*
+ * Off-screen until focused, then it lands in the top-left corner. Every visit
+ * starts on the same run of filters and pills, so without this a keyboard user
+ * tabs through all of them before reaching a card.
+ */
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background: var(--surface-2);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transform: translateY(-150%);
+    transition: transform var(--duration-state) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+    transform: translateY(0);
+}
+
+/*
  * The view containers set their own display, which outranks the UA rule for
  * [hidden]. Without this, hiding a view during loading would have no effect.
  */
