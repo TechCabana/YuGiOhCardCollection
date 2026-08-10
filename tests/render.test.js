@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
     buildCardHTML,
+    buildCardImageHTML,
     buildStatsHTML,
     safeGradient,
+    safeImagePath,
     rarityLabel
 } from '../assets/js/render.js';
 
@@ -13,7 +15,7 @@ const baseCard = {
     cardType: 'Spellcaster / Effect',
     serial: 'LOB-005',
     gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    emoji: '🐉',
+    image: 'assets/cards/46986414.jpg',
     stats: [
         { label: 'ATK', value: '2500' },
         { label: 'DEF', value: '2100' },
@@ -45,6 +47,75 @@ describe('safeGradient', () => {
         [undefined, null, 42, {}].forEach(input => {
             expect(safeGradient(input)).toContain('linear-gradient');
         });
+    });
+});
+
+describe('safeImagePath', () => {
+    it('passes through a mirrored art path', () => {
+        expect(safeImagePath('assets/cards/46986414.jpg')).toBe('assets/cards/46986414.jpg');
+    });
+
+    it('rejects a path outside the mirror directory', () => {
+        expect(safeImagePath('assets/cards/../../.env')).toBeNull();
+        expect(safeImagePath('../../.env')).toBeNull();
+    });
+
+    // Escaping alone would let each of these through as a real request.
+    it('rejects remote, protocol-relative and inline sources', () => {
+        expect(safeImagePath('https://evil.example/x.jpg')).toBeNull();
+        expect(safeImagePath('//evil.example/x.jpg')).toBeNull();
+        expect(safeImagePath('data:image/svg+xml,<svg onload="alert(1)"/>')).toBeNull();
+        expect(safeImagePath('javascript:alert(1)')).toBeNull();
+    });
+
+    it('rejects a non-jpg extension and a non-numeric name', () => {
+        expect(safeImagePath('assets/cards/46986414.svg')).toBeNull();
+        expect(safeImagePath('assets/cards/evil.jpg')).toBeNull();
+    });
+
+    it('returns null for missing or non-string values', () => {
+        [undefined, null, 46986414, {}].forEach(value => {
+            expect(safeImagePath(value)).toBeNull();
+        });
+    });
+});
+
+describe('buildCardImageHTML', () => {
+    it('emits the attributes that keep CLS at zero', () => {
+        const html = buildCardImageHTML(baseCard);
+
+        expect(html).toContain('src="assets/cards/46986414.jpg"');
+        expect(html).toContain('width="421"');
+        expect(html).toContain('height="614"');
+        expect(html).toContain('loading="lazy"');
+        expect(html).toContain('decoding="async"');
+    });
+
+    // The card name is rendered as adjacent text, so a descriptive alt would
+    // make a screen reader announce the same name twice.
+    it('marks the image decorative with an empty alt', () => {
+        expect(buildCardImageHTML(baseCard)).toContain('alt=""');
+    });
+
+    // mirror-images.mjs assigns the path from the passcode before the download
+    // runs, and a failed download is deliberately non-fatal, so a src that
+    // passes safeImagePath is not a guarantee the file exists on disk. This is
+    // the client-side half of the placeholder fallback: it must fire on a 404
+    // exactly like the missing-passcode case does.
+    it('drops itself on a load failure instead of leaving a broken-image icon', () => {
+        expect(buildCardImageHTML(baseCard)).toContain('onerror="this.remove()"');
+    });
+
+    it('emits nothing when the card has no art, leaving the placeholder ground', () => {
+        expect(buildCardImageHTML({ ...baseCard, image: null })).toBe('');
+        expect(buildCardImageHTML({ ...baseCard, image: undefined })).toBe('');
+        expect(buildCardImageHTML(null)).toBe('');
+    });
+
+    it('emits nothing rather than a hostile src', () => {
+        const html = buildCardImageHTML({ ...baseCard, image: 'x.jpg" onerror="alert(1)' });
+
+        expect(html).toBe('');
     });
 });
 
@@ -104,8 +175,27 @@ describe('buildCardHTML', () => {
     it('neutralises an img onerror payload in the card name', () => {
         const html = buildCardHTML({ ...baseCard, name: '<img src=x onerror="alert(1)">' });
 
+        // The card art is itself an img now, and it legitimately carries its own
+        // fixed onerror handler (see buildCardImageHTML), so the assertion is
+        // that the only img in the output is that one, wired to that exact
+        // fixed handler, and the name became literal text rather than a second
+        // live attribute built from attacker-controlled input.
+        expect(html.match(/<img/g)).toHaveLength(1);
+        expect(html).toContain('<img class="card-image"');
+        expect(html.match(/onerror="/g)).toHaveLength(1);
+        expect(html).toContain('onerror="this.remove()"');
+        expect(html).not.toContain('onerror="alert(1)"');
+        expect(html).toContain('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
+    });
+
+    it('injects no img at all for a hostile name on a card with no art', () => {
+        const html = buildCardHTML({
+            ...baseCard,
+            image: null,
+            name: '<img src=x onerror="alert(1)">'
+        });
+
         expect(html).not.toContain('<img');
-        expect(html).not.toContain('onerror="');
     });
 
     it('escapes markup in every interpolated field', () => {
@@ -114,7 +204,6 @@ describe('buildCardHTML', () => {
             ...baseCard,
             name: hostile,
             cardType: hostile,
-            emoji: hostile,
             rarity: hostile
         });
 
@@ -134,6 +223,27 @@ describe('buildCardHTML', () => {
         expect(html).toContain('class="card-image-area"');
         expect(html).toContain('class="rarity-badge"');
         expect(html).toContain('class="card-stats-grid"');
+    });
+
+    it('places the art inside the art area', () => {
+        const html = buildCardHTML(baseCard);
+
+        expect(html).toContain('class="card-image"');
+        expect(html.indexOf('class="card-image"')).toBeGreaterThan(html.indexOf('card-image-area'));
+        expect(html.indexOf('class="card-image"')).toBeLessThan(html.indexOf('card-info-area'));
+    });
+
+    it('renders a card with no art without an img tag', () => {
+        const html = buildCardHTML({ ...baseCard, image: null });
+
+        expect(html).not.toContain('<img');
+        expect(html).toContain('class="card-image-area"');
+        expect(html).toContain('Dark Magician');
+    });
+
+    // Emoji as UI chrome is a design smell the mirrored art replaces.
+    it('renders no placeholder glyph', () => {
+        expect(buildCardHTML({ ...baseCard, emoji: '🐉' })).not.toContain('🐉');
     });
 
     it('returns an empty string for a missing card', () => {

@@ -154,6 +154,8 @@ commit does not undo the exposure.
 | Enrich for real | `node scripts/enrich-airtable.mjs` |
 | Enrich a capped number of rows | `node scripts/enrich-airtable.mjs --limit 5` |
 | Regenerate the JSON only | `node scripts/sync-airtable.mjs` |
+| Mirror any missing card art | `node scripts/mirror-images.mjs` |
+| Mirror a capped number of images | `node scripts/mirror-images.mjs --limit 5` |
 
 The pipeline can also be started from Actions, then Process Data, then Run
 workflow. Use `--dry-run` before any command that writes.
@@ -216,6 +218,9 @@ Everything else is fetched.
                                  │  sync-airtable.mjs                │
                                  ├──> data/cards.json (committed)    │
                                  │                                   │
+                                 │  mirror-images.mjs                │
+                                 ├──> assets/cards/*.jpg (committed) │
+                                 │                                   │
                                  │  actions/deploy-pages             │
                                  └──> GitHub Pages ──────────────────┘
 ```
@@ -241,10 +246,15 @@ Airtable, and there is no credential anywhere in the shipped code.
 7. Before writing anything, the sync rejects a result that is not an array, is
    empty, is missing required fields, or still contains a private field. It fails
    the run rather than publishing bad or private data.
-8. `data/cards.json` is committed, but only if it actually changed.
-9. The same workflow uploads `index.html`, `styles.css`, `script.js`, `assets/`
+8. `scripts/mirror-images.mjs` downloads the art for any passcode not already in
+   `assets/cards/`. It is incremental, so a run that adds no cards downloads
+   nothing, and a single failed image is reported rather than thrown — that card
+   falls back to a plain type-coloured block.
+9. `data/cards.json` and `assets/cards/` are committed together, but only if
+   something actually changed, so a card never deploys ahead of its art.
+10. The same workflow uploads `index.html`, `styles.css`, `script.js`, `assets/`
    and `data/` as the Pages artifact and deploys it.
-10. A visitor loads the page. `assets/js/data.js` fetches `data/cards.json`,
+11. A visitor loads the page. `assets/js/data.js` fetches `data/cards.json`,
     `filters.js` handles search and filtering as pure functions, and `render.js`
     builds the card markup with every field escaped.
 
@@ -285,7 +295,7 @@ quietly delete a printing from the collection.
   "def": 600,
   "level": 2,
   "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
-  "emoji": "⚔️",
+  "image": "assets/cards/54652250.jpg",
   "stats": [
     { "label": "ATK",   "value": "450" },
     { "label": "DEF",   "value": "600" },
@@ -300,13 +310,14 @@ quietly delete a printing from the collection.
 | `name` | string | Required. A record without it is dropped. |
 | `type` | string | Required. `monster`, `spell`, `trap` or `token`. |
 | `rarity` | string | Required. One of the keys in `RARITY_MAP` in `scripts/map-airtable.mjs`: common, rare, super, ultra, secret, ultimate, collector, ghost, prismatic, starlight. |
-| `passcode` | string | Eight digits, stored as text because leading zeros are significant. Drives the card image URL. |
+| `passcode` | string | Eight digits, stored as text because leading zeros are significant. Names the mirrored image file. |
 | `serial` | string | Set code, trimmed. `Serial` is a multiline field in Airtable, so a pasted value can carry an invisible trailing newline that URL-encodes to `%0A` and breaks the lookup. |
 | `cardType` | string | For example `Insect / Effect`. |
 | `summonType` | string or null | Fusion, Synchro, XYZ, Ritual, Link, or null. |
 | `attribute` | string or null | Earth, Fire, and so on. |
 | `atk`, `def`, `level` | number or null | Null for spells and traps. |
-| `gradient`, `emoji` | string | Placeholders. Both go once real card art and the card-frame colour system land. |
+| `image` | string or null | Path to the mirrored art, `assets/cards/<passcode>.jpg`. Null when the passcode is missing or malformed, which is what makes the renderer fall back to a plain type-coloured block. |
+| `gradient` | string | Placeholder type colour, shown behind the art and on its own when there is none. Goes once the card-frame colour system lands. |
 | `stats` | array | Three pre-built display rows. Monsters and spell or trap cards use different labels. |
 
 #### Field ownership
@@ -335,6 +346,7 @@ YuGiOhCardCollection/
 ├── styles.css              everything that is not a token
 ├── assets/css/tokens.css   the design tokens, the only place colour is written
 ├── assets/js/              browser modules
+├── assets/cards/           mirrored card art, one JPEG per passcode
 ├── scripts/                Node scripts, run in CI or by hand
 ├── data/cards.json         generated, committed, served
 ├── tests/                  Vitest suites, one per module
@@ -356,6 +368,7 @@ YuGiOhCardCollection/
 | `scripts/enrich-airtable.mjs` | Resolves unprocessed rows and PATCHes them back |
 | `scripts/map-airtable.mjs` | Pure mapping from an Airtable record to a renderable card |
 | `scripts/sync-airtable.mjs` | Fetches the table and writes `data/cards.json` |
+| `scripts/mirror-images.mjs` | Downloads card art into `assets/cards/`, skipping anything already mirrored |
 | `.github/workflows/process-data.yml` | Enrich, sync, commit and deploy. Manual trigger plus a daily cron. |
 | `.github/workflows/pages.yml` | Pages deploy on push to `main` |
 | `.github/workflows/ci.yml` | Test gate on pull requests |
@@ -372,7 +385,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Twelve files, 250 tests, all passing as of the last run on Node 24.16.0.
+Thirteen files, 291 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -386,6 +399,7 @@ Twelve files, 250 tests, all passing as of the last run on Node 24.16.0.
 | `layout.test.js` | Guards the 59:86 card geometry against a fixed pixel height creeping back onto the art box |
 | `map-airtable.test.js` | Airtable record to card mapping, including the private-field guard |
 | `sync-airtable.test.js` | Pagination, the output shape, and refusal to write bad data |
+| `mirror-images.test.js` | Incremental downloads, passcode validation, and per-image failure handling |
 | `enrich-ygoprodeck.test.js` | YGOPRODeck response to Airtable field mapping |
 | `enrich-airtable.test.js` | Row selection, batching and blocked-row reporting |
 
