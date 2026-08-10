@@ -4,74 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yu-Gi-Oh! Collection</title>
+    <!--
+      Preloaded because the @font-face that asks for it sits inside styles.css:
+      without this the browser cannot discover the font until the stylesheet has
+      downloaded and parsed, which is a whole round trip of fallback text.
+      crossorigin is required even same-origin — fonts are fetched in CORS mode,
+      and omitting it fetches the file a second time.
+    -->
+    <link rel="preload" href="assets/fonts/instrument-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Tokens first: styles.css resolves every colour, radius and space through them. -->
     <link rel="stylesheet" href="assets/css/tokens.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="header">
+    <!--
+      First focusable thing on the page. Every visit starts on the same long
+      run of filters and pills, so a keyboard user otherwise tabs through all
+      of them before reaching a single card. Visible only when focused — see
+      .skip-link in styles.css.
+    -->
+    <a class="skip-link" href="#mainContent">Skip to the collection</a>
+
+    <header class="header">
         <h1>My Yu-Gi-Oh! Collection</h1>
+        <!--
+          aria-live on the visible count only. Filtering changes it on every
+          keystroke, and without this the page silently reflows for a screen
+          reader user. The total is not live: it changes once, at load.
+        -->
         <div class="stats">
             <div class="stat-item"><span id="totalCardsCount">—</span> Cards</div>
-            <div class="stat-item"><span id="visibleCardsCount">—</span> Visible</div>
+            <div class="stat-item" aria-live="polite"><span id="visibleCardsCount">—</span> Visible</div>
         </div>
-    </div>
+    </header>
 
-    <div class="controls">
+    <!--
+      <search> is the landmark for exactly this: a group of controls that
+      filters a set. It carries an implicit search role, so the pills and the
+      view toggle are reachable as one region rather than as loose buttons.
+    -->
+    <search class="controls" aria-label="Filter the collection">
         <div class="search-box">
+            <!--
+              A placeholder is not a label: it vanishes the moment anything is
+              typed, and it is not reliably announced as the field's name.
+            -->
+            <label class="visually-hidden" for="searchInput">Search the collection</label>
             <input type="text" id="searchInput" placeholder="Search by name, type, or serial…">
         </div>
-        
+
+        <!--
+          The pills and the view buttons are toggles, so they carry
+          aria-pressed rather than relying on a class a screen reader cannot
+          see. script.js keeps the two in step through setToggleState().
+        -->
         <div class="filter-section">
             <div class="filter-pills">
-                <button class="pill" data-filter="monster">Monster</button>
-                <button class="pill" data-filter="spell">Spell</button>
-                <button class="pill" data-filter="trap">Trap</button>
-                <button class="pill" data-filter="rare">Rare Only</button>
+                <button class="pill" type="button" data-filter="monster" aria-pressed="false">Monster</button>
+                <button class="pill" type="button" data-filter="spell" aria-pressed="false">Spell</button>
+                <button class="pill" type="button" data-filter="trap" aria-pressed="false">Trap</button>
+                <button class="pill" type="button" data-filter="rare" aria-pressed="false">Rare Only</button>
             </div>
-            <button class="clear-btn" id="clearFilters">Clear Filters</button>
+            <button class="clear-btn" type="button" id="clearFilters">Clear Filters</button>
         </div>
 
         <div class="view-toggle">
-            <button class="view-btn active" data-view="carousel">Carousel</button>
-            <button class="view-btn" data-view="grid">Grid</button>
+            <button class="view-btn active" type="button" data-view="carousel" aria-pressed="true">Carousel</button>
+            <button class="view-btn" type="button" data-view="grid" aria-pressed="false">Grid</button>
         </div>
-    </div>
+    </search>
 
-    <!-- Data loading and failure states -->
-    <div class="status-message" id="statusMessage">Loading collection…</div>
+    <!--
+      Both views live inside one <main> so the skip link has a single target
+      and the landmark does not change when the view does.
+    -->
+    <main id="mainContent">
+        <!--
+          role="status" carries an implicit aria-live="polite". It is on the
+          element in the served HTML rather than added when the message
+          changes, because a live region has to exist before its content
+          changes to be announced reliably.
+        -->
+        <div class="status-message" id="statusMessage" role="status">Loading collection…</div>
 
-    <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
-    <div class="carousel-view" id="carouselView" hidden>
-        <div class="carousel-container">
-            <div class="carousel-stage" id="carouselStage">
+        <!-- Carousel View. Hidden until the collection resolves; see applyViewVisibility(). -->
+        <div class="carousel-view" id="carouselView" hidden>
+            <h2 class="visually-hidden">Collection, showcase view</h2>
+
+            <div class="carousel-container">
+                <!--
+                  A <ul> for the same reason the grid is one: it is a list of
+                  cards, and the count is the useful part. The carousel shows a
+                  five-card window rather than the whole collection, so the
+                  heading above names the view and the list carries the window.
+                -->
+                <ul class="carousel-stage" id="carouselStage">
+                    <!-- Cards will be injected here -->
+                </ul>
+
+                <!--
+                  The glyphs are read out by name — "single left-pointing angle
+                  quotation mark" — so each button states its purpose instead.
+                -->
+                <nav class="carousel-controls" aria-label="Carousel">
+                    <button class="nav-btn" type="button" id="prevBtn" aria-label="Previous card">‹</button>
+                    <div class="card-counter">
+                        <span class="current" id="currentCard">1</span> / <span id="totalCardsCarousel">12</span>
+                    </div>
+                    <button class="nav-btn" type="button" id="nextBtn" aria-label="Next card">›</button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Grid View. Hidden until the collection resolves; see applyViewVisibility(). -->
+        <div class="grid-view" id="gridView" hidden>
+            <h2 class="visually-hidden">Collection, grid view</h2>
+
+            <ul class="card-grid" id="cardGrid">
                 <!-- Cards will be injected here -->
-            </div>
+            </ul>
 
-            <div class="carousel-controls">
-                <button class="nav-btn" id="prevBtn">‹</button>
-                <div class="card-counter">
-                    <span class="current" id="currentCard">1</span> / <span id="totalCardsCarousel">12</span>
+            <nav class="pagination" aria-label="Pagination">
+                <button class="page-btn" type="button" id="prevPage" aria-label="Previous page">‹</button>
+                <div class="page-info" aria-live="polite">
+                    Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
                 </div>
-                <button class="nav-btn" id="nextBtn">›</button>
-            </div>
+                <button class="page-btn" type="button" id="nextPage" aria-label="Next page">›</button>
+            </nav>
         </div>
-    </div>
-
-    <!-- Grid View. Hidden until the collection resolves; see applyViewVisibility(). -->
-    <div class="grid-view" id="gridView" hidden>
-        <div class="card-grid" id="cardGrid">
-            <!-- Cards will be injected here -->
-        </div>
-
-        <div class="pagination">
-            <button class="page-btn" id="prevPage">‹</button>
-            <div class="page-info">
-                Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
-            </div>
-            <button class="page-btn" id="nextPage">›</button>
-        </div>
-    </div>
+    </main>
 
     <script type="module" src="script.js"></script>
 </body>
