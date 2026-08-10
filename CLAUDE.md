@@ -40,11 +40,11 @@ script.js        383 lines   DOM wiring only; logic lives in assets/js/
 styles.css       778 lines   responsive, tokenised colour, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
 assets/js/        6 files    data, filters, render, view, debounce, keyboard
-assets/cards/    77 files    mirrored card art, ~10.6 MB, committed by the pipeline
+assets/cards/   111 files    mirrored card art, ~16 MB, committed by the pipeline
 scripts/         6 files     enrich, sync, map, mirror, YGOPRODeck client
 tests/          13 files     291 Vitest tests, all passing
 .github/         3 workflows ci.yml, pages.yml, process-data.yml
-data/cards.json  81 cards    generated from Airtable, committed, served
+data/cards.json 128 cards    generated from Airtable, committed, served
 ```
 
 Roughly 3,400 lines of source, 2,400 of tests, 290 of workflow.
@@ -535,7 +535,7 @@ https://techcabana.github.io/YuGiOhCardCollection/
 | Conversation resolution | not required | dropped with the PR requirement |
 | Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 291 tests
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 292 tests
 across 13 files; all pass as of 2026-08-10.
 
 **Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
