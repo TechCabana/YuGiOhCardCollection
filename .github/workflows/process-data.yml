@@ -68,6 +68,15 @@ jobs:
           AIRTABLE_TABLE_ID: ${{ secrets.AIRTABLE_TABLE_ID }}
         run: node scripts/sync-airtable.mjs
 
+      # Runs after the sync so it sees the passcodes of any newly added rows.
+      # Incremental: a passcode whose file is already committed is never
+      # re-fetched, so a normal run downloads nothing. Allowed to fail because
+      # a dead image must not hold back the card data that did sync.
+      - name: Mirror card art from YGOPRODeck
+        id: mirror
+        continue-on-error: true
+        run: node scripts/mirror-images.mjs
+
       - name: Verify the result still loads
         # A structurally wrong file would break the live site, so validate
         # before committing rather than after.
@@ -87,8 +96,11 @@ jobs:
 
       - name: Commit if changed
         id: commit
+        # assets/cards/ is committed alongside the data: new rows arrive with
+        # their art in the same commit, so the site never deploys a card whose
+        # image has not been mirrored yet.
         run: |
-          if [ -z "$(git status --porcelain data/cards.json)" ]; then
+          if [ -z "$(git status --porcelain data/cards.json assets/cards)" ]; then
             echo "No change to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -96,7 +108,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/cards.json
+          git add data/cards.json assets/cards
           git commit -m "chore: sync collection from Airtable"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -153,3 +165,11 @@ jobs:
         run: |
           echo "::error::Enrichment reported blocked or skipped rows. The other rows were still synced and deployed. Check the Enrich step's log for the field and value that need adding in Airtable."
           exit 1
+
+      # Separate from the step above so the two causes stay distinguishable in
+      # the run summary. A warning rather than a failure: a card missing its art
+      # still renders its placeholder and all of its data, so this is worth
+      # noticing without turning a good sync red.
+      - name: Warn if any image could not be mirrored
+        if: always() && steps.mirror.outcome == 'failure'
+        run: echo "::warning::Card art mirroring hit an error. Affected cards fall back to a type-coloured placeholder. Check the Mirror step's log for the passcode and reason."
