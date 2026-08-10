@@ -60,6 +60,36 @@
     "type": "monster"
   },
   {
+    "atk": 1600,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec1nFYTNlpDtuy9i",
+    "level": 4,
+    "name": "Stygian Street Patrol",
+    "passcode": "13521194",
+    "rarity": "common",
+    "serial": "SDSA-EN015",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 300,
     "attribute": "Water",
     "cardType": "Fiend / Effect",
@@ -114,6 +144,36 @@
       {
         "label": "Level",
         "value": "⭐1"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 500,
+    "attribute": "Earth",
+    "cardType": "Machine / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec3WaFGS1ybRSik9",
+    "level": 4,
+    "name": "Mighty Guard",
+    "passcode": "62327910",
+    "rarity": "common",
+    "serial": "RDS-EN002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -294,6 +354,66 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1000,
+    "attribute": "Earth",
+    "cardType": "Warrior / Effect",
+    "def": 1500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec8Y03DI1EqbaSOA",
+    "level": 4,
+    "name": "Mysterious Puppeteer",
+    "passcode": "54098121",
+    "rarity": "common",
+    "serial": "SDK-043",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1000"
+      },
+      {
+        "label": "DEF",
+        "value": "1500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Dark",
+    "cardType": "Spellcaster / Effect",
+    "def": 1100,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rec9WJyirTNknkGjq",
+    "level": 4,
+    "name": "Lord of D.",
+    "passcode": "17985575",
+    "rarity": "super",
+    "serial": "SDK-041",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1100"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -509,6 +629,66 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast-Warrior / Normal",
+    "def": 1500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recFaFUd6C7CLDRvT",
+    "level": 4,
+    "name": "Beaver Warrior",
+    "passcode": "32452818",
+    "rarity": "common",
+    "serial": "SDY-005",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1450,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recGHheLnIAgK0Qip",
+    "level": 4,
+    "name": "Ancient Elf",
+    "passcode": "93221206",
+    "rarity": "common",
+    "serial": "SDY-024",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1450"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 500,
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
@@ -599,6 +779,36 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast-Warrior / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recHoqKBfcYJoKaDI",
+    "level": 4,
+    "name": "Hitotsu-Me Giant",
+    "passcode": "76184692",
+    "rarity": "common",
+    "serial": "SDK-002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 800,
     "attribute": "Wind",
     "cardType": "Insect / Effect",
@@ -683,6 +893,66 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1550,
+    "attribute": "Wind",
+    "cardType": "Winged Beast / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recJTw5sZZMkKqDds",
+    "level": 4,
+    "name": "Skull Red Bird",
+    "passcode": "10202894",
+    "rarity": "common",
+    "serial": "SDK-029",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1550"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1500,
+    "attribute": "Dark",
+    "cardType": "Dragon / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recKaLI5drqbCqRLF",
+    "level": 4,
+    "name": "Koumori Dragon",
+    "passcode": "67724379",
+    "rarity": "common",
+    "serial": "SDK-006",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -803,6 +1073,66 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1700,
+    "attribute": "Fire",
+    "cardType": "Pyro / Normal",
+    "def": 1100,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recNaEsb3LtjpbExN",
+    "level": 4,
+    "name": "Darkfire Soldier #2",
+    "passcode": "78861134",
+    "rarity": "common",
+    "serial": "PSV-045",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1700"
+      },
+      {
+        "label": "DEF",
+        "value": "1100"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1500,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recO3TusmOXHWnamT",
+    "level": 4,
+    "name": "Melchid the Four-Face Beast",
+    "passcode": "86569121",
+    "rarity": "common",
+    "serial": "LON-012",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1049,6 +1379,36 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast-Warrior / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recQy9UV6hfH9pd4f",
+    "level": 4,
+    "name": "Hitotsu-Me Giant",
+    "passcode": "76184692",
+    "rarity": "common",
+    "serial": "LOB-002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 450,
     "attribute": "Earth",
     "cardType": "Beast / Effect",
@@ -1103,6 +1463,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1500,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recS3TAjoYKTK4QVf",
+    "level": 4,
+    "name": "Pale Beast",
+    "passcode": "21263083",
+    "rarity": "common",
+    "serial": "SDK-031",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1319,6 +1709,66 @@
     "type": "monster"
   },
   {
+    "atk": 1100,
+    "attribute": "Earth",
+    "cardType": "Rock / Effect",
+    "def": 2000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recU1xzk5wPUzDKVm",
+    "level": 4,
+    "name": "Moai Interceptor Cannons",
+    "passcode": "45159319",
+    "rarity": "common",
+    "serial": "TLM-EN014",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1100"
+      },
+      {
+        "label": "DEF",
+        "value": "2000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1500,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recVUzDLkqOGMIIsk",
+    "level": 4,
+    "name": "Danger! Chupacabra!",
+    "passcode": "16209941",
+    "rarity": "common",
+    "serial": "SDSA-EN018",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1000,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -1379,6 +1829,36 @@
     "type": "monster"
   },
   {
+    "atk": 1500,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recVzZ5xPYr1vy78q",
+    "level": 4,
+    "name": "Pale Beast",
+    "passcode": "21263083",
+    "rarity": "common",
+    "serial": "MRD-047",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 600,
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
@@ -1409,6 +1889,126 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Fiend / Normal",
+    "def": 1500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recXs874uz90yZqOc",
+    "level": 4,
+    "name": "The Portrait's Secret",
+    "passcode": "32541773",
+    "rarity": "common",
+    "serial": "LON-052",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Dark",
+    "cardType": "Spellcaster / Effect",
+    "def": 1100,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recYJfSsZkNG7VlwX",
+    "level": 4,
+    "name": "Lord of D.",
+    "passcode": "17985575",
+    "rarity": "common",
+    "serial": "SKE-016",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1100"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1800,
+    "attribute": "Light",
+    "cardType": "Fairy / Effect",
+    "def": 500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recYRYEqhcHGCa5NG",
+    "level": 4,
+    "name": "Hysteric Fairy",
+    "passcode": "21297224",
+    "rarity": "common",
+    "serial": "LON-042",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1800"
+      },
+      {
+        "label": "DEF",
+        "value": "500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1100,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recZtrhjfVMt1WChz",
+    "level": 4,
+    "name": "Phantom Skyblaster",
+    "passcode": "12958919",
+    "rarity": "common",
+    "serial": "SDSA-EN007",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1100"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 300,
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
@@ -1433,6 +2033,36 @@
       {
         "label": "Level",
         "value": "⭐1"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recaPiNfQdmoWqQ8A",
+    "level": 4,
+    "name": "Feral Imp",
+    "passcode": "41392891",
+    "rarity": "common",
+    "serial": "SDY-002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1522,6 +2152,96 @@
       {
         "label": "Level",
         "value": "⭐1"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1600,
+    "attribute": "Water",
+    "cardType": "Fish / Normal",
+    "def": 800,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reccIT4QyWT87wu6w",
+    "level": 4,
+    "name": "Great White",
+    "passcode": "13429800",
+    "rarity": "common",
+    "serial": "SDY-011",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "800"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1600,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reccOsDfXEX0tdro5",
+    "level": 4,
+    "name": "Rogue Doll",
+    "passcode": "91939608",
+    "rarity": "common",
+    "serial": "SDP-005",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1600,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recccydSLYO8O3SOR",
+    "level": 4,
+    "name": "Rogue Doll",
+    "passcode": "91939608",
+    "rarity": "common",
+    "serial": "SDK-008",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1708,6 +2428,66 @@
     "type": "monster"
   },
   {
+    "atk": 1900,
+    "attribute": "Dark",
+    "cardType": "Spellcaster / Effect",
+    "def": 1700,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recfZ8iQGYHy34Xsu",
+    "level": 4,
+    "name": "Skilled Dark Magician",
+    "passcode": "73752131",
+    "rarity": "common",
+    "serial": "SD6-EN006",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1900"
+      },
+      {
+        "label": "DEF",
+        "value": "1700"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1400,
+    "attribute": "Wind",
+    "cardType": "Winged Beast / Effect",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recfn5mKDdf5AFQhP",
+    "level": 4,
+    "name": "Sonic Bird",
+    "passcode": "57617178",
+    "rarity": "common",
+    "serial": "SDP-011",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 500,
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
@@ -1732,6 +2512,36 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Insect / Normal",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recgVCx2QDOlXSNqD",
+    "level": 4,
+    "name": "Gokibore",
+    "passcode": "15367030",
+    "rarity": "rare",
+    "serial": "MDP2-EN009",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1888,6 +2698,66 @@
     "type": "monster"
   },
   {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast-Warrior / Normal",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reciN137w95vXws4u",
+    "level": 4,
+    "name": "Ogre of the Black Shadow",
+    "passcode": "45121025",
+    "rarity": "common",
+    "serial": "SDK-019",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1550,
+    "attribute": "Wind",
+    "cardType": "Winged Beast / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recjaK9G3IWwOKSDK",
+    "level": 4,
+    "name": "Skull Red Bird",
+    "passcode": "10202894",
+    "rarity": "common",
+    "serial": "LOB-105",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1550"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 0,
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
@@ -1912,6 +2782,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast-Warrior / Normal",
+    "def": 1500,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recjqoqQ80GjCT8Hu",
+    "level": 4,
+    "name": "Beaver Warrior",
+    "passcode": "32452818",
+    "rarity": "common",
+    "serial": "LOB-064",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1500"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -1948,6 +2848,66 @@
     "type": "monster"
   },
   {
+    "atk": 1400,
+    "attribute": "Wind",
+    "cardType": "Dragon / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reckohz0dkXs63cW8",
+    "level": 4,
+    "name": "Winged Dragon, Guardian of the Fortress #1",
+    "passcode": "87796900",
+    "rarity": "common",
+    "serial": "MRD-002",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1400,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reclwyAOJ25qiltSj",
+    "level": 4,
+    "name": "Feral Imp",
+    "passcode": "41392891",
+    "rarity": "common",
+    "serial": "MRD-001",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "1400"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1300,
     "attribute": "Fire",
     "cardType": "Pyro / Effect",
@@ -1972,6 +2932,36 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1800,
+    "attribute": "Light",
+    "cardType": "Plant / Effect",
+    "def": 1600,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recmiPLEXh3jeEsRy",
+    "level": 4,
+    "name": "Homunculus the Alchemic Being",
+    "passcode": "40410110",
+    "rarity": "common",
+    "serial": "RDS-EN034",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1800"
+      },
+      {
+        "label": "DEF",
+        "value": "1600"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -2008,6 +2998,66 @@
     "type": "monster"
   },
   {
+    "atk": 1600,
+    "attribute": "Water",
+    "cardType": "Dinosaur / Effect",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recn5Q0ZCBg2CbyxF",
+    "level": 4,
+    "name": "Hydrogeddon",
+    "passcode": "22587018",
+    "rarity": "common",
+    "serial": "EEN-EN013",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1200,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recn6lvEK6Cneo7c9",
+    "level": 4,
+    "name": "Master & Expert",
+    "passcode": "75499502",
+    "rarity": "common",
+    "serial": "SDK-016",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1200"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1200,
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
@@ -2032,6 +3082,36 @@
       {
         "label": "Level",
         "value": "⭐2"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 1550,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recnZH2qge8Vw3vfN",
+    "level": 4,
+    "name": "Mystic Horseman",
+    "passcode": "68516705",
+    "rarity": "common",
+    "serial": "SDK-012",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "1550"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -2098,6 +3178,96 @@
     "type": "monster"
   },
   {
+    "atk": 1500,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recoMbt7t1839nn0X",
+    "level": 4,
+    "name": "Mystic Clown",
+    "passcode": "47060154",
+    "rarity": "common",
+    "serial": "SDY-019",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1500,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recoNijFo2oyy4YNq",
+    "level": 4,
+    "name": "Melchid the Four-Face Beast",
+    "passcode": "86569121",
+    "rarity": "common",
+    "serial": "DB1-EN215",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1500"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1450,
+    "attribute": "Light",
+    "cardType": "Spellcaster / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recoaxglkslfu7Ei4",
+    "level": 4,
+    "name": "Ancient Elf",
+    "passcode": "93221206",
+    "rarity": "common",
+    "serial": "MRD-037",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1450"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 100,
     "attribute": "Fire",
     "cardType": "Pyro / Normal",
@@ -2152,6 +3322,66 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1600,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recsjz2ClOXTQ6eiL",
+    "level": 4,
+    "name": "Ryu-Kishin Powered",
+    "passcode": "24611934",
+    "rarity": "common",
+    "serial": "MRD-092",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1400,
+    "attribute": "Dark",
+    "cardType": "Machine / Effect",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "rectFss55E4DR5j5U",
+    "level": 4,
+    "name": "Dekoichi the Battlechanted Locomotive",
+    "passcode": "87621407",
+    "rarity": "ultimate",
+    "serial": "RDS-EN032",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -2242,6 +3472,66 @@
       {
         "label": "Level",
         "value": "⭐1"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1400,
+    "attribute": "Wind",
+    "cardType": "Dragon / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recuvymyA1CHGil5a",
+    "level": 4,
+    "name": "Winged Dragon, Guardian of the Fortress #1",
+    "passcode": "87796900",
+    "rarity": "common",
+    "serial": "SDY-003",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1400"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1100,
+    "attribute": "Light",
+    "cardType": "Warrior / Normal",
+    "def": 1000,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "recwCXh3sHJI5dckk",
+    "level": 4,
+    "name": "Moon Envoy",
+    "passcode": "45909477",
+    "rarity": "common",
+    "serial": "MDP2-EN019",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1100"
+      },
+      {
+        "label": "DEF",
+        "value": "1000"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
@@ -2368,6 +3658,36 @@
     "type": "monster"
   },
   {
+    "atk": 0,
+    "attribute": "Dark",
+    "cardType": "Fiend / Effect",
+    "def": 0,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reczDVHttLjAu0r9B",
+    "level": 4,
+    "name": "Phantom of Chaos",
+    "passcode": "30312361",
+    "rarity": "common",
+    "serial": "SDSA-EN006",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "0"
+      },
+      {
+        "label": "DEF",
+        "value": "0"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
     "atk": 1000,
     "attribute": "Light",
     "cardType": "Beast / Normal",
@@ -2422,6 +3742,66 @@
       {
         "label": "Level",
         "value": "⭐3"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1300,
+    "attribute": "Earth",
+    "cardType": "Beast / Normal",
+    "def": 1550,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reczYiwFeaMB7o38L",
+    "level": 4,
+    "name": "Mystic Horseman",
+    "passcode": "68516705",
+    "rarity": "common",
+    "serial": "MRD-076",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1300"
+      },
+      {
+        "label": "DEF",
+        "value": "1550"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
+      }
+    ],
+    "summonType": null,
+    "type": "monster"
+  },
+  {
+    "atk": 1600,
+    "attribute": "Dark",
+    "cardType": "Fiend / Normal",
+    "def": 1200,
+    "emoji": "⚔️",
+    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
+    "id": "reczk9s2oLrcqdQ9W",
+    "level": 4,
+    "name": "Ryu-Kishin Powered",
+    "passcode": "24611934",
+    "rarity": "common",
+    "serial": "SDK-024",
+    "stats": [
+      {
+        "label": "ATK",
+        "value": "1600"
+      },
+      {
+        "label": "DEF",
+        "value": "1200"
+      },
+      {
+        "label": "Level",
+        "value": "⭐4"
       }
     ],
     "summonType": null,
