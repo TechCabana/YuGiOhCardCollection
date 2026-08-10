@@ -43,6 +43,77 @@ describe('tokens.css', () => {
     });
 });
 
+/**
+ * Relative luminance of an #rrggbb colour, per WCAG 2.1.
+ *
+ * @param {string} hex - a six-digit hex colour
+ * @returns {number} relative luminance, 0 to 1
+ */
+const luminance = (hex) => {
+    const channel = (value) => {
+        const srgb = value / 255;
+        return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+    };
+
+    const digits = hex.replace('#', '');
+    const [r, g, b] = [0, 2, 4].map((start) => parseInt(digits.slice(start, start + 2), 16));
+
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+};
+
+/** Contrast ratio between two hex colours, 1 to 21. */
+const contrastRatio = (a, b) => {
+    const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    return (high + 0.05) / (low + 0.05);
+};
+
+/** Value of a declared token, or undefined when it is not declared. */
+const tokenValue = (css, name) => css.match(new RegExp(`${name}\\s*:\\s*([^;]+);`))?.[1]?.trim();
+
+describe('card frame tokens', () => {
+    const frameKeys = [
+        'normal', 'effect', 'ritual', 'fusion', 'synchro',
+        'xyz', 'link', 'spell', 'trap', 'token'
+    ];
+
+    // The surfaces a card's text can sit on. --surface-3 is the lightest, so
+    // it is the hardest case for a light ink.
+    const surfaces = ['--surface-1', '--surface-2', '--surface-3'].map((name) =>
+        tokenValue(tokensCss, name)
+    );
+
+    it('declares a base and an ink value for every frame', () => {
+        for (const key of frameKeys) {
+            expect(tokenValue(tokensCss, `--frame-${key}`)).toMatch(/^#[0-9a-f]{6}$/i);
+            expect(tokenValue(tokensCss, `--frame-${key}-ink`)).toMatch(/^#[0-9a-f]{6}$/i);
+        }
+    });
+
+    // The card asks for an AA contrast check on every frame colour. Computing
+    // it is the only version of that check that cannot quietly rot: a later
+    // tweak to a hex value is caught here rather than in review.
+    it.each(frameKeys)('clears WCAG AA for %s ink on every surface', (key) => {
+        const ink = tokenValue(tokensCss, `--frame-${key}-ink`);
+
+        for (const surface of surfaces) {
+            expect(contrastRatio(ink, surface)).toBeGreaterThanOrEqual(4.5);
+        }
+    });
+
+    it('gives each frame a distinct base colour', () => {
+        const bases = frameKeys.map((key) => tokenValue(tokensCss, `--frame-${key}`));
+        expect(new Set(bases).size).toBe(frameKeys.length);
+    });
+
+    it('keeps the interaction accent distinct from every frame colour', () => {
+        // Accent means "state the user caused". A frame colour equal to it
+        // would read as an active filter rather than as a card type.
+        const accent = tokenValue(tokensCss, '--accent');
+        const bases = frameKeys.map((key) => tokenValue(tokensCss, `--frame-${key}`));
+        expect(bases).not.toContain(accent);
+    });
+});
+
 describe('styles.css', () => {
     it('holds no raw hex colour', () => {
         const hex = stylesCss.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];

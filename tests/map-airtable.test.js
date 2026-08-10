@@ -9,7 +9,8 @@ import {
     PRIVATE_FIELDS
 } from '../scripts/map-airtable.mjs';
 import { RARITY_ORDER } from '../assets/js/filters.js';
-import { RARITY_LABELS, safeGradient } from '../assets/js/render.js';
+import { RARITY_LABELS } from '../assets/js/render.js';
+import { cardFrame } from '../assets/js/frames.js';
 
 /** Mirrors a real record from the live base. */
 const monsterRecord = {
@@ -76,7 +77,7 @@ describe('buildStats', () => {
         expect(buildStats(monsterRecord.fields)).toEqual([
             { label: 'ATK', value: '300' },
             { label: 'DEF', value: '400' },
-            { label: 'Level', value: '⭐1' }
+            { label: 'Level', value: '1' }
         ]);
     });
 
@@ -213,10 +214,21 @@ describe('mapRecord', () => {
         });
     });
 
-    it('produces a gradient the renderer will accept', () => {
+    // Colour is derived at render time from the card's own type, so publishing
+    // one would be a second source of truth that could disagree with the first.
+    it('publishes no colour of any kind', () => {
         ['Monster', 'Spell', 'Trap', 'Token'].forEach(type => {
             const card = mapRecord({ id: 'r', fields: { Name: 'X', Type: type, Rarity: 'Common' } });
-            expect(safeGradient(card.gradient)).toBe(card.gradient);
+
+            expect(card).not.toHaveProperty('gradient');
+            expect(JSON.stringify(card)).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+        });
+    });
+
+    it('maps every published type to a frame the renderer can colour', () => {
+        ['Monster', 'Spell', 'Trap', 'Token'].forEach(type => {
+            const card = mapRecord({ id: 'r', fields: { Name: 'X', Type: type, Rarity: 'Common' } });
+            expect(cardFrame(card)).not.toBeNull();
         });
     });
 });

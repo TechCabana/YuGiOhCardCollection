@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-250%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-367%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Twelve files, 250 tests, all passing. If that is what you see, the checkout is
+Sixteen files, 367 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -294,12 +294,11 @@ quietly delete a printing from the collection.
   "atk": 450,
   "def": 600,
   "level": 2,
-  "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
   "image": "assets/cards/54652250.jpg",
   "stats": [
     { "label": "ATK",   "value": "450" },
     { "label": "DEF",   "value": "600" },
-    { "label": "Level", "value": "⭐2" }
+    { "label": "Level", "value": "2" }
   ]
 }
 ```
@@ -317,7 +316,6 @@ quietly delete a printing from the collection.
 | `attribute` | string or null | Earth, Fire, and so on. |
 | `atk`, `def`, `level` | number or null | Null for spells and traps. |
 | `image` | string or null | Path to the mirrored art, `assets/cards/<passcode>.jpg`. Null when the passcode is missing or malformed, which is what makes the renderer fall back to a plain type-coloured block. |
-| `gradient` | string | Placeholder type colour, shown behind the art and on its own when there is none. Goes once the card-frame colour system lands. |
 | `stats` | array | Three pre-built display rows. Monsters and spell or trap cards use different labels. |
 
 #### Field ownership
@@ -360,6 +358,7 @@ YuGiOhCardCollection/
 | `assets/js/data.js` | Fetches and validates `data/cards.json` |
 | `assets/js/filters.js` | Pure search, filter, pagination and carousel-slot logic |
 | `assets/js/render.js` | Builds card markup, escaping every field |
+| `assets/js/frames.js` | Derives a card frame (Normal, Effect, Ritual, Fusion, Synchro, XYZ, Link, Spell, Trap, Token) from the card type, so colour states what a card is |
 | `assets/js/view.js` | Pure rules for which view is visible, given the selected view and whether the data has loaded |
 | `assets/js/debounce.js` | Debounces the search input |
 | `assets/js/keyboard.js` | Detects text-entry targets so global shortcuts do not hijack typing |
@@ -369,6 +368,7 @@ YuGiOhCardCollection/
 | `scripts/map-airtable.mjs` | Pure mapping from an Airtable record to a renderable card |
 | `scripts/sync-airtable.mjs` | Fetches the table and writes `data/cards.json` |
 | `scripts/mirror-images.mjs` | Downloads card art into `assets/cards/`, skipping anything already mirrored |
+| `scripts/pipeline-report.mjs` | Turns the enrich and sync reports into the message a failed run prints, naming the real cause |
 | `.github/workflows/process-data.yml` | Enrich, sync, commit and deploy. Manual trigger plus a daily cron. |
 | `.github/workflows/pages.yml` | Pages deploy on push to `main` |
 | `.github/workflows/ci.yml` | Test gate on pull requests |
@@ -385,23 +385,26 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Thirteen files, 292 tests, all passing as of the last run on Node 24.16.0.
+Sixteen files, 367 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
 | `data.test.js` | Fetching and validating `data/cards.json` |
 | `filters.test.js` | Search, filter combinations, pagination, carousel slots |
 | `render.test.js` | Card markup and escaping |
+| `frames.test.js` | Card type to card frame, including a Fusion effect monster reading as Fusion rather than Effect |
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
-| `tokens.test.js` | Reads the stylesheets as text to enforce that colour values live in `tokens.css` and nowhere else |
+| `tokens.test.js` | Reads the stylesheets as text to enforce that colour values live in `tokens.css` and nowhere else, and computes the WCAG AA contrast of every card-frame ink |
 | `layout.test.js` | Guards the 59:86 card geometry against a fixed pixel height creeping back onto the art box |
 | `map-airtable.test.js` | Airtable record to card mapping, including the private-field guard |
 | `sync-airtable.test.js` | Pagination, the output shape, and refusal to write bad data |
 | `mirror-images.test.js` | Incremental downloads, passcode validation, and per-image failure handling |
 | `enrich-ygoprodeck.test.js` | YGOPRODeck response to Airtable field mapping |
 | `enrich-airtable.test.js` | Row selection, batching and blocked-row reporting |
+| `pipeline-report.test.js` | Which cause a failed pipeline run reports, and that a skipped serial is never described as a missing Airtable option |
+| `workflows.test.js` | Action pins, the artifact/deploy major pairing, and the Node version in all three workflows |
 
 The source tree is shaped by this. Every piece of logic worth testing was pulled
 out of the DOM handlers and out of the network calls, which is why `filters.js`,

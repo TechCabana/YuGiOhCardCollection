@@ -348,17 +348,83 @@ body {
 }
 
 /*
- * The art area is also the placeholder. render.js sets a per-card type colour
- * inline and lays the mirrored image over it, so a card with no passcode shows
- * that colour with no <img> present at all. A card whose file fails to load
- * (a stale path from a failed mirror, a client-side network hiccup) gets the
- * same result via the img's onerror handler in render.js, which removes the
- * broken element rather than leaving a broken-image icon on top of this ground.
+ * Frame colour, resolved once per card and read by everything below.
+ *
+ * render.js puts data-frame on the card's two areas; these rules turn that key
+ * into the pair of values the card needs. Doing it here rather than inline is
+ * what let the style attribute — and the allowlist that had to guard it —
+ * disappear from render.js entirely: markup now carries a key from a fixed
+ * set, never a colour.
+ *
+ * An unrecognised card type gets no data-frame at all, so var(--frame) falls
+ * back and the card renders neutral rather than borrowing another type's
+ * colour.
+ */
+[data-frame='normal'] {
+    --frame: var(--frame-normal);
+    --frame-ink: var(--frame-normal-ink);
+}
+
+[data-frame='effect'] {
+    --frame: var(--frame-effect);
+    --frame-ink: var(--frame-effect-ink);
+}
+
+[data-frame='ritual'] {
+    --frame: var(--frame-ritual);
+    --frame-ink: var(--frame-ritual-ink);
+}
+
+[data-frame='fusion'] {
+    --frame: var(--frame-fusion);
+    --frame-ink: var(--frame-fusion-ink);
+}
+
+[data-frame='synchro'] {
+    --frame: var(--frame-synchro);
+    --frame-ink: var(--frame-synchro-ink);
+}
+
+[data-frame='xyz'] {
+    --frame: var(--frame-xyz);
+    --frame-ink: var(--frame-xyz-ink);
+}
+
+[data-frame='link'] {
+    --frame: var(--frame-link);
+    --frame-ink: var(--frame-link-ink);
+}
+
+[data-frame='spell'] {
+    --frame: var(--frame-spell);
+    --frame-ink: var(--frame-spell-ink);
+}
+
+[data-frame='trap'] {
+    --frame: var(--frame-trap);
+    --frame-ink: var(--frame-trap-ink);
+}
+
+[data-frame='token'] {
+    --frame: var(--frame-token);
+    --frame-ink: var(--frame-token-ink);
+}
+
+/*
+ * The art area is also the placeholder. It carries a tint of the card's frame
+ * colour, so a card with no passcode still reads as a Spell or a Trap with no
+ * <img> present at all. A card whose file fails to load (a stale path from a
+ * failed mirror, a client-side network hiccup) gets the same result via the
+ * img's onerror handler in render.js, which removes the broken element rather
+ * than leaving a broken-image icon on top of this ground.
+ *
+ * A tint, not a fill: the frame colour is mixed into the surface rather than
+ * replacing it, so ten card types still read as one dark page.
  */
 .card-image-area {
     width: 100%;
     aspect-ratio: 59 / 86;
-    background: var(--surface-3);
+    background: color-mix(in oklab, var(--frame, var(--surface-3)) 22%, var(--surface-3));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -395,8 +461,34 @@ body {
     z-index: 1;
 }
 
+/*
+ * The frame colour's second appearance: a hairline rule where the art meets
+ * the information. Enough to state the type on a card whose art fills the
+ * panel, not enough to become a coloured band.
+ */
 .card-info-area {
     padding: 1.5rem;
+    border-top: 2px solid var(--frame, var(--border-hairline));
+}
+
+/*
+ * The type chip is the one place the frame colour carries text, so it is the
+ * one place the -ink variant is used. Background and border are mixed from the
+ * base at low strength: a filled chip in the true frame colour would out-shout
+ * the card name directly beneath it.
+ */
+.type-chip {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-xs);
+    background: color-mix(in oklab, var(--frame) 16%, transparent);
+    border: 1px solid color-mix(in oklab, var(--frame) 45%, transparent);
+    color: var(--frame-ink);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 /* Also previously a clipped gradient; weight and tracking carry it instead. */

@@ -4,7 +4,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Effect",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec0iHhQomPWtKsMw",
     "image": "assets/cards/54652250.jpg",
     "level": 2,
@@ -23,7 +22,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -34,7 +33,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Normal",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec0oEIBGvqGoS8oS",
     "image": "assets/cards/12143771.jpg",
     "level": 2,
@@ -53,7 +51,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -64,7 +62,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec1nFYTNlpDtuy9i",
     "image": "assets/cards/13521194.jpg",
     "level": 4,
@@ -83,7 +80,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -94,7 +91,6 @@
     "attribute": "Water",
     "cardType": "Fiend / Effect",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec1s8CxYJ9PVd1SG",
     "image": "assets/cards/35798491.jpg",
     "level": 3,
@@ -113,7 +109,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -124,7 +120,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec37qQZ4VYPWc9YQ",
     "image": "assets/cards/74713516.jpg",
     "level": 1,
@@ -143,7 +138,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -154,7 +149,6 @@
     "attribute": "Earth",
     "cardType": "Machine / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec3WaFGS1ybRSik9",
     "image": "assets/cards/62327910.jpg",
     "level": 4,
@@ -173,7 +167,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -184,7 +178,6 @@
     "attribute": "Dark",
     "cardType": "Machine / Normal",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec40tjrpZs3ulZpR",
     "image": "assets/cards/8715625.jpg",
     "level": 2,
@@ -203,7 +196,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -214,7 +207,6 @@
     "attribute": "Water",
     "cardType": "Aqua / Effect",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec4fJaWkBxum2ltO",
     "image": "assets/cards/51534754.jpg",
     "level": 3,
@@ -233,7 +225,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -244,7 +236,6 @@
     "attribute": "Fire",
     "cardType": "Warrior / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec57n7sJuZEUjJmG",
     "image": "assets/cards/58932616.jpg",
     "level": 3,
@@ -263,7 +254,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -274,7 +265,6 @@
     "attribute": "Light",
     "cardType": "Insect / Effect",
     "def": 700,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec5Hg07ACS5anGl6",
     "image": "assets/cards/32362575.jpg",
     "level": 1,
@@ -293,7 +283,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -304,7 +294,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec66krRcp5M5Q6QX",
     "image": "assets/cards/7802006.jpg",
     "level": 2,
@@ -323,7 +312,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -334,7 +323,6 @@
     "attribute": "Water",
     "cardType": "Aqua / Effect",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec7siOc2WkX74pyE",
     "image": "assets/cards/93920745.jpg",
     "level": 2,
@@ -353,7 +341,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -364,7 +352,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 1500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec8Y03DI1EqbaSOA",
     "image": "assets/cards/54098121.jpg",
     "level": 4,
@@ -383,7 +370,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -394,7 +381,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 1100,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rec9WJyirTNknkGjq",
     "image": "assets/cards/17985575.jpg",
     "level": 4,
@@ -413,7 +399,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -424,7 +410,6 @@
     "attribute": null,
     "cardType": "Fiend / Token",
     "def": null,
-    "gradient": "linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)",
     "id": "recAHuh2lwbCrHizI",
     "image": "assets/cards/93224849.jpg",
     "level": null,
@@ -454,7 +439,6 @@
     "attribute": "Wind",
     "cardType": "Dragon / Normal",
     "def": 700,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recAw9gDTKiuDs8CL",
     "image": "assets/cards/88819587.jpg",
     "level": 3,
@@ -473,7 +457,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -484,7 +468,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Effect",
     "def": 300,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recAz9usoraoJlmJO",
     "image": "assets/cards/46657337.jpg",
     "level": 2,
@@ -503,7 +486,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -514,7 +497,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recDlohw6MeGqfjXl",
     "image": "assets/cards/90357090.jpg",
     "level": 3,
@@ -533,7 +515,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -544,7 +526,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recE1Yb8P84DgrJmk",
     "image": "assets/cards/9156135.jpg",
     "level": 2,
@@ -563,7 +544,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -574,7 +555,6 @@
     "attribute": "Water",
     "cardType": "Aqua / Effect",
     "def": 900,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recEXJcSMLuFBHGQg",
     "image": "assets/cards/71466592.jpg",
     "level": 3,
@@ -593,7 +573,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -604,7 +584,6 @@
     "attribute": "Earth",
     "cardType": "Dinosaur / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recFFCwC1LNSx1pyc",
     "image": "assets/cards/40374923.jpg",
     "level": 3,
@@ -623,7 +602,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -634,7 +613,6 @@
     "attribute": "Earth",
     "cardType": "Beast-Warrior / Normal",
     "def": 1500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recFaFUd6C7CLDRvT",
     "image": "assets/cards/32452818.jpg",
     "level": 4,
@@ -653,7 +631,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -664,7 +642,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recGHheLnIAgK0Qip",
     "image": "assets/cards/93221206.jpg",
     "level": 4,
@@ -683,7 +660,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -694,7 +671,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recGMJu4Wz3siCLSr",
     "image": "assets/cards/71625222.jpg",
     "level": 2,
@@ -713,7 +689,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -724,7 +700,6 @@
     "attribute": "Fire",
     "cardType": "Warrior / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recGRaePY2dOkbnAn",
     "image": "assets/cards/67934141.jpg",
     "level": 3,
@@ -743,7 +718,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -754,7 +729,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recHVDGC1RKXVjDwh",
     "image": "assets/cards/27439792.jpg",
     "level": 1,
@@ -773,7 +747,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -784,7 +758,6 @@
     "attribute": "Earth",
     "cardType": "Beast-Warrior / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recHoqKBfcYJoKaDI",
     "image": "assets/cards/76184692.jpg",
     "level": 4,
@@ -803,7 +776,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -814,7 +787,6 @@
     "attribute": "Wind",
     "cardType": "Insect / Effect",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recHzPsBmopKXeHNh",
     "image": "assets/cards/83994646.jpg",
     "level": 3,
@@ -833,7 +805,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -844,7 +816,6 @@
     "attribute": "Wind",
     "cardType": "Winged Beast / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recI8NgsDbLpdLXqY",
     "image": "assets/cards/57617178.jpg",
     "level": 4,
@@ -863,7 +834,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -874,7 +845,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Normal",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recIdejzhAianXPlN",
     "image": "assets/cards/26566878.jpg",
     "level": 2,
@@ -893,7 +863,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -904,7 +874,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recIs3f3Hl1lUuCxq",
     "image": "assets/cards/63018132.jpg",
     "level": 3,
@@ -923,7 +892,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -934,7 +903,6 @@
     "attribute": "Wind",
     "cardType": "Winged Beast / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recJTw5sZZMkKqDds",
     "image": "assets/cards/10202894.jpg",
     "level": 4,
@@ -953,7 +921,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -964,7 +932,6 @@
     "attribute": "Dark",
     "cardType": "Dragon / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recKaLI5drqbCqRLF",
     "image": "assets/cards/67724379.jpg",
     "level": 4,
@@ -983,7 +950,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -994,7 +961,6 @@
     "attribute": "Earth",
     "cardType": "Machine / Effect",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recKewEvNw4yA07yh",
     "image": "assets/cards/6480253.jpg",
     "level": 3,
@@ -1013,7 +979,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1024,7 +990,6 @@
     "attribute": "Wind",
     "cardType": "Dragon / Effect",
     "def": 900,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recKsKy6RENWoxWBh",
     "image": "assets/cards/980973.jpg",
     "level": 3,
@@ -1043,7 +1008,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1054,7 +1019,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Effect",
     "def": 2400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recL4sGz7Bsf3aeni",
     "image": "assets/cards/18654201.jpg",
     "level": 6,
@@ -1073,7 +1037,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐6"
+        "value": "6"
       }
     ],
     "summonType": null,
@@ -1084,7 +1048,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Normal",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recM4c2pT399FjQYJ",
     "image": "assets/cards/13039848.jpg",
     "level": 3,
@@ -1103,7 +1066,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1114,7 +1077,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Normal",
     "def": 1100,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recNaEsb3LtjpbExN",
     "image": "assets/cards/78861134.jpg",
     "level": 4,
@@ -1133,7 +1095,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1144,7 +1106,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recO3TusmOXHWnamT",
     "image": "assets/cards/86569121.jpg",
     "level": 4,
@@ -1163,7 +1124,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1174,7 +1135,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recOh08ZSgyw7QD1t",
     "image": "assets/cards/48343627.jpg",
     "level": 1,
@@ -1193,7 +1153,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -1204,7 +1164,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recOwFJKJzlbuj33A",
     "image": "assets/cards/90020065.jpg",
     "level": 2,
@@ -1223,7 +1182,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1234,7 +1193,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recPVJz97CxCZb1qc",
     "image": "assets/cards/15303296.jpg",
     "level": 3,
@@ -1253,7 +1211,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1264,7 +1222,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Effect",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recPiKJgS9A113Mkf",
     "image": "assets/cards/2694423.jpg",
     "level": 2,
@@ -1283,7 +1240,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1294,7 +1251,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recQJIwAEXTJrb9yK",
     "image": "assets/cards/2460565.jpg",
     "level": 3,
@@ -1313,7 +1269,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1324,7 +1280,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 1300,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recQJUL274aEsa833",
     "image": "assets/cards/41855169.jpg",
     "level": 3,
@@ -1343,7 +1298,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1354,7 +1309,6 @@
     "attribute": "Light",
     "cardType": "Beast / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recQetlgCz0MEmtcX",
     "image": "assets/cards/79335209.jpg",
     "level": 2,
@@ -1373,7 +1327,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1384,7 +1338,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Normal",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recQhbYLreyAX7RdP",
     "image": "assets/cards/13039848.jpg",
     "level": 3,
@@ -1403,7 +1356,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1414,7 +1367,6 @@
     "attribute": "Earth",
     "cardType": "Beast-Warrior / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recQy9UV6hfH9pd4f",
     "image": "assets/cards/76184692.jpg",
     "level": 4,
@@ -1433,7 +1385,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1444,7 +1396,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Effect",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recRx6UQUAqEBJLrv",
     "image": "assets/cards/7089711.jpg",
     "level": 2,
@@ -1463,7 +1414,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1474,7 +1425,6 @@
     "attribute": "Light",
     "cardType": "Beast / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recRzWlYW49op3hUH",
     "image": "assets/cards/42941100.jpg",
     "level": 2,
@@ -1493,7 +1443,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1504,7 +1454,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recS3TAjoYKTK4QVf",
     "image": "assets/cards/21263083.jpg",
     "level": 4,
@@ -1523,7 +1472,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1534,7 +1483,6 @@
     "attribute": "Light",
     "cardType": "Fairy / Effect",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recS67eKoXRqSTX7F",
     "image": "assets/cards/61528025.jpg",
     "level": 3,
@@ -1553,7 +1501,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1564,7 +1512,6 @@
     "attribute": "Wind",
     "cardType": "Fairy / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recSa0fAWjFgCquUG",
     "image": "assets/cards/22419772.jpg",
     "level": 3,
@@ -1583,7 +1530,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1594,7 +1541,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recSei8DUBgQR8qLs",
     "image": "assets/cards/28933734.jpg",
     "level": 2,
@@ -1613,7 +1559,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -1624,7 +1570,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 1900,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recSm36ZaYkHDA9OR",
     "image": "assets/cards/36553319.jpg",
     "level": 3,
@@ -1643,7 +1588,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1654,7 +1599,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recTEKb6SCQtKIOCj",
     "image": "assets/cards/40640059.jpg",
     "level": 1,
@@ -1673,7 +1617,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -1684,7 +1628,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recTKJvBHtsqYwRRI",
     "image": "assets/cards/99690140.jpg",
     "level": 3,
@@ -1703,7 +1646,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1714,7 +1657,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recTYxRPlKUFKNZv9",
     "image": "assets/cards/54040484.jpg",
     "level": 3,
@@ -1733,7 +1675,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1744,7 +1686,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Effect",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recU1xzk5wPUzDKVm",
     "image": "assets/cards/45159319.jpg",
     "level": 4,
@@ -1763,7 +1704,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1774,7 +1715,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recVUzDLkqOGMIIsk",
     "image": "assets/cards/16209941.jpg",
     "level": 4,
@@ -1793,7 +1733,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1804,7 +1744,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recVZXEuVsX3Y8g1K",
     "image": "assets/cards/26202165.jpg",
     "level": 3,
@@ -1823,7 +1762,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1834,7 +1773,6 @@
     "attribute": "Dark",
     "cardType": "Machine / Effect",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recVjSO9N4jViSJ1A",
     "image": "assets/cards/23265594.jpg",
     "level": 3,
@@ -1853,7 +1791,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1864,7 +1802,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recVzZ5xPYr1vy78q",
     "image": "assets/cards/21263083.jpg",
     "level": 4,
@@ -1883,7 +1820,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1894,7 +1831,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recWwbjNrW9e9VISs",
     "image": "assets/cards/6103294.jpg",
     "level": 3,
@@ -1913,7 +1849,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -1924,7 +1860,6 @@
     "attribute": "Earth",
     "cardType": "Fiend / Normal",
     "def": 1500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recXs874uz90yZqOc",
     "image": "assets/cards/32541773.jpg",
     "level": 4,
@@ -1943,7 +1878,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1954,7 +1889,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 1100,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recYJfSsZkNG7VlwX",
     "image": "assets/cards/17985575.jpg",
     "level": 4,
@@ -1973,7 +1907,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -1984,7 +1918,6 @@
     "attribute": "Light",
     "cardType": "Fairy / Effect",
     "def": 500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recYRYEqhcHGCa5NG",
     "image": "assets/cards/21297224.jpg",
     "level": 4,
@@ -2003,7 +1936,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2014,7 +1947,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recZtrhjfVMt1WChz",
     "image": "assets/cards/12958919.jpg",
     "level": 4,
@@ -2033,7 +1965,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2044,7 +1976,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recaJSj5whniIQTRl",
     "image": "assets/cards/31560081.jpg",
     "level": 1,
@@ -2063,7 +1994,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2074,7 +2005,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recaPiNfQdmoWqQ8A",
     "image": "assets/cards/41392891.jpg",
     "level": 4,
@@ -2093,7 +2023,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2104,7 +2034,6 @@
     "attribute": "Wind",
     "cardType": "Insect / Effect",
     "def": 900,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recahCX3c66SPrjOG",
     "image": "assets/cards/34088136.jpg",
     "level": 3,
@@ -2123,7 +2052,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2134,7 +2063,6 @@
     "attribute": null,
     "cardType": "Fiend / Token",
     "def": null,
-    "gradient": "linear-gradient(135deg, #9aa1ac 0%, #52565f 100%)",
     "id": "recb2htZzWobmijal",
     "image": "assets/cards/69890968.jpg",
     "level": null,
@@ -2164,7 +2092,6 @@
     "attribute": "Light",
     "cardType": "Fairy / Effect",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recbCNgPajsttqjRM",
     "image": "assets/cards/57116034.jpg",
     "level": 1,
@@ -2183,7 +2110,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2194,7 +2121,6 @@
     "attribute": "Water",
     "cardType": "Fish / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reccIT4QyWT87wu6w",
     "image": "assets/cards/13429800.jpg",
     "level": 4,
@@ -2213,7 +2139,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2224,7 +2150,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reccOsDfXEX0tdro5",
     "image": "assets/cards/91939608.jpg",
     "level": 4,
@@ -2243,7 +2168,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2254,7 +2179,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recccydSLYO8O3SOR",
     "image": "assets/cards/91939608.jpg",
     "level": 4,
@@ -2273,7 +2197,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2284,7 +2208,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reccebZ9abmpPgC0z",
     "image": "assets/cards/78642798.jpg",
     "level": 1,
@@ -2303,7 +2226,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2314,7 +2237,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 300,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recdP1RkiIH57PVUn",
     "image": "assets/cards/9076207.jpg",
     "level": 1,
@@ -2333,7 +2255,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2344,7 +2266,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Effect",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recdP9cHLA7TDwLDr",
     "image": "assets/cards/88753985.jpg",
     "level": 2,
@@ -2363,7 +2284,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -2374,7 +2295,6 @@
     "attribute": "Dark",
     "cardType": "Dragon / Effect",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recdokbgLA9ZuJ8Vu",
     "image": "assets/cards/47415292.jpg",
     "level": 3,
@@ -2393,7 +2313,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2404,7 +2324,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "receCt3faNX0h9T24",
     "image": "assets/cards/31560081.jpg",
     "level": 1,
@@ -2423,7 +2342,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2434,7 +2353,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recei9KKSoWaAhLnx",
     "image": "assets/cards/31034919.jpg",
     "level": 1,
@@ -2453,7 +2371,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -2464,7 +2382,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 1700,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recfZ8iQGYHy34Xsu",
     "image": "assets/cards/73752131.jpg",
     "level": 4,
@@ -2483,7 +2400,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2494,7 +2411,6 @@
     "attribute": "Wind",
     "cardType": "Winged Beast / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recfn5mKDdf5AFQhP",
     "image": "assets/cards/57617178.jpg",
     "level": 4,
@@ -2513,7 +2429,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2524,7 +2440,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 1100,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recgFMdwk9BNCClRC",
     "image": "assets/cards/46461247.jpg",
     "level": 3,
@@ -2543,7 +2458,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2554,7 +2469,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Normal",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recgVCx2QDOlXSNqD",
     "image": "assets/cards/15367030.jpg",
     "level": 4,
@@ -2573,7 +2487,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2584,7 +2498,6 @@
     "attribute": "Light",
     "cardType": "Fiend / Effect",
     "def": 1800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recgqrHS8TjTLuRWJ",
     "image": "assets/cards/72192100.jpg",
     "level": 3,
@@ -2603,7 +2516,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2614,7 +2527,6 @@
     "attribute": "Dark",
     "cardType": "Spellcaster / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recgud7sw1BH3K0mE",
     "image": "assets/cards/46128076.jpg",
     "level": 2,
@@ -2633,7 +2545,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -2644,7 +2556,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Effect",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rechfH4pgoN46vDei",
     "image": "assets/cards/42364374.jpg",
     "level": 3,
@@ -2663,7 +2574,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2674,7 +2585,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Effect",
     "def": 200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reciDgTyojBCQtuww",
     "image": "assets/cards/90810762.jpg",
     "level": 3,
@@ -2693,7 +2603,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2704,7 +2614,6 @@
     "attribute": "Earth",
     "cardType": "Warrior / Effect",
     "def": 700,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reciGMjEoIq1tiMUd",
     "image": "assets/cards/21015833.jpg",
     "level": 3,
@@ -2723,7 +2632,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2734,7 +2643,6 @@
     "attribute": "Earth",
     "cardType": "Beast-Warrior / Normal",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reciN137w95vXws4u",
     "image": "assets/cards/45121025.jpg",
     "level": 4,
@@ -2753,7 +2661,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2764,7 +2672,6 @@
     "attribute": "Wind",
     "cardType": "Winged Beast / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recjaK9G3IWwOKSDK",
     "image": "assets/cards/10202894.jpg",
     "level": 4,
@@ -2783,7 +2690,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2794,7 +2701,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recjc5pSldHanMf8W",
     "image": "assets/cards/81034083.jpg",
     "level": 2,
@@ -2813,7 +2719,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -2824,7 +2730,6 @@
     "attribute": "Earth",
     "cardType": "Beast-Warrior / Normal",
     "def": 1500,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recjqoqQ80GjCT8Hu",
     "image": "assets/cards/32452818.jpg",
     "level": 4,
@@ -2843,7 +2748,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2854,7 +2759,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Effect",
     "def": 750,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reckBvMdrK8IScncy",
     "image": "assets/cards/32539892.jpg",
     "level": 3,
@@ -2873,7 +2777,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2884,7 +2788,6 @@
     "attribute": "Wind",
     "cardType": "Dragon / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reckohz0dkXs63cW8",
     "image": "assets/cards/87796900.jpg",
     "level": 4,
@@ -2903,7 +2806,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2914,7 +2817,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reclwyAOJ25qiltSj",
     "image": "assets/cards/41392891.jpg",
     "level": 4,
@@ -2933,7 +2835,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -2944,7 +2846,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Effect",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reclyQ5dCPFGetnlB",
     "image": "assets/cards/26082229.jpg",
     "level": 3,
@@ -2963,7 +2864,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -2974,7 +2875,6 @@
     "attribute": "Light",
     "cardType": "Plant / Effect",
     "def": 1600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recmiPLEXh3jeEsRy",
     "image": "assets/cards/40410110.jpg",
     "level": 4,
@@ -2993,7 +2893,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3004,7 +2904,6 @@
     "attribute": "Water",
     "cardType": "Aqua / Effect",
     "def": 350,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recmupdImRvyOy3H2",
     "image": "assets/cards/95174353.jpg",
     "level": 1,
@@ -3023,7 +2922,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -3034,7 +2933,6 @@
     "attribute": "Water",
     "cardType": "Dinosaur / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recn5Q0ZCBg2CbyxF",
     "image": "assets/cards/22587018.jpg",
     "level": 4,
@@ -3053,7 +2951,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3064,7 +2962,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recn6lvEK6Cneo7c9",
     "image": "assets/cards/75499502.jpg",
     "level": 4,
@@ -3083,7 +2980,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3094,7 +2991,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recn9zKNmSRBiycKT",
     "image": "assets/cards/81383947.jpg",
     "level": 2,
@@ -3113,7 +3009,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -3124,7 +3020,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 1550,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recnZH2qge8Vw3vfN",
     "image": "assets/cards/68516705.jpg",
     "level": 4,
@@ -3143,7 +3038,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3154,7 +3049,6 @@
     "attribute": "Wind",
     "cardType": "Warrior / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reco54XHXfe4ahbVe",
     "image": "assets/cards/21844577.jpg",
     "level": 3,
@@ -3173,7 +3067,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3184,7 +3078,6 @@
     "attribute": "Earth",
     "cardType": "Zombie / Effect",
     "def": 1600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recoH6fVtTAnt8JVo",
     "image": "assets/cards/47693640.jpg",
     "level": 3,
@@ -3203,7 +3096,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3214,7 +3107,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recoMbt7t1839nn0X",
     "image": "assets/cards/47060154.jpg",
     "level": 4,
@@ -3233,7 +3125,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3244,7 +3136,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recoNijFo2oyy4YNq",
     "image": "assets/cards/86569121.jpg",
     "level": 4,
@@ -3263,7 +3154,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3274,7 +3165,6 @@
     "attribute": "Light",
     "cardType": "Spellcaster / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recoaxglkslfu7Ei4",
     "image": "assets/cards/93221206.jpg",
     "level": 4,
@@ -3293,7 +3183,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3304,7 +3194,6 @@
     "attribute": "Fire",
     "cardType": "Pyro / Normal",
     "def": 2100,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recqEVGlqnl9AMwvZ",
     "image": "assets/cards/13179332.jpg",
     "level": 1,
@@ -3323,7 +3212,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -3334,7 +3223,6 @@
     "attribute": "Water",
     "cardType": "Aqua / Normal",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recr6JKzRstCDXInK",
     "image": "assets/cards/98456117.jpg",
     "level": 3,
@@ -3353,7 +3241,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3364,7 +3252,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recsjz2ClOXTQ6eiL",
     "image": "assets/cards/24611934.jpg",
     "level": 4,
@@ -3383,7 +3270,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3394,7 +3281,6 @@
     "attribute": "Dark",
     "cardType": "Machine / Effect",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rectFss55E4DR5j5U",
     "image": "assets/cards/87621407.jpg",
     "level": 4,
@@ -3413,7 +3299,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3424,7 +3310,6 @@
     "attribute": "Earth",
     "cardType": "Insect / Effect",
     "def": 600,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "rectHYoP4evdbH08I",
     "image": "assets/cards/54652250.jpg",
     "level": 2,
@@ -3443,7 +3328,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -3454,7 +3339,6 @@
     "attribute": "Fire",
     "cardType": "Spellcaster / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recu1iYkff6fujJta",
     "image": "assets/cards/34460851.jpg",
     "level": 3,
@@ -3473,7 +3357,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3484,7 +3368,6 @@
     "attribute": "Earth",
     "cardType": "Plant / Effect",
     "def": 300,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recu6nvaOpu9arE5Q",
     "image": "assets/cards/95744531.jpg",
     "level": 1,
@@ -3503,7 +3386,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐1"
+        "value": "1"
       }
     ],
     "summonType": null,
@@ -3514,7 +3397,6 @@
     "attribute": "Wind",
     "cardType": "Dragon / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recuvymyA1CHGil5a",
     "image": "assets/cards/87796900.jpg",
     "level": 4,
@@ -3533,7 +3415,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3544,7 +3426,6 @@
     "attribute": "Light",
     "cardType": "Warrior / Normal",
     "def": 1000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recwCXh3sHJI5dckk",
     "image": "assets/cards/45909477.jpg",
     "level": 4,
@@ -3563,7 +3444,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3574,7 +3455,6 @@
     "attribute": "Earth",
     "cardType": "Dinosaur / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recx3pnPnSVb3OQHU",
     "image": "assets/cards/42348802.jpg",
     "level": 3,
@@ -3593,7 +3473,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3604,7 +3484,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Normal",
     "def": 1400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recx7IkWdp9eazCzA",
     "image": "assets/cards/52121290.jpg",
     "level": 3,
@@ -3623,7 +3502,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3634,7 +3513,6 @@
     "attribute": "Water",
     "cardType": "Thunder / Normal",
     "def": 750,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recxAd7asQGtidtyG",
     "image": "assets/cards/27671321.jpg",
     "level": 3,
@@ -3653,7 +3531,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3664,7 +3542,6 @@
     "attribute": "Earth",
     "cardType": "Winged Beast / Normal",
     "def": 800,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "recyFXto4GJX7j8GJ",
     "image": "assets/cards/7805359.jpg",
     "level": 3,
@@ -3683,7 +3560,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3694,7 +3571,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Effect",
     "def": 0,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reczDVHttLjAu0r9B",
     "image": "assets/cards/30312361.jpg",
     "level": 4,
@@ -3713,7 +3589,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3724,7 +3600,6 @@
     "attribute": "Light",
     "cardType": "Beast / Normal",
     "def": 400,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reczRFqTS2TncJBBy",
     "image": "assets/cards/82888408.jpg",
     "level": 2,
@@ -3743,7 +3618,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐2"
+        "value": "2"
       }
     ],
     "summonType": null,
@@ -3754,7 +3629,6 @@
     "attribute": "Earth",
     "cardType": "Rock / Normal",
     "def": 2000,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reczV6mACftKqmPGs",
     "image": "assets/cards/13039848.jpg",
     "level": 3,
@@ -3773,7 +3647,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐3"
+        "value": "3"
       }
     ],
     "summonType": null,
@@ -3784,7 +3658,6 @@
     "attribute": "Earth",
     "cardType": "Beast / Normal",
     "def": 1550,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reczYiwFeaMB7o38L",
     "image": "assets/cards/68516705.jpg",
     "level": 4,
@@ -3803,7 +3676,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
@@ -3814,7 +3687,6 @@
     "attribute": "Dark",
     "cardType": "Fiend / Normal",
     "def": 1200,
-    "gradient": "linear-gradient(135deg, #c9954f 0%, #8a5a2b 100%)",
     "id": "reczk9s2oLrcqdQ9W",
     "image": "assets/cards/24611934.jpg",
     "level": 4,
@@ -3833,7 +3705,7 @@
       },
       {
         "label": "Level",
-        "value": "⭐4"
+        "value": "4"
       }
     ],
     "summonType": null,
