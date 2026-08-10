@@ -3,7 +3,7 @@ import {
     buildCardHTML,
     buildCardImageHTML,
     buildStatsHTML,
-    safeGradient,
+    frameAttribute,
     safeImagePath,
     rarityLabel
 } from '../assets/js/render.js';
@@ -14,7 +14,6 @@ const baseCard = {
     rarity: 'ultra',
     cardType: 'Spellcaster / Effect',
     serial: 'LOB-005',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
     image: 'assets/cards/46986414.jpg',
     stats: [
         { label: 'ATK', value: '2500' },
@@ -23,30 +22,17 @@ const baseCard = {
     ]
 };
 
-describe('safeGradient', () => {
-    it('passes through a well-formed gradient unchanged', () => {
-        expect(safeGradient(baseCard.gradient)).toBe(baseCard.gradient);
+describe('frameAttribute', () => {
+    it('emits the attribute for a declared frame', () => {
+        expect(frameAttribute('spell')).toBe(' data-frame="spell"');
     });
 
-    it('falls back when the value tries to close the declaration', () => {
-        const payload = 'red; background-image: url(javascript:alert(1))';
-        expect(safeGradient(payload)).not.toContain('javascript');
-        expect(safeGradient(payload)).toContain('linear-gradient');
-    });
-
-    it('falls back on a quote-based attribute break-out', () => {
-        expect(safeGradient('red" onload="alert(1)')).not.toContain('onload');
-    });
-
-    it('falls back on arbitrary CSS functions', () => {
-        expect(safeGradient('url(https://evil.example/x.png)')).not.toContain('evil');
-        expect(safeGradient('expression(alert(1))')).not.toContain('expression');
-    });
-
-    it('falls back for missing or non-string values', () => {
-        [undefined, null, 42, {}].forEach(input => {
-            expect(safeGradient(input)).toContain('linear-gradient');
-        });
+    // The value is derived, not user data, but it lands in an attribute, so
+    // anything outside the declared set is dropped rather than written out.
+    it('emits nothing for a frame it does not recognise', () => {
+        expect(frameAttribute(null)).toBe('');
+        expect(frameAttribute('skill')).toBe('');
+        expect(frameAttribute('spell" onload="alert(1)')).toBe('');
     });
 });
 
@@ -211,11 +197,45 @@ describe('buildCardHTML', () => {
         expect(html).not.toContain('onload="');
     });
 
-    it('does not let a hostile gradient escape the style attribute', () => {
-        const html = buildCardHTML({ ...baseCard, gradient: 'red" onmouseover="alert(1)' });
+    // The gradient used to be interpolated into a style attribute and had to be
+    // allowlisted. Card colour is now a key resolved by CSS, so no card data
+    // reaches a style attribute at all and the whole class of break-out is gone.
+    it('puts no card data in a style attribute', () => {
+        const html = buildCardHTML({
+            ...baseCard,
+            gradient: 'red" onmouseover="alert(1)',
+            type: 'monster" onmouseover="alert(1)'
+        });
 
         expect(html).not.toContain('onmouseover');
-        expect(html).toContain('style="background: linear-gradient(');
+        expect(html).not.toContain('style="background');
+    });
+
+    it('carries the derived frame on both card areas', () => {
+        const html = buildCardHTML({ ...baseCard, type: 'spell', cardType: 'Quick-Play / Spell' });
+
+        expect(html).toContain('class="card-image-area" data-frame="spell"');
+        expect(html).toContain('class="card-info-area" data-frame="spell"');
+        expect(html).toContain('<span class="type-chip">Spell</span>');
+    });
+
+    it('reads a fusion monster as the fusion frame rather than the effect one', () => {
+        const html = buildCardHTML({
+            ...baseCard,
+            summonType: 'Fusion',
+            cardType: 'Warrior / Fusion / Effect'
+        });
+
+        expect(html).toContain('data-frame="fusion"');
+        expect(html).not.toContain('data-frame="effect"');
+    });
+
+    it('renders an unknown card type with no frame and no chip', () => {
+        const html = buildCardHTML({ ...baseCard, type: 'skill' });
+
+        expect(html).not.toContain('data-frame');
+        expect(html).not.toContain('type-chip');
+        expect(html).toContain('Dark Magician');
     });
 
     it('keeps the surrounding markup structure intact', () => {
