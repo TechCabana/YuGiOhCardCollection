@@ -98,9 +98,18 @@ export function safeImagePath(image) {
  * Build the art element for a card.
  *
  * Returns an empty string when there is no usable image, which leaves the
- * type-coloured ground of .card-image-area showing on its own. That same ground
- * sits behind the image, so a card whose file 404s degrades to the placeholder
- * without any error handler.
+ * type-coloured ground of .card-image-area showing on its own.
+ *
+ * A src that passes safeImagePath still is not a guarantee the file exists:
+ * mirror-images.mjs assigns the path from the passcode alone at sync time,
+ * before the download runs, and a single failed download is deliberately
+ * non-fatal (mirror-images.mjs, process-data.yml) so the card's data still
+ * ships. That leaves a real gap between "has a plausible path" and "has art
+ * on disk" until the next sync retries it. The onerror handler closes that
+ * gap client-side: it removes the broken <img> so the ground shows through
+ * cleanly, the same placeholder treatment as a missing passcode gets. The
+ * handler is a fixed string, not built from card data, so it carries none of
+ * the injection risk escapeHtml/safeImagePath exist to prevent.
  *
  * The alt is deliberately empty: the card name is rendered as adjacent text in
  * .card-name, so a descriptive alt would make a screen reader announce the same
@@ -113,7 +122,7 @@ export function buildCardImageHTML(card) {
     const src = safeImagePath(card?.image);
     if (!src) return '';
 
-    return `<img class="card-image" src="${src}" alt="" width="${IMAGE_WIDTH}" height="${IMAGE_HEIGHT}" loading="lazy" decoding="async">`;
+    return `<img class="card-image" src="${src}" alt="" width="${IMAGE_WIDTH}" height="${IMAGE_HEIGHT}" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
 
 /**

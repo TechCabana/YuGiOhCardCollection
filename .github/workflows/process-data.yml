@@ -96,9 +96,13 @@ jobs:
 
       - name: Commit if changed
         id: commit
-        # assets/cards/ is committed alongside the data: new rows arrive with
-        # their art in the same commit, so the site never deploys a card whose
-        # image has not been mirrored yet.
+        # assets/cards/ is committed alongside the data so the two never split
+        # into separate commits -- no window where cards.json references art
+        # that has not even been pushed yet. Not a guarantee every image
+        # exists: the mirror step above is continue-on-error, so a card whose
+        # download failed still ships with a path that 404s until the next
+        # run retries it. render.js's onerror handler covers that case
+        # client-side by dropping the broken <img> back to the placeholder.
         run: |
           if [ -z "$(git status --porcelain data/cards.json assets/cards)" ]; then
             echo "No change to commit."
