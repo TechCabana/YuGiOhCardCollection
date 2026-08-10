@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-372%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-396%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Sixteen files, 372 tests, all passing. If that is what you see, the checkout is
+Seventeen files, 396 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -391,7 +391,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Sixteen files, 372 tests, all passing as of the last run on Node 24.16.0.
+Seventeen files, 396 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -399,6 +399,7 @@ Sixteen files, 372 tests, all passing as of the last run on Node 24.16.0.
 | `filters.test.js` | Search, filter combinations, pagination, carousel slots |
 | `render.test.js` | Card markup and escaping |
 | `frames.test.js` | Card type to card frame, including a Fusion effect monster reading as Fusion rather than Effect |
+| `motion.test.js` | Reads styles.css as text to enforce named transition properties, tokenised durations, and no idle animation |
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
