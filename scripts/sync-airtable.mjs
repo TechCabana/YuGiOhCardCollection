@@ -17,6 +17,7 @@
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { mapRecords, assertNoPrivateFields } from './map-airtable.mjs';
+import { writeReport, SYNC_REPORT } from './pipeline-report.mjs';
 
 const OUTPUT_PATH = 'data/cards.json';
 const PAGE_SIZE = 100;
@@ -114,11 +115,18 @@ async function main() {
         throw new Error('Airtable returned zero records. Refusing to publish an empty collection.');
     }
 
-    const { cards, skipped } = mapRecords(records);
+    const { cards, skipped, dropped } = mapRecords(records);
 
     if (skipped > 0) {
-        console.warn(`Skipped ${skipped} record(s) missing Name, Type or Rarity.`);
+        console.warn(`Skipped ${skipped} record(s) missing Name, Type or Rarity:`);
+        for (const row of dropped) {
+            console.warn(`  ${row.serial || '(row with no Serial)'}: missing ${row.missing.join(', ')}.`);
+        }
     }
+
+    // Handed to pipeline-report.mjs, which is what turns "a row is missing"
+    // into "this serial is missing from the site, and here is why".
+    writeReport(SYNC_REPORT, { dropped });
 
     if (cards.length === 0) {
         throw new Error('No usable records after mapping. Refusing to overwrite the collection.');

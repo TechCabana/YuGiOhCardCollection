@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Prepare site directory
         # No build step — this is a static site. Copy only what's actually
@@ -57,13 +57,16 @@ jobs:
           cp -r data _site/data
 
       - name: Set up Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
+      # upload-pages-artifact and deploy-pages are a matched pair: v5 of the
+      # deploy action expects the artifact format v5 produces. Bump them
+      # together or the deploy fails to find its artifact.
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

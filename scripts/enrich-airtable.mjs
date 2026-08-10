@@ -20,6 +20,7 @@
 
 import { pathToFileURL } from 'node:url';
 import { fetchAllRecords } from './sync-airtable.mjs';
+import { writeReport, ENRICH_REPORT } from './pipeline-report.mjs';
 import { resolveSerial } from './ygoprodeck-client.mjs';
 import {
     buildEnrichedFields,
@@ -327,6 +328,11 @@ async function main() {
     }
 
     console.log(`Summary: enriched ${rows.length}, skipped ${skipped.length}, blocked ${blocked.length}.`);
+
+    // The log above is for a human reading the step; this is for the reporting
+    // step, which has to tell a blocked row from a skipped one and name the
+    // serials involved. Parsing the log text back out would be guesswork.
+    writeReport(ENRICH_REPORT, { enriched: rows.length, skipped, blocked });
 
     // Non-zero on any skip or block, even in --dry-run, so CI (or the owner)
     // sees that the run was not fully clean.

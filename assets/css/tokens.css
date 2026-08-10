@@ -50,6 +50,42 @@
     --accent-border: rgba(200, 165, 75, 0.55);
 
     /* ---------------------------------------------------------------
+       Card frames. The real Yu-Gi-Oh frame palette, used as data colour:
+       a card's colour states its type and nothing else. Never decoration.
+
+       Two values per frame, because one cannot do both jobs on a dark
+       ground. The base is the printed frame colour and is used for
+       borders, accents and tints, where contrast is not a legibility
+       requirement. The -ink variant is the same hue lifted until it
+       clears WCAG AA (4.5:1) against every surface token, and is the
+       only one allowed to carry text. XYZ black is the case that proves
+       the split: as text on a near-black page it would be invisible.
+
+       tests/tokens.test.js computes the contrast of every -ink value
+       rather than trusting this comment.
+       --------------------------------------------------------------- */
+    --frame-normal: #c9b171;
+    --frame-normal-ink: #e0cd97;
+    --frame-effect: #c46a2f;
+    --frame-effect-ink: #e79a5f;
+    --frame-ritual: #4a6fb5;
+    --frame-ritual-ink: #8fabe0;
+    --frame-fusion: #8a56a6;
+    --frame-fusion-ink: #c398d9;
+    --frame-synchro: #e8e6e1;
+    --frame-synchro-ink: #f0eee9;
+    --frame-xyz: #23262b;
+    --frame-xyz-ink: #a9b0bd;
+    --frame-link: #2c6f8f;
+    --frame-link-ink: #74b8d4;
+    --frame-spell: #1b9e8f;
+    --frame-spell-ink: #4fd0bd;
+    --frame-trap: #b0347f;
+    --frame-trap-ink: #e884bd;
+    --frame-token: #8a8f98;
+    --frame-token-ink: #b9bec7;
+
+    /* ---------------------------------------------------------------
        Failure. Only ever used by the status banner.
        --------------------------------------------------------------- */
     --danger-text: #f0c3cb;

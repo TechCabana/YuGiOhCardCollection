@@ -2,13 +2,15 @@ import { describe, it, expect } from 'vitest';
 import {
     mapRecord,
     mapRecords,
+    missingRequiredFields,
     buildCardTypeLabel,
     buildStats,
     assertNoPrivateFields,
     PRIVATE_FIELDS
 } from '../scripts/map-airtable.mjs';
 import { RARITY_ORDER } from '../assets/js/filters.js';
-import { RARITY_LABELS, safeGradient } from '../assets/js/render.js';
+import { RARITY_LABELS } from '../assets/js/render.js';
+import { cardFrame } from '../assets/js/frames.js';
 
 /** Mirrors a real record from the live base. */
 const monsterRecord = {
@@ -75,7 +77,7 @@ describe('buildStats', () => {
         expect(buildStats(monsterRecord.fields)).toEqual([
             { label: 'ATK', value: '300' },
             { label: 'DEF', value: '400' },
-            { label: 'Level', value: '⭐1' }
+            { label: 'Level', value: '1' }
         ]);
     });
 
@@ -212,10 +214,21 @@ describe('mapRecord', () => {
         });
     });
 
-    it('produces a gradient the renderer will accept', () => {
+    // Colour is derived at render time from the card's own type, so publishing
+    // one would be a second source of truth that could disagree with the first.
+    it('publishes no colour of any kind', () => {
         ['Monster', 'Spell', 'Trap', 'Token'].forEach(type => {
             const card = mapRecord({ id: 'r', fields: { Name: 'X', Type: type, Rarity: 'Common' } });
-            expect(safeGradient(card.gradient)).toBe(card.gradient);
+
+            expect(card).not.toHaveProperty('gradient');
+            expect(JSON.stringify(card)).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+        });
+    });
+
+    it('maps every published type to a frame the renderer can colour', () => {
+        ['Monster', 'Spell', 'Trap', 'Token'].forEach(type => {
+            const card = mapRecord({ id: 'r', fields: { Name: 'X', Type: type, Rarity: 'Common' } });
+            expect(cardFrame(card)).not.toBeNull();
         });
     });
 });
@@ -240,6 +253,62 @@ describe('mapRecords', () => {
 
     it('throws when given something other than an array', () => {
         expect(() => mapRecords(null)).toThrow(/must be an array/);
+    });
+
+    // A count alone says a card vanished from the site without saying which,
+    // which is what made a failed pipeline run read as "the pipeline missed a
+    // row". The dropped list is what the failure message names.
+    it('reports which rows were dropped and why', () => {
+        const unresolved = { id: 'rec404', fields: { Serial: 'DBJ-EN056 ' } };
+        const result = mapRecords([monsterRecord, unresolved]);
+
+        expect(result.skipped).toBe(1);
+        expect(result.dropped).toEqual([
+            { id: 'rec404', serial: 'DBJ-EN056', missing: ['Name', 'Type', 'Rarity'] }
+        ]);
+    });
+
+    it('names only the fields a dropped row is actually missing', () => {
+        const noRarity = {
+            id: 'rec005',
+            fields: { ...monsterRecord.fields, Rarity: 'Not A Rarity' }
+        };
+
+        expect(mapRecords([noRarity]).dropped[0].missing).toEqual(['Rarity']);
+    });
+
+    it('reports an empty dropped list when every row maps', () => {
+        expect(mapRecords([monsterRecord, spellRecord]).dropped).toEqual([]);
+    });
+
+    it('handles a record with no fields at all', () => {
+        const result = mapRecords([{ id: 'recEmpty' }]);
+
+        expect(result.cards).toEqual([]);
+        expect(result.dropped).toEqual([
+            { id: 'recEmpty', serial: '', missing: ['Name', 'Type', 'Rarity'] }
+        ]);
+    });
+});
+
+describe('missingRequiredFields', () => {
+    it('returns nothing for a mappable record', () => {
+        expect(missingRequiredFields(monsterRecord)).toEqual([]);
+    });
+
+    it('is the single definition mapRecord drops on', () => {
+        // If these two ever disagree, the pipeline reports a cause for a row
+        // it did in fact publish, or publishes a row it reported as missing.
+        const records = [
+            monsterRecord,
+            spellRecord,
+            { id: 'bad', fields: { Name: 'X' } },
+            { id: 'empty' }
+        ];
+
+        for (const record of records) {
+            expect(mapRecord(record) === null).toBe(missingRequiredFields(record).length > 0);
+        }
     });
 });
 

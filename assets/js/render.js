@@ -5,16 +5,21 @@
  * comes from Airtable, which is user-editable, so all of it is untrusted — a
  * card named `<img src=x onerror=...>` must render as text, not execute.
  *
- * Two values cannot be handled by escaping alone, because they end up inside an
- * attribute the browser acts on rather than displays: the gradient in a style
- * attribute and the art path in a src. Both go through an allowlist instead —
- * see safeGradient and safeImagePath.
+ * One value cannot be handled by escaping alone, because it ends up inside an
+ * attribute the browser acts on rather than displays: the art path in a src.
+ * It goes through an allowlist instead — see safeImagePath.
+ *
+ * There used to be a second such value, a per-card gradient interpolated into
+ * a style attribute. Card colour is now a frame key from a fixed set, resolved
+ * to a colour by styles.css, so no card data reaches a style attribute at all
+ * and that allowlist could be deleted rather than tightened.
  *
  * Functions here return strings and touch no DOM, so the escaping behaviour is
  * directly testable.
  */
 
 import { escapeHtml } from './filters.js';
+import { cardFrame, frameLabel, FRAME_KEYS } from './frames.js';
 
 /**
  * Human-readable labels for the rarity values used in the data.
@@ -32,18 +37,6 @@ export const RARITY_LABELS = {
     ghost: 'Ghost Rare',
     starlight: 'Starlight Rare'
 };
-
-/**
- * CSS gradients are injected into a style attribute, so they cannot simply be
- * escaped — a quote-free payload could still close the declaration and add
- * properties. Only this exact shape is allowed through.
- *
- * Matches: linear-gradient(<angle>deg, <colour> <pct>%, <colour> <pct>%)
- */
-const SAFE_GRADIENT = /^linear-gradient\(\s*\d{1,3}deg\s*,\s*#[0-9a-f]{3,8}\s+\d{1,3}%\s*,\s*#[0-9a-f]{3,8}\s+\d{1,3}%\s*\)$/i;
-
-/** Fallback used when a gradient is missing or fails validation. */
-const DEFAULT_GRADIENT = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
 
 /**
  * Mirrored card art lives at assets/cards/<passcode>.jpg and nowhere else, so
@@ -69,17 +62,18 @@ const IMAGE_WIDTH = 421;
 const IMAGE_HEIGHT = 614;
 
 /**
- * Return a gradient only if it matches the expected shape.
+ * Build the data-frame attribute for a card.
  *
- * Anything else falls back to the default, so a malicious or malformed value
- * can never reach the style attribute.
+ * The value can only ever be one of FRAME_KEYS, checked here rather than
+ * trusted: cardFrame derives it from card data, and an attribute value is one
+ * of the few places where a mistake upstream would become a markup bug rather
+ * than a wrong colour.
  *
- * @param {unknown} gradient - candidate CSS gradient
- * @returns {string} a gradient safe to interpolate into a style attribute
+ * @param {string|null} frame - a frame key from cardFrame
+ * @returns {string} ` data-frame="..."`, or an empty string for an unknown frame
  */
-export function safeGradient(gradient) {
-    if (typeof gradient !== 'string') return DEFAULT_GRADIENT;
-    return SAFE_GRADIENT.test(gradient.trim()) ? gradient.trim() : DEFAULT_GRADIENT;
+export function frameAttribute(frame) {
+    return FRAME_KEYS.includes(frame) ? ` data-frame="${frame}"` : '';
 }
 
 /**
@@ -171,14 +165,20 @@ export function buildStatsHTML(stats) {
 export function buildCardHTML(card) {
     if (!card || typeof card !== 'object') return '';
 
+    // Both areas carry the attribute so each resolves --frame in its own
+    // subtree; they are siblings, not nested, so one would not reach the other.
+    const frame = cardFrame(card);
+    const frameAttr = frameAttribute(frame);
+    const chip = frame ? `<span class="type-chip">${escapeHtml(frameLabel(frame))}</span>` : '';
+
     return `
-        <div class="card-image-area" style="background: ${safeGradient(card.gradient)};">
+        <div class="card-image-area"${frameAttr}>
             ${buildCardImageHTML(card)}
             <div class="rarity-badge">${rarityLabel(card.rarity)}</div>
         </div>
-        <div class="card-info-area">
+        <div class="card-info-area"${frameAttr}>
             <div class="card-name">${escapeHtml(card.name)}</div>
-            <div class="card-type">${escapeHtml(card.cardType)}</div>
+            <div class="card-type">${chip}${escapeHtml(card.cardType)}</div>
             <div class="card-stats-grid">
                 ${buildStatsHTML(card.stats)}
             </div>
