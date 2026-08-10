@@ -11,6 +11,7 @@ import {
 } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
+import { setToggleState, setExclusiveToggle } from './assets/js/toggle.js';
 import { VIEW_CAROUSEL, normaliseView, getViewVisibility } from './assets/js/view.js';
 
 // Populated from data/cards.json once the fetch resolves.
@@ -45,6 +46,13 @@ let searchQuery = '';
 function buildEmptyState() {
     const wrapper = document.createElement('div');
     wrapper.className = 'empty-state';
+    // Belt and braces. This element is injected after the filter runs, and a
+    // live region created at the same moment as its content is announced
+    // inconsistently across screen readers — so the reliable announcement is
+    // the visible-count region going to 0, which is already live and already
+    // in the document. This helps where it does work and costs nothing where
+    // it does not.
+    wrapper.setAttribute('role', 'status');
 
     const title = document.createElement('p');
     title.className = 'empty-state-title';
@@ -62,6 +70,23 @@ function buildEmptyState() {
 
     wrapper.append(title, hint, action);
     return wrapper;
+}
+
+/**
+ * Wrap the empty state in a list item.
+ *
+ * Both views render into a <ul> now, and only <li> is valid there. A bare
+ * <div> child would put the block outside the list as far as assistive
+ * technology is concerned, which is precisely the message that must not be
+ * missed.
+ *
+ * @returns {HTMLElement} an li containing the empty-state block
+ */
+function buildEmptyStateItem() {
+    const item = document.createElement('li');
+    item.className = 'empty-state-item';
+    item.appendChild(buildEmptyState());
+    return item;
 }
 
 /**
@@ -90,7 +115,7 @@ function updateCarousel() {
     stage.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        stage.appendChild(buildEmptyState());
+        stage.appendChild(buildEmptyStateItem());
         resetCarouselControls();
         return;
     }
@@ -102,7 +127,10 @@ function updateCarousel() {
     const slots = getCarouselSlots(filteredCards, currentIndex);
 
     slots.forEach(({ card, index, position, isCenter }) => {
-        const cardEl = document.createElement('div');
+        // li, not div: the stage is a <ul> now, so assistive technology can
+        // announce how many cards are in the window rather than reading a
+        // wall of unrelated groups.
+        const cardEl = document.createElement('li');
         cardEl.className = `carousel-card ${position}`;
         cardEl.innerHTML = buildCardHTML(card);
         cardEl.onclick = () => {
@@ -123,7 +151,7 @@ function updateGrid() {
     grid.innerHTML = '';
 
     if (filteredCards.length === 0) {
-        const empty = buildEmptyState();
+        const empty = buildEmptyStateItem();
         // The grid is a CSS grid; span the full row so the block centres.
         empty.style.gridColumn = '1 / -1';
         grid.appendChild(empty);
@@ -139,7 +167,7 @@ function updateGrid() {
     const pageCards = getPageSlice(filteredCards, currentPage, cardsPerPage);
 
     pageCards.forEach(card => {
-        const cardEl = document.createElement('div');
+        const cardEl = document.createElement('li');
         cardEl.className = 'grid-card';
         cardEl.innerHTML = buildCardHTML(card);
         grid.appendChild(cardEl);
@@ -193,11 +221,12 @@ document.querySelectorAll('.pill').forEach(pill => {
 
         if (group.has(filter)) {
             group.delete(filter);
-            pill.classList.remove('active');
         } else {
             group.add(filter);
-            pill.classList.add('active');
         }
+        // One call sets the class and aria-pressed together, so the announced
+        // state cannot drift from the visible one.
+        setToggleState(pill, group.has(filter));
         applyFilters();
     });
 });
@@ -211,7 +240,7 @@ document.querySelectorAll('.pill').forEach(pill => {
 function clearAllFilters() {
     activeTypeFilters.clear();
     activeRarityFilters.clear();
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pill').forEach(p => setToggleState(p, false));
     searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
@@ -228,8 +257,9 @@ document.getElementById('searchInput').addEventListener('input', debounce((e) =>
 // View toggle
 document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        // The view buttons are mutually exclusive, so the whole group is set
+        // at once rather than clearing and then re-adding.
+        setExclusiveToggle(document.querySelectorAll('.view-btn'), btn);
         currentView = normaliseView(btn.dataset.view);
 
         applyViewVisibility();

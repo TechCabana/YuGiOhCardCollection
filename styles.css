@@ -1,3 +1,40 @@
+/*
+ * Self-hosted, not linked from Google Fonts: a third-party request on an
+ * otherwise fully static site costs a DNS lookup and a connection before any
+ * text can paint, and tells another origin who is reading the page.
+ *
+ * One variable file carries 400-700, which is why the weight tokens cost
+ * nothing. Latin subset only — the collection is English and the full face is
+ * several times the size.
+ *
+ * swap, so the fallback shows immediately and is replaced when the font
+ * arrives. The alternative is invisible text on a slow connection.
+ */
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('assets/fonts/instrument-sans-latin-var.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+    /*
+     * Fable gate, 2026-08-10: the range below replaces a copy-pasted Google
+     * Fonts "latin" boilerplate that claimed 387 code points. Read against
+     * the committed file's actual cmap (fontTools), that boilerplate covered
+     * 118 non-control code points — fractions, superscripts, several dash and
+     * space variants — the file has no glyph for. unicode-range only gates
+     * which font a browser tries; it does not check per-glyph coverage, so an
+     * overclaim there means a future card name using one of those characters
+     * would silently render tofu instead of falling through to the system
+     * fallback stack. This list is exactly the file's own coverage, so the
+     * range can never claim more than the font delivers.
+     */
+    unicode-range: U+0020-007E, U+00A0-00A3, U+00A5, U+00A7-00AB, U+00AE-00B0, U+00B4,
+                   U+00B6-00B8, U+00BA-00BB, U+00BF-00FF, U+0102, U+0131, U+0152-0153,
+                   U+02C6, U+02DA, U+02DC, U+0300-0301, U+0303-0304, U+0308,
+                   U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A,
+                   U+20AC, U+2122, U+2191, U+2193, U+2212;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,11 +42,21 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-sans);
+    font-weight: var(--weight-regular);
     background: var(--bg);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
+}
+
+/*
+ * Buttons and inputs do not inherit the page font, so without this the
+ * controls would silently fall back to the browser's own UI font.
+ */
+button,
+input {
+    font-family: inherit;
 }
 
 /*
@@ -27,6 +74,56 @@ body {
 }
 
 /*
+ * Both views are lists of cards now, for the count assistive technology reads
+ * out. The bullets and indent that come with that are not wanted.
+ */
+.carousel-stage,
+.card-grid {
+    list-style: none;
+}
+
+/*
+ * Present to assistive technology, invisible on screen. The clip-path pairs
+ * with the 1px box because a screen reader skips an element with no size at
+ * all, and `display: none` would remove it from the tree entirely.
+ */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*
+ * Off-screen until focused, then it lands in the top-left corner. Every visit
+ * starts on the same run of filters and pills, so without this a keyboard user
+ * tabs through all of them before reaching a card.
+ */
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background: var(--surface-2);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transform: translateY(-150%);
+    transition: transform var(--duration-state) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+    transform: translateY(0);
+}
+
+/*
  * The view containers set their own display, which outranks the UA rule for
  * [hidden]. Without this, hiding a view during loading would have no effect.
  */
@@ -40,7 +137,7 @@ body {
     padding: 1.2rem 1.6rem;
     max-width: 40rem;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     color: var(--text-secondary);
     background: var(--surface-1);
     border: 1px solid var(--border-subtle);
@@ -68,13 +165,13 @@ body {
 }
 
 .empty-state-title {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
     color: var(--text-primary);
 }
 
 .empty-state-hint {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     color: var(--text-muted);
 }
 
@@ -86,7 +183,7 @@ body {
     background: transparent;
     color: var(--text-primary);
     border-radius: var(--radius-pill);
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     cursor: pointer;
     transition: background-color var(--duration-state) var(--ease-out),
                 border-color var(--duration-state) var(--ease-out);
@@ -110,16 +207,16 @@ body {
 
 /* Hierarchy from weight and tracking. The title was a gradient clipped to text. */
 .header h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
     color: var(--text-primary);
 }
 
 .stats {
     display: flex;
     gap: 1.5rem;
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     flex-wrap: wrap;
 }
 
@@ -151,7 +248,7 @@ body {
     background: var(--surface-2);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     transition: background-color var(--duration-state) var(--ease-out),
                 border-color var(--duration-state) var(--ease-out);
 }
@@ -191,7 +288,7 @@ body {
                 border-color var(--duration-state) var(--ease-out),
                 color var(--duration-state) var(--ease-out),
                 transform var(--duration-state) var(--ease-out);
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     user-select: none;
 }
 
@@ -207,7 +304,7 @@ body {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--accent-fg);
-    font-weight: 600;
+    font-weight: var(--weight-semibold);
 }
 
 .clear-btn {
@@ -220,7 +317,7 @@ body {
     transition: background-color var(--duration-state) var(--ease-out),
                 border-color var(--duration-state) var(--ease-out),
                 color var(--duration-state) var(--ease-out);
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     white-space: nowrap;
 }
 
@@ -248,14 +345,14 @@ body {
     cursor: pointer;
     transition: background-color var(--duration-state) var(--ease-out),
                 color var(--duration-state) var(--ease-out);
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
 }
 
 /* The current view is state, so it takes the accent like an active filter. */
 .view-btn.active {
     background: var(--accent);
     color: var(--accent-fg);
-    font-weight: 600;
+    font-weight: var(--weight-semibold);
 }
 
 /* Carousel View */
@@ -500,10 +597,10 @@ body {
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
     border-radius: var(--radius-xs);
-    font-size: 0.7rem;
+    font-size: var(--text-2xs);
     text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-caps);
     border: 1px solid var(--border-subtle);
     /* Flex items default to a min-width that equals their unshrunk content,
        which would defeat the shrink above; 0 lets ellipsis take over instead. */
@@ -558,23 +655,23 @@ body {
     background: color-mix(in oklab, var(--frame) 16%, transparent);
     border: 1px solid color-mix(in oklab, var(--frame) 45%, transparent);
     color: var(--frame-ink);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
 }
 
 /* Also previously a clipped gradient; weight and tracking carry it instead. */
 .card-name {
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-snug);
     color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
 .card-type {
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     color: var(--text-muted);
     margin-bottom: 1rem;
 }
@@ -594,7 +691,7 @@ body {
 }
 
 .stat-label {
-    font-size: 0.7rem;
+    font-size: var(--text-2xs);
     color: var(--text-muted);
     margin-bottom: 0.2rem;
 }
@@ -604,8 +701,8 @@ body {
  * from weight against the muted label above it.
  */
 .stat-value {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
     color: var(--text-primary);
 }
 
@@ -624,7 +721,7 @@ body {
     border: 1px solid var(--border-subtle);
     border-radius: 50%;
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: var(--text-xl);
     cursor: pointer;
     /* opacity is named for the :disabled state, transform for the hover scale. */
     transition: background-color var(--duration-state) var(--ease-out),
@@ -650,16 +747,16 @@ body {
 }
 
 .card-counter {
-    font-size: 1.2rem;
+    font-size: var(--text-lg);
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: var(--weight-medium);
 }
 
 /* The current index is the one thing here that tracks user position. */
 .card-counter .current {
     color: var(--accent);
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
 }
 
 /*
@@ -704,11 +801,11 @@ body {
 }
 
 .grid-card .card-name {
-    font-size: 1.1rem;
+    font-size: var(--text-md);
 }
 
 .grid-card .card-type {
-    font-size: 0.8rem;
+    font-size: var(--text-xs);
 }
 
 .grid-card .card-stats-grid {
@@ -721,11 +818,11 @@ body {
 }
 
 .grid-card .stat-label {
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
 }
 
 .grid-card .stat-value {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
 }
 
 .pagination {
@@ -752,7 +849,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: var(--text-lg);
 }
 
 .page-btn:hover:not(:disabled) {
@@ -767,7 +864,7 @@ body {
 }
 
 .page-info {
-    font-size: 1rem;
+    font-size: var(--text-base);
     color: var(--text-secondary);
 }
 
@@ -788,7 +885,7 @@ body {
     }
 
     .header h1 {
-        font-size: 1.6rem;
+        font-size: var(--text-2xl);
     }
 
     /*
@@ -840,7 +937,7 @@ body {
     }
 
     .header h1 {
-        font-size: 1.35rem;
+        font-size: var(--text-lg);
     }
 
     .stats {
@@ -883,7 +980,7 @@ body {
     .clear-btn,
     .view-btn {
         min-height: 44px;
-        font-size: 0.9rem;
+        font-size: var(--text-sm);
     }
 
     .view-toggle {
