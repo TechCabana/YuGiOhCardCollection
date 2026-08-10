@@ -151,6 +151,62 @@ describe('mapRecord', () => {
         expect(mapRecord(monsterRecord)).not.toHaveProperty('emoji');
     });
 
+    // Owner-typed and deliberately published: edition describes the printing a
+    // visitor is looking at, not what the owner paid or how many they hold, so
+    // it is not inventory data and does not belong in PRIVATE_FIELDS.
+    describe('isFirstEdition', () => {
+        it('publishes true for a ticked checkbox', () => {
+            const card = mapRecord({
+                id: 'r',
+                fields: { ...monsterRecord.fields, IsFirstEdition: true }
+            });
+
+            expect(card.isFirstEdition).toBe(true);
+        });
+
+        // Airtable omits an unticked checkbox entirely rather than sending
+        // false, so this is the common case, not an edge case.
+        it('publishes false when the field is absent', () => {
+            expect(mapRecord(monsterRecord).isFirstEdition).toBe(false);
+        });
+
+        it('publishes false for an explicit false', () => {
+            const card = mapRecord({
+                id: 'r',
+                fields: { ...monsterRecord.fields, IsFirstEdition: false }
+            });
+
+            expect(card.isFirstEdition).toBe(false);
+        });
+
+        // A truthy non-boolean must not be published as true — the field is a
+        // claim about a physical card, so only a real tick counts.
+        it('publishes false for a truthy value that is not literally true', () => {
+            for (const value of ['true', 1, 'yes', {}]) {
+                const card = mapRecord({
+                    id: 'r',
+                    fields: { ...monsterRecord.fields, IsFirstEdition: value }
+                });
+
+                expect(card.isFirstEdition).toBe(false);
+            }
+        });
+
+        it('is always a boolean, never undefined', () => {
+            expect(typeof mapRecord(monsterRecord).isFirstEdition).toBe('boolean');
+            expect(typeof mapRecord(spellRecord).isFirstEdition).toBe('boolean');
+        });
+
+        it('is not required, so a row without it is never dropped', () => {
+            expect(missingRequiredFields(monsterRecord)).toEqual([]);
+            expect(mapRecord(monsterRecord)).not.toBeNull();
+        });
+
+        it('is not a private field', () => {
+            expect(PRIVATE_FIELDS.map(f => f.toLowerCase())).not.toContain('isfirstedition');
+        });
+    });
+
     it('never carries a private field through', () => {
         const card = mapRecord(monsterRecord);
         PRIVATE_FIELDS.forEach(field => {

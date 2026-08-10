@@ -119,10 +119,16 @@
     --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.6);
 
     /* ---------------------------------------------------------------
-       Motion. State changes are quick. The longer view-transition timing
-       belongs with the motion card, which also owns the transition: all
-       declarations still left in styles.css.
+       Motion. Two durations, because a hover and a carousel position
+       change are different events: state the user is causing right now
+       reads as instant feedback, while a card travelling across the
+       stage needs long enough to be followed.
+
+       Both are on the same easing. There is no idle animation and no
+       `transition: all` anywhere — every transition names its
+       properties, so nothing animates layout and forces a reflow.
        --------------------------------------------------------------- */
     --duration-state: 160ms;
+    --duration-view: 340ms;
     --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
 }

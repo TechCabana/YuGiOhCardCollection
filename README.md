@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-372%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-396%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Sixteen files, 372 tests, all passing. If that is what you see, the checkout is
+Seventeen files, 396 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -294,6 +294,7 @@ quietly delete a printing from the collection.
   "atk": 450,
   "def": 600,
   "level": 2,
+  "isFirstEdition": false,
   "image": "assets/cards/54652250.jpg",
   "stats": [
     { "label": "ATK",   "value": "450" },
@@ -316,6 +317,7 @@ quietly delete a printing from the collection.
 | `attribute` | string or null | Earth, Fire, and so on. |
 | `atk`, `def`, `level` | number or null | Null for spells and traps. |
 | `image` | string or null | Path to the mirrored art, `assets/cards/<passcode>.jpg`. Null when the passcode is missing or malformed, which is what makes the renderer fall back to a plain type-coloured block. |
+| `isFirstEdition` | boolean | Whether the owner's copy is a 1st Edition print. Always present and always a boolean — an unticked Airtable checkbox arrives as `undefined`, so it is published as `false` rather than omitted. |
 | `stats` | array | Three pre-built display rows. Monsters and spell or trap cards use different labels. |
 
 #### Field ownership
@@ -328,7 +330,11 @@ A sync overwrites machine-owned fields freely and never touches the rest.
 
 `IsFirstEdition` is yours because it cannot be derived. A 1st Edition and an
 Unlimited copy share the same set code, and neither YGOPRODeck endpoint reports
-edition. It is not published to `data/cards.json` yet.
+edition. It **is** published, as the `isFirstEdition` boolean above: the edition
+describes the printing anyone is looking at rather than what the copy is worth or
+how many are held, so it is not inventory data. Being human-owned and being
+published are separate questions — the enrichment guard still refuses to write
+this field back to Airtable.
 
 `Quantity`, `Condition` and `Set Price` are private. They are held in Airtable and
 stripped before the JSON is written, because this repository is public and those
@@ -385,7 +391,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Sixteen files, 372 tests, all passing as of the last run on Node 24.16.0.
+Seventeen files, 396 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -393,6 +399,7 @@ Sixteen files, 372 tests, all passing as of the last run on Node 24.16.0.
 | `filters.test.js` | Search, filter combinations, pagination, carousel slots |
 | `render.test.js` | Card markup and escaping |
 | `frames.test.js` | Card type to card frame, including a Fusion effect monster reading as Fusion rather than Effect |
+| `motion.test.js` | Reads styles.css as text to enforce named transition properties, tokenised durations, and no idle animation |
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
