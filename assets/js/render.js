@@ -190,12 +190,17 @@ export function buildCardHTML(card) {
     const frame = cardFrame(card);
     const frameAttr = frameAttribute(frame);
     const chip = frame ? `<span class="type-chip">${escapeHtml(frameLabel(frame))}</span>` : '';
+    // Computed once: the title attribute repeats it for a rarity long enough
+    // that the flex layout in styles.css truncates the badge with ellipsis.
+    const rarity = rarityLabel(card.rarity);
 
     return `
         <div class="card-image-area"${frameAttr}>
             ${buildCardImageHTML(card)}
-            ${buildEditionBadgeHTML(card)}
-            <div class="rarity-badge">${rarityLabel(card.rarity)}</div>
+            <div class="card-badges">
+                ${buildEditionBadgeHTML(card)}
+                <div class="rarity-badge" title="${rarity}">${rarity}</div>
+            </div>
         </div>
         <div class="card-info-area"${frameAttr}>
             <div class="card-name">${escapeHtml(card.name)}</div>

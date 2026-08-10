@@ -287,6 +287,20 @@ describe('buildCardHTML', () => {
             expect(html.indexOf('edition-badge')).toBeGreaterThan(html.indexOf('card-image-area'));
             expect(html.indexOf('edition-badge')).toBeLessThan(html.indexOf('card-info-area'));
         });
+
+        // Both badges are flex children of one wrapper so a long rarity label
+        // and the edition mark share space instead of overlapping — see
+        // tests/layout.test.js for the CSS side of this. This just locks in
+        // that render.js still emits the wrapper the CSS relies on.
+        it('wraps both badges in a single .card-badges container', () => {
+            const html = buildCardHTML({ ...baseCard, isFirstEdition: true });
+            const wrapperOpen = html.indexOf('class="card-badges"');
+
+            expect(wrapperOpen).toBeGreaterThan(-1);
+            expect(wrapperOpen).toBeGreaterThan(html.indexOf('card-image-area'));
+            expect(wrapperOpen).toBeLessThan(html.indexOf('edition-badge'));
+            expect(wrapperOpen).toBeLessThan(html.indexOf('rarity-badge'));
+        });
     });
 
     it('keeps the surrounding markup structure intact', () => {
@@ -294,6 +308,14 @@ describe('buildCardHTML', () => {
         expect(html).toContain('class="card-image-area"');
         expect(html).toContain('class="rarity-badge"');
         expect(html).toContain('class="card-stats-grid"');
+    });
+
+    // A long rarity label truncates with ellipsis under tests/layout.test.js's
+    // flex-shrink rules; the title attribute keeps the full label reachable
+    // on hover and via assistive tech reading the accessible name.
+    it('carries the full rarity label in a title attribute, for when the badge truncates', () => {
+        const html = buildCardHTML({ ...baseCard, rarity: 'prismatic' });
+        expect(html).toContain('title="Prismatic Secret Rare"');
     });
 
     it('places the art inside the art area', () => {
