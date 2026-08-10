@@ -138,6 +138,69 @@ describe('the heading outline', () => {
     });
 });
 
+describe('control labelling', () => {
+    /** Every button in index.html, as its attribute string. */
+    const buttons = [...indexHtml.matchAll(/<button([^>]*)>([^<]*)</g)].map((match) => ({
+        attributes: match[1],
+        text: match[2].trim()
+    }));
+
+    it('finds the buttons, so the assertions below are not vacuous', () => {
+        expect(buttons.length).toBeGreaterThanOrEqual(8);
+    });
+
+    // A button whose only content is a glyph is announced by that glyph's
+    // Unicode name — "single left-pointing angle quotation mark".
+    it('gives every glyph-only button an accessible name', () => {
+        const glyphOnly = buttons.filter(({ text }) => text !== '' && !/[a-z]/i.test(text));
+
+        expect(glyphOnly.length).toBeGreaterThanOrEqual(4);
+        for (const button of glyphOnly) {
+            expect(button.attributes).toMatch(/aria-label="[^"]+"/);
+        }
+    });
+
+    it('types every button, so none can submit something by accident', () => {
+        for (const button of buttons) {
+            expect(button.attributes).toMatch(/type="button"/);
+        }
+    });
+
+    it('gives every toggle an initial aria-pressed', () => {
+        const toggles = buttons.filter(({ attributes }) => /class="(pill|view-btn)/.test(attributes));
+
+        expect(toggles).toHaveLength(6);
+        for (const toggle of toggles) {
+            expect(toggle.attributes).toMatch(/aria-pressed="(true|false)"/);
+        }
+    });
+
+    // The one toggle that starts engaged is the default view, and its markup
+    // must agree with the class it also carries.
+    it('starts with the carousel toggle both active and pressed', () => {
+        const carousel = buttons.find(({ attributes }) => /data-view="carousel"/.test(attributes));
+
+        expect(carousel.attributes).toMatch(/class="view-btn active"/);
+        expect(carousel.attributes).toMatch(/aria-pressed="true"/);
+    });
+
+    it('labels the search field rather than relying on the placeholder', () => {
+        expect(indexHtml).toMatch(/<label class="visually-hidden" for="searchInput">[^<]+<\/label>/);
+    });
+
+    it('announces the counts that change as the user filters', () => {
+        expect(indexHtml).toMatch(/aria-live="polite"[^>]*>\s*<span id="visibleCardsCount"/);
+        expect(indexHtml).toMatch(/class="page-info" aria-live="polite"/);
+    });
+
+    // Sets both halves of the state in one call. Two call sites setting the
+    // class and the attribute separately is how they drift apart.
+    it('routes every state change through the toggle helper', () => {
+        expect(scriptJs).toMatch(/import \{ setToggleState, setExclusiveToggle \}/);
+        expect(scriptJs).not.toMatch(/classList\.(add|remove)\('active'\)/);
+    });
+});
+
 describe('visually-hidden', () => {
     it('keeps hidden text in the accessibility tree', () => {
         const rule = stylesCss.match(/\.visually-hidden\s*{([^}]*)}/);
