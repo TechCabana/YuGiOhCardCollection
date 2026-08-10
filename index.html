@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yu-Gi-Oh! Collection</title>
+    <!--
+      Preloaded because the @font-face that asks for it sits inside styles.css:
+      without this the browser cannot discover the font until the stylesheet has
+      downloaded and parsed, which is a whole round trip of fallback text.
+      crossorigin is required even same-origin — fonts are fetched in CORS mode,
+      and omitting it fetches the file a second time.
+    -->
+    <link rel="preload" href="assets/fonts/instrument-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Tokens first: styles.css resolves every colour, radius and space through them. -->
     <link rel="stylesheet" href="assets/css/tokens.css">
     <link rel="stylesheet" href="styles.css">

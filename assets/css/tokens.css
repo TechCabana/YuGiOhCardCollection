@@ -93,6 +93,44 @@
     --danger-border: rgba(194, 56, 79, 0.45);
 
     /* ---------------------------------------------------------------
+       Type. One family, self-hosted, doing every job.
+
+       A pairing was the other option and was rejected: hierarchy built
+       from weight, size and tracking in a single voice reads more
+       deliberate than two families negotiating, and it is one 30 KB file
+       instead of several. Instrument Sans is a variable face carrying
+       400-700 in that one file, which is what makes the weight steps
+       below free.
+
+       The stack after it is the fallback for the moment before the font
+       arrives, not a design choice — `Segoe UI` used to be the whole
+       stack, which is why the site rendered as Tahoma on macOS.
+       --------------------------------------------------------------- */
+    --font-sans: 'Instrument Sans', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+    /* A ~1.125-1.25 ratio. Nine steps, because the interface has a real
+       range: a stat label and the page title are three lines apart. */
+    --text-2xs: 0.7rem;
+    --text-xs: 0.8rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-md: 1.125rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 1.75rem;
+    --text-3xl: 2rem;
+
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+
+    /* Tracking tightens as type grows and opens up for small caps. */
+    --tracking-tight: -0.02em;
+    --tracking-snug: -0.01em;
+    --tracking-wide: 0.02em;
+    --tracking-caps: 0.08em;
+
+    /* ---------------------------------------------------------------
        Radius. A range, so shape carries hierarchy: chrome is soft, cards
        are squarer, and only genuine pills are fully round.
        --------------------------------------------------------------- */
