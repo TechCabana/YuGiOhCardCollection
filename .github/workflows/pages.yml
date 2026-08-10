@@ -9,12 +9,11 @@ name: Deploy Pages
 # process-data.yml (that workflow only runs on `schedule` and
 # `workflow_dispatch`, never on `push`) and it cannot retrigger itself.
 #
-# NOTE: GitHub Pages for this repo is still configured as a legacy
-# branch-based deployment (build_type: legacy, source: main /). This
-# workflow has no effect until the owner switches build_type to "workflow"
-# via the Pages API after this PR merges — see CLAUDE.md §9. Flipping it
-# before merge would break the live site, so that step is deliberately left
-# to the owner.
+# Pages is on build_type: workflow (verified against the Pages API on
+# 2026-08-10), so this is the live deploy path for a human push to main —
+# not an inert workflow waiting on a switch, as this comment previously
+# claimed. process-data.yml deploys its own bot commits, because a push made
+# with GITHUB_TOKEN cannot trigger this one. See CLAUDE.md §9.
 
 on:
   push:
