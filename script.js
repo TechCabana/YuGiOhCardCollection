@@ -11,6 +11,7 @@ import {
 } from './assets/js/filters.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
+import { setToggleState, setExclusiveToggle } from './assets/js/toggle.js';
 import { VIEW_CAROUSEL, normaliseView, getViewVisibility } from './assets/js/view.js';
 
 // Populated from data/cards.json once the fetch resolves.
@@ -213,11 +214,12 @@ document.querySelectorAll('.pill').forEach(pill => {
 
         if (group.has(filter)) {
             group.delete(filter);
-            pill.classList.remove('active');
         } else {
             group.add(filter);
-            pill.classList.add('active');
         }
+        // One call sets the class and aria-pressed together, so the announced
+        // state cannot drift from the visible one.
+        setToggleState(pill, group.has(filter));
         applyFilters();
     });
 });
@@ -231,7 +233,7 @@ document.querySelectorAll('.pill').forEach(pill => {
 function clearAllFilters() {
     activeTypeFilters.clear();
     activeRarityFilters.clear();
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pill').forEach(p => setToggleState(p, false));
     searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
@@ -248,8 +250,9 @@ document.getElementById('searchInput').addEventListener('input', debounce((e) =>
 // View toggle
 document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        // The view buttons are mutually exclusive, so the whole group is set
+        // at once rather than clearing and then re-adding.
+        setExclusiveToggle(document.querySelectorAll('.view-btn'), btn);
         currentView = normaliseView(btn.dataset.view);
 
         applyViewVisibility();
