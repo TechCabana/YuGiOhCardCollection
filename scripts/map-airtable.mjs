@@ -155,6 +155,12 @@ export function mapRecord(record) {
         atk: typeof fields['Attack'] === 'number' ? fields['Attack'] : null,
         def: typeof fields['Defense'] === 'number' ? fields['Defense'] : null,
         level: typeof fields['Level'] === 'number' ? fields['Level'] : null,
+        // Owner-typed, never enriched: a 1st Edition and an Unlimited copy
+        // share a set code, and no YGOPRODeck endpoint reports edition.
+        // Strict === true because an unticked Airtable checkbox arrives as
+        // undefined rather than false, and undefined would serialise as a
+        // missing key instead of a published "no".
+        isFirstEdition: fields['IsFirstEdition'] === true,
         // No colour is published: assets/js/frames.js derives the card frame
         // from type, summonType and cardType at render time, so a card can
         // never carry a colour that disagrees with what it is.

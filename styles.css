@@ -152,7 +152,8 @@ body {
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-size: 0.95rem;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out);
 }
 
 .search-box input:focus-visible {
@@ -185,7 +186,11 @@ body {
     color: var(--text-secondary);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all 0.3s;
+    /* transform is named explicitly because :hover lifts the pill 2px. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
     user-select: none;
 }
@@ -212,7 +217,9 @@ body {
     color: var(--text-muted);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
     white-space: nowrap;
 }
@@ -239,7 +246,8 @@ body {
     color: var(--text-muted);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color var(--duration-state) var(--ease-out),
+                color var(--duration-state) var(--ease-out);
     font-size: 0.85rem;
 }
 
@@ -309,7 +317,17 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-2);
     overflow: hidden;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    /*
+     * The position classes below change transform, opacity, filter, border
+     * and shadow, so all five are named. `all` at 0.8s was both sluggish and
+     * indiscriminate: it animated layout properties too, forcing a reflow on
+     * every carousel step.
+     */
+    transition: transform var(--duration-view) var(--ease-out),
+                opacity var(--duration-view) var(--ease-out),
+                filter var(--duration-view) var(--ease-out),
+                border-color var(--duration-view) var(--ease-out),
+                box-shadow var(--duration-view) var(--ease-out);
     cursor: pointer;
 }
 
@@ -445,10 +463,39 @@ body {
     object-fit: cover;
 }
 
-.rarity-badge {
+/*
+ * Two badges sit over the art and must never argue. They used to be
+ * independently `position: absolute; left/right: 15px`, each guessing at
+ * how much room the other needed — fine for "Rare" next to "1st Edition",
+ * but "Prismatic Secret Rare" (a real Airtable option, see RARITY_LABELS in
+ * render.js) is wider than half the card at every width below ~320px, so
+ * the two badges overlapped on phones and the 641-900px tablet band.
+ *
+ * Flex fixes that structurally instead of by breakpoint arithmetic: the
+ * badges are children of .card-badges and only give up width to each other
+ * once their combined natural size exceeds what is available, at which
+ * point they shrink and truncate rather than collide. `gap` guarantees a
+ * minimum seam between them even when both are maxed out.
+ */
+.card-badges {
     position: absolute;
     top: 15px;
+    left: 15px;
     right: 15px;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/*
+ * They share one treatment on purpose. Both state a fact about the printing,
+ * so both are neutral over --overlay — no colour. Colour on a card means card
+ * type since the frame system landed, and a second colour system competing
+ * with it is exactly what the design rules rule out.
+ */
+.rarity-badge,
+.edition-badge {
     background: var(--overlay);
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
@@ -458,7 +505,33 @@ body {
     font-weight: 600;
     letter-spacing: 1px;
     border: 1px solid var(--border-subtle);
-    z-index: 1;
+    /* Flex items default to a min-width that equals their unshrunk content,
+       which would defeat the shrink above; 0 lets ellipsis take over instead. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*
+ * margin-left: auto pins rarity to the right edge of .card-badges whether or
+ * not the edition badge is present (an Unlimited card renders no edition
+ * badge at all), without either badge needing to know the other exists.
+ */
+.rarity-badge {
+    margin-left: auto;
+}
+
+/*
+ * Rendered only for a card the owner holds as a 1st Edition print. An
+ * Unlimited copy carries no badge at all rather than a greyed one: absence is
+ * the clearer statement, and it keeps the art uncovered on most cards.
+ *
+ * A brighter hairline than the rarity badge, because on two otherwise
+ * identical rows this is the thing that tells them apart.
+ */
+.edition-badge {
+    border-color: var(--border-strong);
 }
 
 /*
@@ -553,7 +626,11 @@ body {
     color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
-    transition: all 0.3s;
+    /* opacity is named for the :disabled state, transform for the hover scale. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                opacity var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -610,7 +687,9 @@ body {
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-md);
     overflow: hidden;
-    transition: all 0.3s;
+    transition: transform var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                box-shadow var(--duration-state) var(--ease-out);
     cursor: pointer;
 }
 
@@ -665,7 +744,11 @@ body {
     border-radius: 50%;
     color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s;
+    /* Same set as .nav-btn — the two buttons share hover and disabled states. */
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out),
+                opacity var(--duration-state) var(--ease-out),
+                transform var(--duration-state) var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -688,14 +771,6 @@ body {
     color: var(--text-secondary);
 }
 
-@keyframes float {
-    0%, 100% { transform: translateX(0) translateY(-10px) scale(1.05); }
-    50% { transform: translateX(0) translateY(-20px) scale(1.05); }
-}
-
-.carousel-card.pos-center .card-image-area {
-    animation: float 3s ease-in-out infinite;
-}
 /* ==========================================================================
    Responsive breakpoints
 
@@ -861,12 +936,5 @@ body {
 
     .status-message {
         margin: 2rem 1rem;
-    }
-}
-
-/* The float animation assumes the desktop centre transform; skip it on phones. */
-@media (max-width: 640px) {
-    .carousel-card.pos-center .card-image-area {
-        animation: none;
     }
 }
