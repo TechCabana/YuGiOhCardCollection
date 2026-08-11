@@ -278,14 +278,31 @@ describe('buildCardHTML', () => {
             }
         });
 
-        // The two badges are pinned to opposite corners so neither can grow
-        // into the other. Both must be present for that to be worth anything.
-        it('sits alongside the rarity badge, both inside the art area', () => {
+        // It moved off the art and onto the card-type row: the rarity badge
+        // keeps the art to itself, and the marker sits opposite the type text
+        // where it covers no card image.
+        it('sits on the card type row, after the type text, not over the art', () => {
             const html = buildCardHTML({ ...baseCard, isFirstEdition: true });
 
             expect(html).toContain('rarity-badge');
-            expect(html.indexOf('edition-badge')).toBeGreaterThan(html.indexOf('card-image-area'));
-            expect(html.indexOf('edition-badge')).toBeLessThan(html.indexOf('card-info-area'));
+            expect(html.indexOf('edition-badge')).toBeGreaterThan(html.indexOf('card-info-area'));
+            expect(html.indexOf('edition-badge')).toBeGreaterThan(html.indexOf('card-type-text'));
+        });
+
+        it('leaves only the rarity badge over the art', () => {
+            const html = buildCardHTML({ ...baseCard, isFirstEdition: true });
+            const badges = html.match(/<div class="card-badges">[\s\S]*?<\/div>\s*<\/div>/)?.[0] ?? '';
+
+            expect(badges).toContain('rarity-badge');
+            expect(badges).not.toContain('edition-badge');
+        });
+
+        // The type text and the marker are siblings in one flex row, so the
+        // text needs its own element to be the half that truncates.
+        it('wraps the type text so it can truncate independently', () => {
+            const html = buildCardHTML({ ...baseCard, cardType: 'Insect / Effect' });
+
+            expect(html).toMatch(/<span class="card-type-text">.*Insect \/ Effect<\/span>/);
         });
 
         // Both badges are flex children of one wrapper so a long rarity label

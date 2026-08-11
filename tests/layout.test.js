@@ -95,20 +95,51 @@ describe('card badge layout', () => {
         expect(declarationsFor('.rarity-badge')).toMatch(/margin-left:\s*auto/);
     });
 
-    it('lets both badges shrink and truncate instead of overflowing into each other', () => {
-        const shared = stylesCss.match(/\.rarity-badge,\s*\n?\.edition-badge\s*{([^}]*)}/);
-        expect(shared, 'expected the shared .rarity-badge, .edition-badge rule').not.toBeNull();
-        expect(shared[1]).toMatch(/min-width:\s*0/);
-        expect(shared[1]).toMatch(/overflow:\s*hidden/);
-        expect(shared[1]).toMatch(/text-overflow:\s*ellipsis/);
-        expect(shared[1]).toMatch(/white-space:\s*nowrap/);
+    // The rarity badge kept the truncation it was given when it shared the row
+    // with the edition marker. It still needs it on its own: "Prismatic Secret
+    // Rare" is wider than a card below about 320px whether or not anything
+    // else is beside it.
+    it('lets the rarity badge truncate rather than overflow its card', () => {
+        const rarity = declarationsFor('.rarity-badge');
+
+        expect(rarity).toMatch(/min-width:\s*0/);
+        expect(rarity).toMatch(/overflow:\s*hidden/);
+        expect(rarity).toMatch(/text-overflow:\s*ellipsis/);
+        expect(rarity).toMatch(/white-space:\s*nowrap/);
     });
 
-    it('does not position either badge with a fixed left or right offset', () => {
+    // The marker moved off the art and onto the card-type row, where the
+    // pressure is reversed: the type text is the part that gives way, and the
+    // marker must not, because "1st Edi…" is worse than no marker.
+    it('lets the card type truncate and holds the edition marker at full width', () => {
+        const cardType = declarationsFor('.card-type');
+        const typeText = declarationsFor('.card-type-text');
+        const edition = declarationsFor('.edition-badge');
+
+        expect(cardType).toMatch(/display:\s*flex/);
+        expect(cardType).toMatch(/justify-content:\s*space-between/);
+        expect(cardType).toMatch(/gap:\s*\S/);
+
+        expect(typeText).toMatch(/min-width:\s*0/);
+        expect(typeText).toMatch(/text-overflow:\s*ellipsis/);
+
+        expect(edition).toMatch(/flex:\s*none/);
+        expect(edition).toMatch(/white-space:\s*nowrap/);
+    });
+
+    // It no longer sits over card art, so it no longer needs the scrim the
+    // rarity badge has. Keeping it would be a floating panel on a flat surface.
+    it('drops the overlay background now the marker is off the art', () => {
+        expect(declarationsFor('.edition-badge')).not.toMatch(/background:\s*var\(--overlay\)/);
+        expect(declarationsFor('.rarity-badge')).toMatch(/background:\s*var\(--overlay\)/);
+    });
+
+    it('does not position either marker with a fixed left or right offset', () => {
         // A fixed offset on the badge itself is what caused the original
-        // overlap: it sizes to its own content with no regard for the other
-        // badge. Positioning now belongs to .card-badges alone.
+        // overlap: it sizes to its own content with no regard for anything
+        // else. Positioning belongs to the container in both rows now.
         expect(declarationsFor('.rarity-badge')).not.toMatch(/\bright:\s*\d/);
         expect(declarationsFor('.edition-badge')).not.toMatch(/\bleft:\s*\d/);
+        expect(declarationsFor('.edition-badge')).not.toMatch(/position:\s*absolute/);
     });
 });
