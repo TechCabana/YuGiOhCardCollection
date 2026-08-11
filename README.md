@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-456%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-468%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Twenty files, 456 tests, all passing. If that is what you see, the checkout is
+Twenty-one files, 468 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -356,7 +356,7 @@ YuGiOhCardCollection/
 ├── tests/                  Vitest suites, one per module
 ├── .github/workflows/      CI, deploy and the data pipeline
 ├── CLAUDE.md               project context and working agreement
-└── LICENSE                 GPL-3.0
+└── LICENSE                 MIT
 ```
 
 | Path | Role |
@@ -392,7 +392,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Twenty files, 456 tests, all passing as of the last run on Node 24.16.0.
+Twenty-one files, 468 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -407,6 +407,7 @@ Twenty files, 456 tests, all passing as of the last run on Node 24.16.0.
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
+| `licence.test.js` | The four places the licence is stated agreeing with each other, and the bundled font licence |
 | `tokens.test.js` | Reads the stylesheets as text to enforce that colour values live in `tokens.css` and nowhere else, and computes the WCAG AA contrast of every card-frame ink |
 | `layout.test.js` | Guards the 59:86 card geometry against a fixed pixel height creeping back onto the art box |
 | `map-airtable.test.js` | Airtable record to card mapping, including the private-field guard |
@@ -445,8 +446,18 @@ the theme has to obey.
 
 ## Licence
 
-Released under the GPL-3.0 licence. The full text is in [LICENSE](LICENSE), and it
-covers the code in this repository only.
+Released under the MIT licence. The full text is in [LICENSE](LICENSE).
+
+It covers **the code in this repository only** — the HTML, CSS, JavaScript and the
+Node scripts. It does not and cannot grant any rights over the card artwork or the
+Yu-Gi-Oh! name, which belong to their rights holders. See the credits below.
+
+Relicensed from GPL-3.0 on 2026-08-11. Every commit to that point was either the
+repository owner's or `github-actions[bot]`'s — the bot's commits are the
+automated `data/cards.json` syncs, made on the owner's behalf and not an
+independent copyright claim — so no other copyright holder's permission was
+needed. Anyone who took a copy under GPL-3.0 keeps their rights under it; MIT
+applies from this commit onward.
 
 ### Credits and third-party terms
 
@@ -455,6 +466,9 @@ covers the code in this repository only.
 - *Yu-Gi-Oh!* and all card names, artwork and related marks are trademarks of
   Konami. This is an unaffiliated personal project with no endorsement from or
   association with Konami.
+- The typeface is [Instrument Sans](https://github.com/Instrument/instrument-sans),
+  self-hosted in `assets/fonts/` under the SIL Open Font License 1.1. Its licence
+  travels with the file, in `assets/fonts/OFL.txt`.
 
 ---
 
