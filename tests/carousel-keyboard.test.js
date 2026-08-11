@@ -100,3 +100,21 @@ describe('how the control is styled', () => {
         expect(rule).toMatch(/cursor:\s*pointer/);
     });
 });
+
+describe('the focus ring stays perceivable on a dimmed side card', () => {
+    // pos-left/pos-right blur and fade the whole card, focus ring included —
+    // `filter` composites an element's entire subtree before blurring it, so
+    // a ring drawn at 30% opacity through a 3px blur would fail WCAG 2.4.11.
+    // Both properties are lifted while the control inside is focus-visible.
+    const undim = stylesCss.match(
+        /\.carousel-card\.pos-left:has\(\.carousel-card-action:focus-visible\),\s*\.carousel-card\.pos-right:has\(\.carousel-card-action:focus-visible\)\s*\{([^}]*)\}/
+    )?.[1] ?? '';
+
+    it('restores full opacity', () => {
+        expect(undim).toMatch(/opacity:\s*1/);
+    });
+
+    it('removes the blur', () => {
+        expect(undim).toMatch(/filter:\s*none/);
+    });
+});
