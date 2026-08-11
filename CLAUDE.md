@@ -36,8 +36,8 @@ build-time pipeline, every card renders its real art mirrored from YGOPRODeck, a
 colour now carries the card's type rather than decorating it.
 
 ```
-index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
-script.js        383 lines   DOM wiring only; logic lives in assets/js/
+index.html       148 lines   landmarks, a labelled skip link, 15 aria attributes
+script.js        666 lines   DOM wiring only; logic lives in assets/js/
 styles.css      1187 lines   responsive, tokenised colour and type, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
 assets/js/       10 files    data, filters, facets, render, frames, focus, toggle, view, debounce, keyboard
@@ -48,7 +48,7 @@ tests/          23 files     505 Vitest tests, all passing
 data/cards.json 128 cards    generated from Airtable, committed, served
 ```
 
-Roughly 3,800 lines of source, 3,400 of tests, 315 of workflow.
+Roughly 4,900 lines of source, 4,300 of tests, 315 of workflow.
 
 **What the 2026-08-05 audit found has been fixed**: search is wired, `@media` rules exist,
 the carousel no longer duplicates cards, and every rendered field is escaped. Only one
@@ -82,14 +82,33 @@ went with the gradient.
    rendered as a badge beside the rarity one. See §3 for why that field is published while
    `Quantity` and `Condition` are not.
 
-**What is still open.** Six cards in To Do: self-hosted typography, two accessibility cards
-(landmarks, and labelling controls for assistive technology), grid-first layout with sort, a
-refresh button, and the licence decision. Backlog holds five more. Each has a Trello card
-with `file:line` evidence.
+**PRs #19 to #21 closed most of what this section used to list as open:**
 
-**Not yet seen by a human**: the frame colour system, the badge layout and the motion pass
-were all verified by tests, by measurement and by reading the CSS — never by eye or by
-screenshot. Three merged PRs of visual change now rest on that.
+6. **The page has a structure.** `<header>`, one `<main>`, `<search>`, named `<nav>`s, both
+   views as lists of `<li>` cards, a skip link, and an h1-h2-h3 outline. Every control has
+   an accessible name, and toggle state goes through `assets/js/toggle.js` so the announced
+   state cannot drift from the visible one.
+7. **Type is self-hosted and tokenised.** One variable Instrument Sans file in
+   `assets/fonts/`, a nine-step scale, and no literal font size, weight or tracking left in
+   `styles.css`. The Windows-only `Segoe UI` stack is gone.
+8. **The filters filter on something.** Seven facet dropdowns with live counts and a
+   removable chip tray, replacing four pills of which two matched nothing and one matched
+   126 of 128 cards. `assets/js/facets.js` declares the facets; counts exclude their own
+   facet, so a menu never reports a widening choice as a dead end.
+9. **The licence is MIT**, chosen deliberately on 2026-08-11. The README states what it
+   does and does not cover — the card art and the Yu-Gi-Oh! name are not this project's to
+   license.
+
+**What is still open.** Three cards in To Do: a refresh button, keyboard operability for the
+carousel side cards, and grid-first layout with sort and density. Backlog holds four, and
+the new Ideas list holds one. Each has a Trello card with `file:line` evidence.
+
+**Not yet seen by a human.** The frame colours, the badge layout, the motion pass, the
+typeface and now the whole facet filter UI reached production verified by tests, by
+measurement and by reading the code — never by eye. Five merged PRs of visual and
+interactive change rest on that, and the filter toolbar is the most interactive of them.
+There is no DOM test environment here (`jsdom` is deliberately not a dependency), so a
+browser pass is the only thing that will catch what these tests structurally cannot.
 
 ---
 
@@ -195,7 +214,20 @@ The owner's explicit brief: dark theme that **does not look AI-generated**.
 
 ## 5. Trello board
 
-Lists: **Backlog → To Do → In-Progress → Review → Done**
+Lists: **Ideas · Backlog → To Do → In-Progress → Review → Done**
+
+**Ideas is not the front of the queue.** It holds things that may or may not ever be
+built — worth remembering, not committed to. Backlog is the opposite: everything in it is
+planned for delivery, just not yet started. The distinction is the owner's, added
+2026-08-11, and it decides where a new card goes:
+
+- A gap in something already promised, a regression, a missing test, a follow-up a merged
+  PR left behind → **Backlog**.
+- A feature nobody has agreed to build, a "we could also…", anything speculative →
+  **Ideas**, and it stays there until the owner moves it.
+
+Never promote a card out of Ideas without being asked. Moving one is a decision to build
+it, which is the owner's to make.
 
 Backlog is ordered by build sequence. Dependencies point backwards only, so pulling from
 the top never blocks.
@@ -204,18 +236,21 @@ Labels are named as of 2026-08-08. The MCP cannot rename them — use the REST A
 (`PUT /1/labels/{id}` with a `name` param). Trello labels have no description field, only
 a name and colour. Every card also states its domain on the first line of its description.
 
-**49 cards as of 2026-08-10**, split Backlog 5, To Do 6, In-Progress 0, Review 0, Done 38.
-Read the board rather than this table for anything that matters — the count moves every
-session, and the split below is a snapshot, not a source of truth.
+**52 cards as of 2026-08-11**, split Ideas 1, Backlog 4, To Do 3, In-Progress 0, Review 0,
+Done 44. Read the board rather than this line for anything that matters — the count moves
+every session, and the split is a snapshot, not a source of truth.
 
-| Colour | Label name | Cards |
-|---|---|---|
-| Blue | Data & Airtable | 15 |
-| Red | Bugs & Correctness | 10 |
-| Yellow | Responsive & Layout | 3 |
-| Purple | Accessibility | 4 |
-| Orange | UI Design System | 6 |
-| Green | Repo & Tooling | 11 |
+The six domain labels, which are stable. Per-label counts are deliberately not recorded
+here: they went stale every single session they were.
+
+| Colour | Label name |
+|---|---|
+| Blue | Data & Airtable |
+| Red | Bugs & Correctness |
+| Yellow | Responsive & Layout |
+| Purple | Accessibility |
+| Orange | UI Design System |
+| Green | Repo & Tooling |
 
 Every new card must carry exactly one domain label. Cards created by `audit project` follow
 the same rule.
@@ -297,7 +332,7 @@ The same workflow also runs on a daily schedule as a safety net.
 Run by **Fable**. A standing health check of scope versus delivery — it writes cards, never code.
 
 1. Load the audit skill set (§6.3) before reading anything.
-2. Read the current repo state, the merged PRs, and every card across all five lists.
+2. Read the current repo state, the merged PRs, and every card on the board, Ideas included.
 3. Evaluate delivered work against the project goals (§1), the architecture decisions (§3)
    and the design rules (§4).
 4. Identify gaps: scope in the goals with no card covering it, decisions that have drifted,
@@ -307,9 +342,12 @@ Run by **Fable**. A standing health check of scope versus delivery — it writes
    workflow run. A claim that was not checked is not a finding — it is a guess with a card
    number attached, and it costs more to disprove later than it saved now.
 6. For each real gap, create a card in **Backlog** with a domain label (§5), a description
-   carrying `file:line` evidence, and a `**Done when:**` line.
-7. Do **not** duplicate an existing card — check all five lists first, and extend the
-   existing card instead where one already covers the ground.
+   carrying `file:line` evidence, and a `**Done when:**` line. Backlog, not Ideas: an audit
+   reports gaps in work already promised, and those are planned by definition. A suggestion
+   the audit merely thinks would be nice belongs in **Ideas** — and if it cannot be stated
+   as a gap against something already agreed, it probably is one.
+7. Do **not** duplicate an existing card — check every list first, Ideas included, and
+   extend the existing card instead where one already covers the ground.
 8. Report a summary in chat: what is on track, what has drifted, which cards were created,
    and which skills from §6.3 were actually loaded.
 
@@ -450,7 +488,7 @@ before step 2 of the audit.
 | `superpowers:verification-before-completion` | Evidence before assertion. The audit's only value is that its claims were checked, so this is the one skill it cannot skip. |
 | `superpowers:requesting-code-review` | The "does this actually meet the requirement" pass, run against each merged PR's `**Done when:**` line rather than against a diff. |
 | `superpowers:systematic-debugging` | Only when a regression surfaces. Establish the cause before writing the card, so the card describes the fault rather than the symptom. |
-| `superpowers:dispatching-parallel-agents` | Optional. Repo state, merged PRs and the five lists are independent reads. Use it only when a serial pass would be shallow, and never on a quiet board — the cost is real. |
+| `superpowers:dispatching-parallel-agents` | Optional. Repo state, merged PRs and the board lists are independent reads. Use it only when a serial pass would be shallow, and never on a quiet board — the cost is real. |
 
 **Deliberately not loaded:** `brainstorming`, `writing-plans`, `executing-plans`,
 `test-driven-development`, `subagent-driven-development`, `using-git-worktrees`,
