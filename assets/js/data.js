@@ -7,7 +7,51 @@
  */
 
 /** Location of the collection data, relative to the page. */
-const DATA_URL = 'data/cards.json';
+export const DATA_URL = 'data/cards.json';
+
+/**
+ * Add a cache-busting stamp to the data URL.
+ *
+ * Pages serves `cards.json` with caching headers, so a plain re-fetch can hand
+ * back the copy the browser already has — which would make the refresh button
+ * look broken in exactly the case it exists for.
+ *
+ * The stamp is the current second, not a random value: repeated clicks inside
+ * one second produce the same URL and hit the browser cache rather than
+ * hammering the network, while anything a second later gets a fresh fetch.
+ *
+ * @param {number} [now] - milliseconds since the epoch, injectable for tests
+ * @param {string} [url] - base URL, overridable for tests
+ * @returns {string} the URL with a `t` query parameter
+ */
+export function cacheBustedUrl(now = Date.now(), url = DATA_URL) {
+    const seconds = Math.floor(now / 1000);
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}t=${seconds}`;
+}
+
+/**
+ * Format a fetch time for the "updated" label.
+ *
+ * Local 24-hour time, built by hand rather than through toLocaleTimeString so
+ * the output does not change with the runner's locale — a test that passes on
+ * one machine and fails on another is worse than no test.
+ *
+ * `cards.json` carries no timestamp of its own and Airtable record ids are not
+ * time-ordered, so the fetch time is the only honest answer available: it says
+ * when this page last looked, not when the data was last written.
+ *
+ * @param {Date} [date] - the moment of the fetch
+ * @returns {string} a label such as "Updated 14:32"
+ */
+export function formatUpdatedAt(date = new Date()) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `Updated ${hours}:${minutes}`;
+}
 
 /**
  * Fields every card must carry for the render path to work.
