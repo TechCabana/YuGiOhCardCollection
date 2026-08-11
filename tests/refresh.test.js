@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { cacheBustedUrl, formatUpdatedAt, DATA_URL } from '../assets/js/data.js';
-import { pruneSelection } from '../assets/js/facets.js';
+import { pruneSelection, shouldReopenFacet } from '../assets/js/facets.js';
 
 /**
  * Covers the refresh button's logic.
@@ -101,6 +101,67 @@ describe('pruneSelection', () => {
     });
 });
 
+describe('applyFilters position handling', () => {
+    const applyFiltersFn = scriptJs.match(/function applyFilters\([\s\S]*?\n\}/)?.[0] ?? '';
+
+    it('resets to the first card and page by default', () => {
+        // Guarded to the non-preserving branch so this cannot pass by
+        // matching the preserving branch's clamp calls instead.
+        const defaultBranch = applyFiltersFn.match(/\} else \{[\s\S]*?\n    \}/)?.[0] ?? '';
+
+        expect(defaultBranch).toMatch(/currentIndex = 0;/);
+        expect(defaultBranch).toMatch(/currentPage = 1;/);
+    });
+
+    // Reused rather than hand-rolled so the refresh path cannot drift from
+    // the wrapping/clamping every other carousel and pagination action uses.
+    it('clamps instead of resetting when preserving position', () => {
+        expect(applyFiltersFn).toMatch(/currentIndex = wrapIndex\(currentIndex, filteredCards\.length\)/);
+        expect(applyFiltersFn).toMatch(
+            /currentPage = clampPage\(currentPage, getTotalPages\(filteredCards\.length, cardsPerPage\)\)/
+        );
+    });
+});
+
+describe('shouldReopenFacet', () => {
+    it('reopens a facet still on the rebuilt toolbar', () => {
+        expect(shouldReopenFacet('attribute', ['type', 'attribute', 'rarity'])).toBe(true);
+    });
+
+    // The case a refresh creates directly: the facet the user had open is the
+    // one whose last value just left the collection, so buildFacetBar skips
+    // it entirely and there is nothing left to reopen.
+    it('does not reopen a facet the rebuild dropped', () => {
+        expect(shouldReopenFacet('attribute', ['type', 'rarity'])).toBe(false);
+    });
+
+    it('does nothing when no panel was open', () => {
+        expect(shouldReopenFacet(null, ['type', 'attribute'])).toBe(false);
+    });
+});
+
+describe('buildFacetBar preserves an open panel across a refresh', () => {
+    // A refresh rebuilds the toolbar from scratch (see buildFacetBar), which
+    // would otherwise silently close whatever panel the user had open and
+    // drop their focus to <body> — panels are not disabled while a refresh
+    // is in flight, so this is reachable, not theoretical.
+    const buildFacetBarFn = scriptJs.match(/function buildFacetBar\(\)[\s\S]*?\n\}/)?.[0] ?? '';
+
+    it('captures the open panel and any focused value before rebuilding', () => {
+        expect(buildFacetBarFn).toMatch(/querySelector\('\.facet-panel:not\(\[hidden\]\)'\)/);
+        expect(buildFacetBarFn).toMatch(/reopenFacetKey/);
+        expect(buildFacetBarFn).toMatch(/document\.activeElement/);
+    });
+
+    it('reopens the panel through shouldReopenFacet rather than unconditionally', () => {
+        expect(buildFacetBarFn).toMatch(/shouldReopenFacet\(reopenFacetKey, availableFacetKeys\)/);
+    });
+
+    it('falls back to focusing the facet button when the value is gone', () => {
+        expect(buildFacetBarFn).toMatch(/\(target \?\? button\)\.focus\(\)/);
+    });
+});
+
 describe('the refresh control', () => {
     it('is in the served markup with its timestamp region', () => {
         expect(indexHtml).toMatch(/<button class="refresh-btn" type="button" id="refreshBtn">/);
@@ -132,6 +193,17 @@ describe('the refresh control', () => {
         expect(refresh).not.toMatch(/activeFacets = \{\}/);
         expect(refresh).not.toMatch(/searchQuery = ''/);
         expect(refresh).not.toMatch(/currentView =/);
+    });
+
+    // The Trello card is explicit: "Preserve the current filters, search term
+    // and view on refresh — do not reset the user's context." applyFilters()
+    // resets currentIndex/currentPage to 1 for every other caller because
+    // their filter criteria genuinely changed; a refresh's did not, so it
+    // opts into the preserving branch instead.
+    it('preserves the current card and page rather than resetting them', () => {
+        const refresh = scriptJs.match(/async function refreshCollection\(\)[\s\S]*?\n\}/)?.[0] ?? '';
+
+        expect(refresh).toMatch(/applyFilters\(\{ preservePosition: true \}\)/);
     });
 
     it('keeps the loaded cards when the refresh fails', () => {

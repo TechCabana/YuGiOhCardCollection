@@ -280,6 +280,28 @@ export function pruneSelection(selection = {}, cards = []) {
 }
 
 /**
+ * Decide whether a facet panel that was open before a rebuild should reopen.
+ *
+ * A refresh rebuilds the whole facet toolbar in place (see buildFacetBar in
+ * script.js), including any panel the user had open at the time. Reopening it
+ * is only possible when that facet is still on the rebuilt toolbar — a facet
+ * no card carries a value for any more is skipped entirely, so there is
+ * nothing to reopen.
+ *
+ * Pure and DOM-free on purpose: the decision of *whether* to reopen is one
+ * branch, easy to get backwards under a null check, so it is tested on its
+ * own; the actual `.focus()` call belongs to the caller, same division as
+ * focus.js.
+ *
+ * @param {string|null} facetKey - the facet whose panel was open before the rebuild
+ * @param {string[]} availableFacetKeys - keys the rebuilt toolbar actually renders
+ * @returns {boolean} whether that panel should reopen
+ */
+export function shouldReopenFacet(facetKey, availableFacetKeys) {
+    return facetKey !== null && Array.isArray(availableFacetKeys) && availableFacetKeys.includes(facetKey);
+}
+
+/**
  * Count how many values are selected across every facet.
  *
  * @param {Record<string, string[]>} [selection] - selected values keyed by facet

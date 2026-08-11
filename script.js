@@ -9,7 +9,7 @@ import {
     getPageSlice,
     clampPage
 } from './assets/js/filters.js';
-import { FACETS, facetOptions, selectionChips, pruneSelection } from './assets/js/facets.js';
+import { FACETS, facetOptions, selectionChips, pruneSelection, shouldReopenFacet } from './assets/js/facets.js';
 import { focusIndexAfterRemoval } from './assets/js/focus.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
@@ -221,7 +221,19 @@ function updateGrid() {
     document.getElementById('nextPage').disabled = currentPage === totalPages;
 }
 
-function applyFilters() {
+/**
+ * Re-run the filter/search pipeline and re-render both views' controls.
+ *
+ * @param {object} [options]
+ * @param {boolean} [options.preservePosition] - keep the current card/page
+ *   rather than snapping back to the first. Every caller except a refresh
+ *   changed the filter criteria themselves, so starting over at card one is
+ *   the right call for them; a refresh changed only the data behind an
+ *   unchanged selection, and the card for this feature is explicit that the
+ *   user's context — filters, search term and view — must survive it.
+ * @returns {void}
+ */
+function applyFilters({ preservePosition = false } = {}) {
     // Facets AND against each other; values inside a facet OR. The search term
     // ANDs on top of all of them, all handled inside filterCards().
     filteredCards = filterCards(allCards, {
@@ -229,8 +241,16 @@ function applyFilters() {
         query: searchQuery
     });
 
-    currentIndex = 0;
-    currentPage = 1;
+    if (preservePosition) {
+        // Clamped rather than trusted outright: the refreshed collection can
+        // be shorter than the one being browsed, and both helpers already
+        // handle zero cards without a caller-side special case.
+        currentIndex = wrapIndex(currentIndex, filteredCards.length);
+        currentPage = clampPage(currentPage, getTotalPages(filteredCards.length, cardsPerPage));
+    } else {
+        currentIndex = 0;
+        currentPage = 1;
+    }
 
     // After filtering, not before: every count in every menu is stated against
     // the filters that are actually applied now.
@@ -488,12 +508,30 @@ function renderFilterControls() {
 /**
  * Build the facet toolbar once the collection is known.
  *
+ * Called again by refreshCollection() once the toolbar already has live
+ * panels in it — possibly one open, possibly with focus inside it, since
+ * neither the panels nor the search box are disabled while a refresh is in
+ * flight. `replaceChildren()` below throws all of that away unconditionally,
+ * which would otherwise silently close whatever the user had open and drop
+ * their focus to `<body>` out from under them. The open panel is captured
+ * before the rebuild and reopened after, so a refresh cannot do that.
+ *
  * @returns {void}
  */
 function buildFacetBar() {
     const bar = document.getElementById('facetBar');
+
+    const openPanel = bar.querySelector('.facet-panel:not([hidden])');
+    const reopenFacetKey = openPanel?.dataset.facetKey ?? null;
+    // Only meaningful if focus was actually inside the open panel — an open
+    // panel with focus elsewhere on the page has nothing worth restoring.
+    const reopenValue = openPanel?.contains(document.activeElement)
+        ? (document.activeElement.value ?? null)
+        : null;
+
     bar.replaceChildren();
 
+    const availableFacetKeys = [];
     for (const facet of FACETS) {
         // A facet no card has a value for would render an empty menu, so it
         // is skipped entirely. Every facet in FACETS has at least one value
@@ -502,9 +540,26 @@ function buildFacetBar() {
         // added: every card in the collection currently leaves it null.
         if (facetOptions(allCards, facet.key).length === 0) continue;
         bar.appendChild(buildFacet(facet));
+        availableFacetKeys.push(facet.key);
     }
 
     renderFilterControls();
+
+    if (shouldReopenFacet(reopenFacetKey, availableFacetKeys)) {
+        const panel = document.getElementById(`facet-panel-${reopenFacetKey}`);
+        const button = document.getElementById(`facet-btn-${reopenFacetKey}`);
+        panel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
+
+        // The value itself might be the very thing the refresh pruned away —
+        // shouldReopenFacet only promises the facet still exists, not that
+        // every value in it does — so the button is a real fallback, not a
+        // formality.
+        const target = reopenValue !== null
+            ? [...panel.querySelectorAll('input[type="checkbox"]')].find(box => box.value === reopenValue)
+            : null;
+        (target ?? button).focus();
+    }
 }
 
 // A click anywhere else closes the open panel. Escape does the same but also
@@ -712,9 +767,12 @@ async function refreshCollection() {
         activeFacets = pruneSelection(activeFacets, allCards);
 
         // Values and counts both come from the collection, so the toolbar is
-        // rebuilt rather than left describing the previous data.
+        // rebuilt rather than left describing the previous data. The filter
+        // criteria did not change, only the data behind them, so the card the
+        // user was looking at is kept rather than snapped back to the first —
+        // see applyFilters()'s preservePosition.
         buildFacetBar();
-        applyFilters();
+        applyFilters({ preservePosition: true });
 
         setStatus(null);
         document.getElementById('refreshStamp').textContent = formatUpdatedAt(new Date());
