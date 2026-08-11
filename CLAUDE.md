@@ -28,22 +28,22 @@ code — see §3.
 
 ## 2. Current state
 
-**As of 2026-08-10, after PR #18.** Restate this section rather than trusting it once it is
+**As of 2026-08-11, after PR #21.** Restate this section rather than trusting it once it is
 more than a few PRs old — a stale briefing here causes real errors, not cosmetic drift.
 
-17 PRs merged, 38 cards Done. The site is live, data comes from Airtable through the
+21 PRs merged, 43 cards Done. The site is live, data comes from Airtable through the
 build-time pipeline, every card renders its real art mirrored from YGOPRODeck, and card
 colour now carries the card's type rather than decorating it.
 
 ```
 index.html        77 lines   still all divs — no landmarks, no aria (a11y cards open)
 script.js        383 lines   DOM wiring only; logic lives in assets/js/
-styles.css       940 lines   responsive, tokenised colour, true 59:86 card geometry
+styles.css      1187 lines   responsive, tokenised colour and type, true 59:86 card geometry
 assets/css/       1 file     tokens.css, the only place a colour value is written
-assets/js/        7 files    data, filters, render, frames, view, debounce, keyboard
+assets/js/       10 files    data, filters, facets, render, frames, focus, toggle, view, debounce, keyboard
 assets/cards/   111 files    mirrored card art, ~16 MB, committed by the pipeline
 scripts/         7 files     enrich, sync, map, mirror, YGOPRODeck client, pipeline report
-tests/          17 files     403 Vitest tests, all passing
+tests/          23 files     505 Vitest tests, all passing
 .github/         3 workflows ci.yml, pages.yml, process-data.yml
 data/cards.json 128 cards    generated from Airtable, committed, served
 ```
@@ -625,8 +625,8 @@ https://techcabana.github.io/YuGiOhCardCollection/
 | Conversation resolution | not required | dropped with the PR requirement |
 | Required status checks | none | `ci.yml` runs on pull requests but does not gate the merge. §6.1 rule 4 still applies: state the local test result in the PR body. |
 
-**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 403 tests
-across 17 files; all pass as of 2026-08-10. The workflows pin Node 24 to match, and
+**Environment:** Node v24.16.0, npm 11.13.0, Vitest ^4.1.10. `npm test` runs 505 tests
+across 23 files; all pass as of 2026-08-11. The workflows pin Node 24 to match, and
 `tests/workflows.test.js` fails if that pin or an action version slips backwards.
 
 **Nothing is blocking work.** Trello comments, PR creation, git, Pages and the test harness
