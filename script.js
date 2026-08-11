@@ -2,13 +2,14 @@ import { loadCards } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
 import {
     filterCards,
-    getFilterGroup,
+    matchesSearch,
     getCarouselSlots,
     wrapIndex,
     getTotalPages,
     getPageSlice,
     clampPage
 } from './assets/js/filters.js';
+import { FACETS, facetOptions, selectionChips } from './assets/js/facets.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
 import { setToggleState, setExclusiveToggle } from './assets/js/toggle.js';
@@ -18,10 +19,10 @@ import { VIEW_CAROUSEL, normaliseView, getViewVisibility } from './assets/js/vie
 let allCards = [];
 let filteredCards = [];
 let currentIndex = 0;
-// Two groups so filters AND across groups (type AND rarity) but OR within a
-// group (monster OR spell) — see filterCards() in assets/js/filters.js.
-let activeTypeFilters = new Set();
-let activeRarityFilters = new Set();
+// Selected values keyed by facet. Facets AND against each other, values within
+// a facet OR — see matchesSelection() in assets/js/facets.js. One object rather
+// than a variable per group, so adding a facet needs no new state here.
+let activeFacets = {};
 let currentView = VIEW_CAROUSEL;
 let currentPage = 1;
 const cardsPerPage = 18;
@@ -180,17 +181,20 @@ function updateGrid() {
 }
 
 function applyFilters() {
-    // Types and rarities AND against each other; values inside each group OR.
-    // The search term ANDs on top of both, all handled inside filterCards().
+    // Facets AND against each other; values inside a facet OR. The search term
+    // ANDs on top of all of them, all handled inside filterCards().
     filteredCards = filterCards(allCards, {
-        types: Array.from(activeTypeFilters),
-        rarities: Array.from(activeRarityFilters),
+        facets: activeFacets,
         query: searchQuery
     });
 
     currentIndex = 0;
     currentPage = 1;
-    
+
+    // After filtering, not before: every count in every menu is stated against
+    // the filters that are actually applied now.
+    renderFilterControls();
+
     document.getElementById('visibleCardsCount').textContent = filteredCards.length;
     document.getElementById('totalCardsCount').textContent = allCards.length;
 
@@ -201,34 +205,230 @@ function applyFilters() {
     }
 }
 
-// Filter controls
-document.querySelectorAll('.pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-        const filter = pill.dataset.filter;
-        // Route the pill into its group so it ANDs against the other group
-        // instead of OR-ing into one flat set (the original bug). A pill
-        // matching neither constant list is a markup error, not a filter.
-        const filterGroup = getFilterGroup(filter);
-        let group;
-        if (filterGroup === 'type') {
-            group = activeTypeFilters;
-        } else if (filterGroup === 'rarity') {
-            group = activeRarityFilters;
-        } else {
-            console.warn(`Unrecognised filter pill: "${filter}"`);
-            return;
-        }
+/**
+ * Toggle one value of one facet, then re-render.
+ *
+ * @param {string} facetKey - a key from FACETS
+ * @param {string} value - the value being ticked or unticked
+ * @returns {void}
+ */
+function toggleFacetValue(facetKey, value) {
+    const selected = activeFacets[facetKey] ?? [];
 
-        if (group.has(filter)) {
-            group.delete(filter);
-        } else {
-            group.add(filter);
-        }
-        // One call sets the class and aria-pressed together, so the announced
-        // state cannot drift from the visible one.
-        setToggleState(pill, group.has(filter));
-        applyFilters();
+    activeFacets[facetKey] = selected.includes(value)
+        ? selected.filter(existing => existing !== value)
+        : [...selected, value];
+
+    // An empty array and an absent key mean the same thing to matchesSelection,
+    // but only the absent key keeps the selection object readable in a debugger
+    // and keeps countSelected honest.
+    if (activeFacets[facetKey].length === 0) delete activeFacets[facetKey];
+
+    applyFilters();
+}
+
+/**
+ * Close every open facet panel.
+ *
+ * @param {HTMLElement} [except] - a panel to leave open
+ * @returns {void}
+ */
+function closeFacetPanels(except = null) {
+    for (const panel of document.querySelectorAll('.facet-panel')) {
+        if (panel === except) continue;
+        panel.hidden = true;
+        document.getElementById(panel.dataset.buttonId)?.setAttribute('aria-expanded', 'false');
+    }
+}
+
+/**
+ * Build one facet's button and panel.
+ *
+ * Built with DOM calls rather than innerHTML: every value here comes from
+ * Airtable by way of data/cards.json, and textContent cannot be talked into
+ * executing anything, whereas an escaping mistake in a template string can.
+ *
+ * @param {object} facet - an entry from FACETS
+ * @returns {HTMLElement} the facet's wrapper element
+ */
+function buildFacet(facet) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'facet';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'facet-btn';
+    button.id = `facet-btn-${facet.key}`;
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-controls', `facet-panel-${facet.key}`);
+
+    const label = document.createElement('span');
+    label.textContent = facet.label;
+
+    // Shows how many values are ticked, so a collapsed panel still says
+    // whether it is doing anything.
+    const badge = document.createElement('span');
+    badge.className = 'facet-btn-count';
+    badge.hidden = true;
+
+    button.append(label, badge);
+
+    const panel = document.createElement('div');
+    panel.className = 'facet-panel';
+    panel.id = `facet-panel-${facet.key}`;
+    panel.dataset.buttonId = button.id;
+    panel.dataset.facetKey = facet.key;
+    panel.setAttribute('role', 'group');
+    panel.setAttribute('aria-labelledby', button.id);
+    panel.hidden = true;
+
+    button.addEventListener('click', () => {
+        const willOpen = panel.hidden;
+        closeFacetPanels(panel);
+        panel.hidden = !willOpen;
+        button.setAttribute('aria-expanded', String(willOpen));
     });
+
+    wrapper.append(button, panel);
+    return wrapper;
+}
+
+/**
+ * Rebuild a facet panel's checkboxes and counts.
+ *
+ * Counts move as other filters change, so the contents are rewritten rather
+ * than built once. The checkbox state is read back from activeFacets, which
+ * stays the single source of truth.
+ *
+ * @param {HTMLElement} panel - the panel element
+ * @returns {void}
+ */
+function renderFacetPanel(panel) {
+    const facetKey = panel.dataset.facetKey;
+    const options = facetOptions(allCards, facetKey, {
+        selection: activeFacets,
+        matchesQuery: card => matchesSearch(card, searchQuery)
+    });
+
+    panel.replaceChildren();
+
+    for (const option of options) {
+        const selected = (activeFacets[facetKey] ?? []).includes(option.value);
+
+        const row = document.createElement('label');
+        row.className = 'facet-option';
+        // A value that would return nothing is dimmed rather than removed, so
+        // the menu does not reshuffle under the cursor as boxes are ticked.
+        row.classList.toggle('is-empty', option.count === 0 && !selected);
+
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.checked = selected;
+        box.value = option.value;
+        box.addEventListener('change', () => toggleFacetValue(facetKey, option.value));
+
+        const text = document.createElement('span');
+        text.className = 'facet-option-label';
+        text.textContent = option.label;
+
+        const count = document.createElement('span');
+        count.className = 'facet-option-count';
+        count.textContent = String(option.count);
+
+        row.append(box, text, count);
+        panel.appendChild(row);
+    }
+}
+
+/**
+ * Rebuild the chip tray from the current selection.
+ *
+ * @returns {void}
+ */
+function renderChipTray() {
+    const tray = document.getElementById('chipTray');
+    const chips = selectionChips(activeFacets);
+
+    tray.replaceChildren();
+    tray.hidden = chips.length === 0;
+    document.getElementById('clearFilters').hidden = chips.length === 0 && searchQuery === '';
+
+    for (const chip of chips) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'chip';
+        // The visible text is just the value; the accessible name says which
+        // facet it came from and what pressing it does, because "Earth" alone
+        // means nothing announced out of context.
+        button.setAttribute('aria-label', `Remove filter ${chip.facetLabel}: ${chip.label}`);
+        button.addEventListener('click', () => toggleFacetValue(chip.facetKey, chip.value));
+
+        const text = document.createElement('span');
+        text.textContent = chip.label;
+
+        const cross = document.createElement('span');
+        cross.className = 'chip-remove';
+        cross.setAttribute('aria-hidden', 'true');
+        cross.textContent = '×';
+
+        button.append(text, cross);
+        tray.appendChild(button);
+    }
+}
+
+/**
+ * Refresh every part of the filter UI that depends on the current selection.
+ *
+ * @returns {void}
+ */
+function renderFilterControls() {
+    for (const panel of document.querySelectorAll('.facet-panel')) {
+        renderFacetPanel(panel);
+
+        const selectedCount = (activeFacets[panel.dataset.facetKey] ?? []).length;
+        const badge = document.querySelector(`#${panel.dataset.buttonId} .facet-btn-count`);
+        badge.textContent = String(selectedCount);
+        badge.hidden = selectedCount === 0;
+        document.getElementById(panel.dataset.buttonId)
+            .classList.toggle('is-active', selectedCount > 0);
+    }
+
+    renderChipTray();
+}
+
+/**
+ * Build the facet toolbar once the collection is known.
+ *
+ * @returns {void}
+ */
+function buildFacetBar() {
+    const bar = document.getElementById('facetBar');
+    bar.replaceChildren();
+
+    for (const facet of FACETS) {
+        // A facet no card has a value for would be an empty menu, so it is not
+        // shown at all — Summon Type today, which every card leaves null.
+        if (facetOptions(allCards, facet.key).length === 0) continue;
+        bar.appendChild(buildFacet(facet));
+    }
+
+    renderFilterControls();
+}
+
+// A click anywhere else closes the open panel. Escape does the same but also
+// returns focus to the button that opened it, which a click does not need to.
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('.facet')) closeFacetPanels();
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+
+    const openPanel = [...document.querySelectorAll('.facet-panel')].find(panel => !panel.hidden);
+    if (!openPanel) return;
+
+    closeFacetPanels();
+    document.getElementById(openPanel.dataset.buttonId)?.focus();
 });
 
 /**
@@ -238,9 +438,7 @@ document.querySelectorAll('.pill').forEach(pill => {
  * always clear exactly the same state.
  */
 function clearAllFilters() {
-    activeTypeFilters.clear();
-    activeRarityFilters.clear();
-    document.querySelectorAll('.pill').forEach(p => setToggleState(p, false));
+    activeFacets = {};
     searchQuery = '';
     document.getElementById('searchInput').value = '';
     applyFilters();
@@ -403,6 +601,9 @@ async function init() {
 
         setStatus(null);
         setDataReady(true);
+        // The facets and their values are read off the collection, so the
+        // toolbar cannot be built until the data is in.
+        buildFacetBar();
         applyFilters();
     } catch (error) {
         console.error(error);
