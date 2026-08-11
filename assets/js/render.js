@@ -120,18 +120,23 @@ export function buildCardImageHTML(card) {
 }
 
 /**
- * Build the 1st Edition badge for a card.
+ * Build the 1st Edition marker for a card.
  *
  * Strict === true, matching how the field is published: anything else — false,
  * a missing field on data written before the field existed, a truthy string —
  * renders nothing. A card that is not a 1st Edition print says nothing at all
- * rather than carrying a greyed badge, so the art stays uncovered on most
- * cards and the badge means something when it does appear.
+ * rather than carrying a greyed marker, so the marker means something when it
+ * does appear.
+ *
+ * It sits on the card-type row rather than over the art. Two badges on the art
+ * had to be taught not to collide; the type row already has unused space to
+ * its right, so the marker lands somewhere it obscures no card image and cannot
+ * run into the rarity badge at any width.
  *
  * The label is a fixed string, never card data, so there is nothing to escape.
  *
  * @param {object} card - a card record
- * @returns {string} the badge markup, or an empty string
+ * @returns {string} the marker markup, or an empty string
  */
 export function buildEditionBadgeHTML(card) {
     return card?.isFirstEdition === true
@@ -202,13 +207,15 @@ export function buildCardHTML(card) {
         <div class="card-image-area"${frameAttr}>
             ${buildCardImageHTML(card)}
             <div class="card-badges">
-                ${buildEditionBadgeHTML(card)}
                 <div class="rarity-badge" title="${rarity}">${rarity}</div>
             </div>
         </div>
         <div class="card-info-area"${frameAttr}>
             <h3 class="card-name">${escapeHtml(card.name)}</h3>
-            <div class="card-type">${chip}${escapeHtml(card.cardType)}</div>
+            <div class="card-type">
+                <span class="card-type-text">${chip}${escapeHtml(card.cardType)}</span>
+                ${buildEditionBadgeHTML(card)}
+            </div>
             <div class="card-stats-grid">
                 ${buildStatsHTML(card.stats)}
             </div>

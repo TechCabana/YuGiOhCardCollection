@@ -4,7 +4,12 @@
  * Everything here is free of DOM access so it can be unit tested directly.
  * Rendering code is responsible for reading state, calling these functions and
  * writing the result to the page.
+ *
+ * The facet rules themselves live in facets.js, which declares what a facet is
+ * and how its options are counted. This file owns how a card is matched.
  */
+
+import { matchesSelection } from './facets.js';
 
 /**
  * Rarity tiers in ascending scarcity. Index position defines "rare or better",
@@ -28,33 +33,6 @@ export const RARITY_ORDER = [
 
 /** Lowest tier that the "Rare Only" filter accepts. */
 const RARE_THRESHOLD = RARITY_ORDER.indexOf('rare');
-
-/**
- * Pill data-filter values that belong to the "type" group.
- *
- * Kept as a constant so the click handler routes pills into the right group
- * (type vs rarity) by lookup instead of hardcoding per-value checks — adding a
- * new type pill only means updating this list.
- */
-export const TYPE_FILTERS = ['monster', 'spell', 'trap'];
-
-/** Pill data-filter values that belong to the "rarity" group. */
-export const RARITY_FILTERS = ['rare'];
-
-/**
- * Determine which filter group a pill's data-filter value belongs to.
- *
- * Groups combine with AND (see filterCards), so routing a pill into the wrong
- * group — or into a single flat set — silently changes filter semantics.
- *
- * @param {string} filter - a pill's data-filter value
- * @returns {'type'|'rarity'|null} the group name, or null for an unknown pill
- */
-export function getFilterGroup(filter) {
-    if (TYPE_FILTERS.includes(filter)) return 'type';
-    if (RARITY_FILTERS.includes(filter)) return 'rarity';
-    return null;
-}
 
 /** Carousel slot classes, ordered from leftmost to rightmost. */
 export const CAROUSEL_POSITIONS = [
@@ -155,14 +133,21 @@ export function matchesRarities(card, rarities) {
 }
 
 /**
- * Filter a collection by type, rarity and search term together.
+ * Filter a collection by facets, the legacy pill groups, and a search term.
  *
  * Groups combine with AND, values within a group combine with OR. Selecting
  * Monster plus Rare Only therefore yields rare-or-better monsters, not the
- * union of the two sets.
+ * union of the two sets. The facet selection follows exactly the same rule —
+ * it is that rule generalised from two hardcoded groups to any number.
+ *
+ * `types` and `rarities` are the original pill groups. They are kept because
+ * the "Rare Only" threshold is not an equality test — it accepts rare and
+ * every tier above it — and because the tests written against them are the
+ * evidence that generalising the logic did not change it.
  *
  * @param {object[]} cards - the full collection
  * @param {object} [criteria] - filter criteria
+ * @param {Record<string, string[]>} [criteria.facets] - selected facet values by key
  * @param {string[]} [criteria.types] - selected type pills
  * @param {string[]} [criteria.rarities] - selected rarity pills
  * @param {string} [criteria.query] - search box text
@@ -171,11 +156,12 @@ export function matchesRarities(card, rarities) {
 export function filterCards(cards, criteria = {}) {
     if (!Array.isArray(cards)) return [];
 
-    const { types = [], rarities = [], query = '' } = criteria;
+    const { facets = {}, types = [], rarities = [], query = '' } = criteria;
 
     return cards.filter(card =>
         matchesTypes(card, types) &&
         matchesRarities(card, rarities) &&
+        matchesSelection(card, facets) &&
         matchesSearch(card, query)
     );
 }

@@ -54,25 +54,34 @@
         </div>
 
         <!--
-          The pills and the view buttons are toggles, so they carry
-          aria-pressed rather than relying on a class a screen reader cannot
-          see. script.js keeps the two in step through setToggleState().
+          The facet buttons are built from FACETS in assets/js/facets.js once
+          the collection loads, because their values and counts come from the
+          data. The fixed pills they replace filtered on card type, which 126
+          of 128 cards share.
+
+          The view buttons below are toggles, so they carry aria-pressed rather
+          than relying on a class a screen reader cannot see. script.js keeps
+          the two in step through setToggleState().
         -->
-        <div class="filter-section">
-            <div class="filter-pills">
-                <button class="pill" type="button" data-filter="monster" aria-pressed="false">Monster</button>
-                <button class="pill" type="button" data-filter="spell" aria-pressed="false">Spell</button>
-                <button class="pill" type="button" data-filter="trap" aria-pressed="false">Trap</button>
-                <button class="pill" type="button" data-filter="rare" aria-pressed="false">Rare Only</button>
-            </div>
-            <button class="clear-btn" type="button" id="clearFilters">Clear Filters</button>
-        </div>
+        <div class="facet-bar" id="facetBar"></div>
+
+        <button class="clear-btn" type="button" id="clearFilters" hidden>Clear filters</button>
 
         <div class="view-toggle">
             <button class="view-btn active" type="button" data-view="carousel" aria-pressed="true">Carousel</button>
             <button class="view-btn" type="button" data-view="grid" aria-pressed="false">Grid</button>
         </div>
     </search>
+
+    <!--
+      Active filters, one removable chip each. Outside <search> because it
+      reports the current state rather than offering a control, and live so
+      that adding or removing a filter is announced.
+
+      Hidden until something is selected: an empty tray would be a permanent
+      band of nothing between the toolbar and the cards.
+    -->
+    <div class="chip-tray" id="chipTray" aria-live="polite" aria-label="Active filters" hidden></div>
 
     <!--
       Both views live inside one <main> so the skip link has a single target

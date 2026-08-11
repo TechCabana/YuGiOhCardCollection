@@ -6,9 +6,6 @@ import {
     matchesTypes,
     matchesRarities,
     filterCards,
-    getFilterGroup,
-    TYPE_FILTERS,
-    RARITY_FILTERS,
     getTotalPages,
     clampPage,
     getPageSlice,
@@ -214,28 +211,11 @@ describe('filterCards', () => {
     });
 });
 
-describe('getFilterGroup', () => {
-    it('routes every type pill to the "type" group', () => {
-        TYPE_FILTERS.forEach(filter => {
-            expect(getFilterGroup(filter)).toBe('type');
-        });
-    });
-
-    it('routes every rarity pill to the "rarity" group', () => {
-        RARITY_FILTERS.forEach(filter => {
-            expect(getFilterGroup(filter)).toBe('rarity');
-        });
-    });
-
-    it('returns null for a pill matching neither list', () => {
-        expect(getFilterGroup('unknown')).toBeNull();
-    });
-
-    it('keeps the two groups disjoint', () => {
-        const overlap = TYPE_FILTERS.filter(filter => RARITY_FILTERS.includes(filter));
-        expect(overlap).toEqual([]);
-    });
-});
+// getFilterGroup and its two constants routed a pill's data-filter value into
+// the type or rarity group. There are no pills: the facet toolbar reads its
+// groups from FACETS, and the routing tests went with the code they covered.
+// The behaviour they protected — values OR within a group, groups AND against
+// each other — is now covered against facets in facets.test.js.
 
 describe('getTotalPages', () => {
     it('divides exactly when the count is a multiple of the page size', () => {
