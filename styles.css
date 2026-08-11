@@ -583,7 +583,39 @@ input {
                 filter var(--duration-view) var(--ease-out),
                 border-color var(--duration-view) var(--ease-out),
                 box-shadow var(--duration-view) var(--ease-out);
+}
+
+/*
+ * The control that brings a side card to the centre: a real button stretched
+ * over the card rather than a wrapper around it, because a button may only
+ * contain phrasing content and wrapping would swallow the card's <h3>.
+ *
+ * Transparent and empty. It carries no visible text of its own — its name is
+ * an aria-label — so everything under it stays readable and the card looks
+ * untouched.
+ *
+ * Rendered only for side cards, so the centre card takes no focus.
+ */
+.carousel-card-action {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: inherit;
     cursor: pointer;
+}
+
+/*
+ * The focus ring belongs on the card, not on an invisible rectangle sitting
+ * over it. Inset by the outline width so it traces just inside the card's own
+ * border rather than being clipped by the parent's overflow: hidden.
+ */
+.carousel-card-action:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
 }
 
 .carousel-card.pos-left {

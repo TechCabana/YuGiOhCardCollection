@@ -112,6 +112,45 @@ function resetGridControls() {
     document.getElementById('nextPage').disabled = true;
 }
 
+/**
+ * Build the control that brings a side card to the centre.
+ *
+ * A real `<button>`, so focus, Enter and Space all work without being
+ * reimplemented. Before this the behaviour hung off an onclick on the card
+ * element itself, which had no tabindex, no role and no key handler: the
+ * affordance simply did not exist for anyone not using a pointer.
+ *
+ * It is an empty overlay stretched across the card rather than a wrapper
+ * around the card's markup, because a button may only contain phrasing
+ * content — wrapping would mean swallowing the `<h3>` card name and losing it
+ * from the document outline, trading one accessibility problem for another.
+ *
+ * The card's own text is therefore not the button's name, so the name is set
+ * explicitly. `setAttribute` rather than string interpolation: the card name
+ * comes from Airtable and is not to be trusted into markup.
+ *
+ * @param {object} card - the card the button acts on
+ * @param {number} index - its index in the filtered collection
+ * @returns {HTMLElement} the button
+ */
+function buildCarouselCardAction(card, index) {
+    const action = document.createElement('button');
+    action.type = 'button';
+    action.className = 'carousel-card-action';
+    action.setAttribute('aria-label', `Show ${card?.name ?? 'card'}`);
+
+    action.addEventListener('click', () => {
+        currentIndex = index;
+        updateCarousel();
+        // The card just activated is now the centre one and has no button, so
+        // focus would fall to <body>. Hand it to the control that governs the
+        // carousel instead, which is where a keyboard user needs to be next.
+        document.getElementById('nextBtn')?.focus();
+    });
+
+    return action;
+}
+
 function updateCarousel() {
     const stage = document.getElementById('carouselStage');
     stage.innerHTML = '';
@@ -135,12 +174,13 @@ function updateCarousel() {
         const cardEl = document.createElement('li');
         cardEl.className = `carousel-card ${position}`;
         cardEl.innerHTML = buildCardHTML(card);
-        cardEl.onclick = () => {
-            if (!isCenter) {
-                currentIndex = index;
-                updateCarousel();
-            }
-        };
+
+        // Only a side card does anything when activated, so only a side card
+        // gets a control. The centre card is already centred.
+        if (!isCenter) {
+            cardEl.appendChild(buildCarouselCardAction(card, index));
+        }
+
         stage.appendChild(cardEl);
     });
 
