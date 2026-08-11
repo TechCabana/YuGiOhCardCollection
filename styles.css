@@ -430,7 +430,41 @@ input {
     line-height: 1;
 }
 
-.clear-btn {
+/*
+ * Refresh, with the time of the last fetch beside it. Sits at the end of the
+ * controls row: it acts on the whole collection rather than narrowing it, so
+ * it is deliberately not among the facet buttons.
+ */
+.refresh {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-left: auto;
+}
+
+.refresh-stamp {
+    color: var(--text-muted);
+    font-size: var(--text-2xs);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/*
+ * aria-busy is the state the button is actually in while a fetch runs, so it
+ * drives the styling too rather than a second class that could disagree with
+ * it. :disabled covers the same window; both are set together.
+ */
+.refresh-btn[aria-busy='true'] {
+    cursor: progress;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.clear-btn,
+.refresh-btn {
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-subtle);
     background: transparent;
@@ -444,7 +478,8 @@ input {
     white-space: nowrap;
 }
 
-.clear-btn:hover {
+.clear-btn:hover,
+.refresh-btn:hover:not(:disabled) {
     background: var(--surface-2);
     border-color: var(--border-strong);
     color: var(--text-primary);
