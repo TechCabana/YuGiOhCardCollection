@@ -452,10 +452,12 @@ It covers **the code in this repository only** — the HTML, CSS, JavaScript and
 Node scripts. It does not and cannot grant any rights over the card artwork or the
 Yu-Gi-Oh! name, which belong to their rights holders. See the credits below.
 
-Relicensed from GPL-3.0 on 2026-08-11. Every commit to that point was the
-repository owner's, so no other copyright holder's permission was needed. Anyone
-who took a copy under GPL-3.0 keeps their rights under it; MIT applies from this
-commit onward.
+Relicensed from GPL-3.0 on 2026-08-11. Every commit to that point was either the
+repository owner's or `github-actions[bot]`'s — the bot's commits are the
+automated `data/cards.json` syncs, made on the owner's behalf and not an
+independent copyright claim — so no other copyright holder's permission was
+needed. Anyone who took a copy under GPL-3.0 keeps their rights under it; MIT
+applies from this commit onward.
 
 ### Credits and third-party terms
 

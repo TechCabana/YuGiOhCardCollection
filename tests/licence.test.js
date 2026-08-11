@@ -59,6 +59,15 @@ describe('the stated licence agrees everywhere', () => {
         expect(readme).toMatch(/unaffiliated personal project/);
         expect(readme).toMatch(/trademarks of\s+Konami/);
     });
+
+    // The relicensing note claims every commit up to that point was the
+    // owner's — true only because the bot commits are called out as
+    // automated work done on the owner's behalf, not a second copyright
+    // holder. Silently dropping that clause would make the claim false.
+    it('accounts for the bot commits in the relicensing note', () => {
+        expect(readme).toMatch(/github-actions\[bot\]/);
+        expect(readme).toMatch(/on the owner's behalf/);
+    });
 });
 
 describe('bundled third-party licences', () => {
