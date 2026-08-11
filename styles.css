@@ -653,6 +653,21 @@ input {
 }
 
 /*
+ * A side card's own blur and 30% opacity apply to everything painted inside
+ * it, focus ring included — `filter` composites the whole element as one
+ * image before the blur runs. Without this, tabbing to a side card would
+ * land on a control whose focus indicator is not actually perceivable,
+ * which is a WCAG 2.4.11 (focus appearance) problem, not just a cosmetic
+ * one. Full opacity and no blur while focus is on the control makes the
+ * card fully legible, the same as hovering or landing on it would.
+ */
+.carousel-card.pos-left:has(.carousel-card-action:focus-visible),
+.carousel-card.pos-right:has(.carousel-card-action:focus-visible) {
+    opacity: 1;
+    filter: none;
+}
+
+/*
  * Frame colour, resolved once per card and read by everything below.
  *
  * render.js puts data-frame on the card's two areas; these rules turn that key
