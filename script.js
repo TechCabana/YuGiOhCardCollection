@@ -10,6 +10,7 @@ import {
     clampPage
 } from './assets/js/filters.js';
 import { FACETS, facetOptions, selectionChips } from './assets/js/facets.js';
+import { focusIndexAfterRemoval } from './assets/js/focus.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
 import { setToggleState, setExclusiveToggle } from './assets/js/toggle.js';
@@ -310,7 +311,18 @@ function renderFacetPanel(panel) {
         matchesQuery: card => matchesSearch(card, searchQuery)
     });
 
+    // Ticking a box calls this function to redraw the counts, which throws
+    // away and recreates the very checkbox that is mid-`change` event. A
+    // focused element removed from the document loses focus to <body>, so
+    // without remembering which value held it, every tick in an open panel
+    // would strand a keyboard or screen-reader user — see focus.js.
+    const focusedValue = panel.contains(document.activeElement)
+        ? document.activeElement.value
+        : null;
+
     panel.replaceChildren();
+
+    let focusTarget = null;
 
     for (const option of options) {
         const selected = (activeFacets[facetKey] ?? []).includes(option.value);
@@ -327,6 +339,10 @@ function renderFacetPanel(panel) {
         box.value = option.value;
         box.addEventListener('change', () => toggleFacetValue(facetKey, option.value));
 
+        if (focusedValue !== null && option.value === focusedValue) {
+            focusTarget = box;
+        }
+
         const text = document.createElement('span');
         text.className = 'facet-option-label';
         text.textContent = option.label;
@@ -338,6 +354,11 @@ function renderFacetPanel(panel) {
         row.append(box, text, count);
         panel.appendChild(row);
     }
+
+    // The toggled value always survives the rebuild — facetOptions keeps
+    // every value the collection has ever shown, even one whose live count is
+    // now 0 — so this is a real restore, not a best-effort one.
+    focusTarget?.focus();
 }
 
 /**
@@ -349,9 +370,17 @@ function renderChipTray() {
     const tray = document.getElementById('chipTray');
     const chips = selectionChips(activeFacets);
 
+    // Removing a chip rebuilds the whole tray, including the chip that was
+    // just clicked. Capture its position before it is gone, so focus can land
+    // on whichever chip now occupies that slot instead of falling to <body>
+    // — see focus.js for the index math.
+    const focusedIndex = [...tray.children].indexOf(document.activeElement);
+
     tray.replaceChildren();
     tray.hidden = chips.length === 0;
     document.getElementById('clearFilters').hidden = chips.length === 0 && searchQuery === '';
+
+    const rendered = [];
 
     for (const chip of chips) {
         const button = document.createElement('button');
@@ -373,6 +402,26 @@ function renderChipTray() {
 
         button.append(text, cross);
         tray.appendChild(button);
+        rendered.push(button);
+    }
+
+    if (focusedIndex === -1) return;
+
+    const nextIndex = focusIndexAfterRemoval(focusedIndex, rendered.length);
+    if (nextIndex !== -1) {
+        rendered[nextIndex].focus();
+        return;
+    }
+
+    // The tray is now empty. Land on whatever is next in the toolbar instead
+    // of letting focus fall out to <body> — the clear button when it is still
+    // visible (a search term can keep it shown after the last chip goes),
+    // the search box otherwise.
+    const clearButton = document.getElementById('clearFilters');
+    if (clearButton && !clearButton.hidden) {
+        clearButton.focus();
+    } else {
+        document.getElementById('searchInput')?.focus();
     }
 }
 
@@ -406,8 +455,11 @@ function buildFacetBar() {
     bar.replaceChildren();
 
     for (const facet of FACETS) {
-        // A facet no card has a value for would be an empty menu, so it is not
-        // shown at all — Summon Type today, which every card leaves null.
+        // A facet no card has a value for would render an empty menu, so it
+        // is skipped entirely. Every facet in FACETS has at least one value
+        // today, but Summon Type — Fusion / Synchro / XYZ / Ritual / Link /
+        // None, per CLAUDE.md §3 — is exactly this case should it ever be
+        // added: every card in the collection currently leaves it null.
         if (facetOptions(allCards, facet.key).length === 0) continue;
         bar.appendChild(buildFacet(facet));
     }
