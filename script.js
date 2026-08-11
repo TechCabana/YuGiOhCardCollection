@@ -1,4 +1,4 @@
-import { loadCards } from './assets/js/data.js';
+import { loadCards, cacheBustedUrl, formatUpdatedAt } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
 import {
     filterCards,
@@ -9,7 +9,7 @@ import {
     getPageSlice,
     clampPage
 } from './assets/js/filters.js';
-import { FACETS, facetOptions, selectionChips } from './assets/js/facets.js';
+import { FACETS, facetOptions, selectionChips, pruneSelection, shouldReopenFacet } from './assets/js/facets.js';
 import { focusIndexAfterRemoval } from './assets/js/focus.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
@@ -112,6 +112,45 @@ function resetGridControls() {
     document.getElementById('nextPage').disabled = true;
 }
 
+/**
+ * Build the control that brings a side card to the centre.
+ *
+ * A real `<button>`, so focus, Enter and Space all work without being
+ * reimplemented. Before this the behaviour hung off an onclick on the card
+ * element itself, which had no tabindex, no role and no key handler: the
+ * affordance simply did not exist for anyone not using a pointer.
+ *
+ * It is an empty overlay stretched across the card rather than a wrapper
+ * around the card's markup, because a button may only contain phrasing
+ * content — wrapping would mean swallowing the `<h3>` card name and losing it
+ * from the document outline, trading one accessibility problem for another.
+ *
+ * The card's own text is therefore not the button's name, so the name is set
+ * explicitly. `setAttribute` rather than string interpolation: the card name
+ * comes from Airtable and is not to be trusted into markup.
+ *
+ * @param {object} card - the card the button acts on
+ * @param {number} index - its index in the filtered collection
+ * @returns {HTMLElement} the button
+ */
+function buildCarouselCardAction(card, index) {
+    const action = document.createElement('button');
+    action.type = 'button';
+    action.className = 'carousel-card-action';
+    action.setAttribute('aria-label', `Show ${card?.name ?? 'card'}`);
+
+    action.addEventListener('click', () => {
+        currentIndex = index;
+        updateCarousel();
+        // The card just activated is now the centre one and has no button, so
+        // focus would fall to <body>. Hand it to the control that governs the
+        // carousel instead, which is where a keyboard user needs to be next.
+        document.getElementById('nextBtn')?.focus();
+    });
+
+    return action;
+}
+
 function updateCarousel() {
     const stage = document.getElementById('carouselStage');
     stage.innerHTML = '';
@@ -135,12 +174,13 @@ function updateCarousel() {
         const cardEl = document.createElement('li');
         cardEl.className = `carousel-card ${position}`;
         cardEl.innerHTML = buildCardHTML(card);
-        cardEl.onclick = () => {
-            if (!isCenter) {
-                currentIndex = index;
-                updateCarousel();
-            }
-        };
+
+        // Only a side card does anything when activated, so only a side card
+        // gets a control. The centre card is already centred.
+        if (!isCenter) {
+            cardEl.appendChild(buildCarouselCardAction(card, index));
+        }
+
         stage.appendChild(cardEl);
     });
 
@@ -181,7 +221,19 @@ function updateGrid() {
     document.getElementById('nextPage').disabled = currentPage === totalPages;
 }
 
-function applyFilters() {
+/**
+ * Re-run the filter/search pipeline and re-render both views' controls.
+ *
+ * @param {object} [options]
+ * @param {boolean} [options.preservePosition] - keep the current card/page
+ *   rather than snapping back to the first. Every caller except a refresh
+ *   changed the filter criteria themselves, so starting over at card one is
+ *   the right call for them; a refresh changed only the data behind an
+ *   unchanged selection, and the card for this feature is explicit that the
+ *   user's context — filters, search term and view — must survive it.
+ * @returns {void}
+ */
+function applyFilters({ preservePosition = false } = {}) {
     // Facets AND against each other; values inside a facet OR. The search term
     // ANDs on top of all of them, all handled inside filterCards().
     filteredCards = filterCards(allCards, {
@@ -189,8 +241,16 @@ function applyFilters() {
         query: searchQuery
     });
 
-    currentIndex = 0;
-    currentPage = 1;
+    if (preservePosition) {
+        // Clamped rather than trusted outright: the refreshed collection can
+        // be shorter than the one being browsed, and both helpers already
+        // handle zero cards without a caller-side special case.
+        currentIndex = wrapIndex(currentIndex, filteredCards.length);
+        currentPage = clampPage(currentPage, getTotalPages(filteredCards.length, cardsPerPage));
+    } else {
+        currentIndex = 0;
+        currentPage = 1;
+    }
 
     // After filtering, not before: every count in every menu is stated against
     // the filters that are actually applied now.
@@ -448,12 +508,30 @@ function renderFilterControls() {
 /**
  * Build the facet toolbar once the collection is known.
  *
+ * Called again by refreshCollection() once the toolbar already has live
+ * panels in it — possibly one open, possibly with focus inside it, since
+ * neither the panels nor the search box are disabled while a refresh is in
+ * flight. `replaceChildren()` below throws all of that away unconditionally,
+ * which would otherwise silently close whatever the user had open and drop
+ * their focus to `<body>` out from under them. The open panel is captured
+ * before the rebuild and reopened after, so a refresh cannot do that.
+ *
  * @returns {void}
  */
 function buildFacetBar() {
     const bar = document.getElementById('facetBar');
+
+    const openPanel = bar.querySelector('.facet-panel:not([hidden])');
+    const reopenFacetKey = openPanel?.dataset.facetKey ?? null;
+    // Only meaningful if focus was actually inside the open panel — an open
+    // panel with focus elsewhere on the page has nothing worth restoring.
+    const reopenValue = openPanel?.contains(document.activeElement)
+        ? (document.activeElement.value ?? null)
+        : null;
+
     bar.replaceChildren();
 
+    const availableFacetKeys = [];
     for (const facet of FACETS) {
         // A facet no card has a value for would render an empty menu, so it
         // is skipped entirely. Every facet in FACETS has at least one value
@@ -462,9 +540,26 @@ function buildFacetBar() {
         // added: every card in the collection currently leaves it null.
         if (facetOptions(allCards, facet.key).length === 0) continue;
         bar.appendChild(buildFacet(facet));
+        availableFacetKeys.push(facet.key);
     }
 
     renderFilterControls();
+
+    if (shouldReopenFacet(reopenFacetKey, availableFacetKeys)) {
+        const panel = document.getElementById(`facet-panel-${reopenFacetKey}`);
+        const button = document.getElementById(`facet-btn-${reopenFacetKey}`);
+        panel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
+
+        // The value itself might be the very thing the refresh pruned away —
+        // shouldReopenFacet only promises the facet still exists, not that
+        // every value in it does — so the button is a real fallback, not a
+        // formality.
+        const target = reopenValue !== null
+            ? [...panel.querySelectorAll('input[type="checkbox"]')].find(box => box.value === reopenValue)
+            : null;
+        (target ?? button).focus();
+    }
 }
 
 // A click anywhere else closes the open panel. Escape does the same but also
@@ -630,6 +725,69 @@ function setDataReady(ready) {
 }
 
 /**
+ * Re-fetch the deployed collection without reloading the page.
+ *
+ * What it shows is the last data the pipeline deployed, not Airtable live —
+ * a static page has nowhere safe to keep a token, which is the same reason
+ * client-side Airtable was rejected outright (CLAUDE.md §3).
+ *
+ * The user's context survives on purpose: the filters, the search term, the
+ * view and the scroll position are all left alone. Only a selected value that
+ * no longer exists anywhere in the new data is dropped, because that one would
+ * filter the page down to nothing with no way for the user to know why.
+ *
+ * A failure keeps the collection already on screen. Replacing a working page
+ * with an error because a refresh failed would lose the user more than the
+ * stale data cost them.
+ *
+ * @returns {Promise<void>}
+ */
+async function refreshCollection() {
+    const button = document.getElementById('refreshBtn');
+    if (button.disabled) return;
+
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    try {
+        const { cards, skipped } = await loadCards(cacheBustedUrl());
+
+        if (skipped > 0) {
+            console.warn(`Skipped ${skipped} card record(s) missing required fields.`);
+        }
+
+        // An empty payload is treated as a failed refresh rather than an empty
+        // collection: the pipeline refuses to publish zero cards, so this can
+        // only be a bad deploy or a truncated response.
+        if (cards.length === 0) {
+            throw new Error('The refreshed collection came back empty. Keeping the cards already loaded.');
+        }
+
+        allCards = cards;
+        activeFacets = pruneSelection(activeFacets, allCards);
+
+        // Values and counts both come from the collection, so the toolbar is
+        // rebuilt rather than left describing the previous data. The filter
+        // criteria did not change, only the data behind them, so the card the
+        // user was looking at is kept rather than snapped back to the first —
+        // see applyFilters()'s preservePosition.
+        buildFacetBar();
+        applyFilters({ preservePosition: true });
+
+        setStatus(null);
+        document.getElementById('refreshStamp').textContent = formatUpdatedAt(new Date());
+    } catch (error) {
+        console.error(error);
+        setStatus(error.message, true);
+    } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+    }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', refreshCollection);
+
+/**
  * Load the collection, then render it.
  *
  * A failure leaves a readable message on screen rather than a blank page.
@@ -657,6 +815,7 @@ async function init() {
         // toolbar cannot be built until the data is in.
         buildFacetBar();
         applyFilters();
+        document.getElementById('refreshStamp').textContent = formatUpdatedAt(new Date());
     } catch (error) {
         console.error(error);
         setStatus(error.message, true);
