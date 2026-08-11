@@ -11,7 +11,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
-[![Tests](https://img.shields.io/badge/tests-468%20passing-2EA043?style=flat)](#testing)
+[![Tests](https://img.shields.io/badge/tests-505%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
 [Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
@@ -110,7 +110,7 @@ The only dependency is Vitest, and it is there for the tests.
 npm test
 ```
 
-Twenty-one files, 468 tests, all passing. If that is what you see, the checkout is
+Twenty-three files, 505 tests, all passing. If that is what you see, the checkout is
 good.
 
 ### 5. Configure Airtable
@@ -367,6 +367,8 @@ YuGiOhCardCollection/
 | `assets/js/frames.js` | Derives a card frame (Normal, Effect, Ritual, Fusion, Synchro, XYZ, Link, Spell, Trap, Token) from the card type, so colour states what a card is |
 | `assets/js/view.js` | Pure rules for which view is visible, given the selected view and whether the data has loaded |
 | `assets/js/debounce.js` | Debounces the search input |
+| `assets/js/facets.js` | Declares the seven filter facets, reads their values off a card, and counts each option against the other active filters |
+| `assets/js/focus.js` | Index arithmetic for restoring focus after a list is rebuilt in place |
 | `assets/js/toggle.js` | Sets a toggle's class and its `aria-pressed` together, so the announced state cannot drift from the visible one |
 | `assets/js/keyboard.js` | Detects text-entry targets so global shortcuts do not hijack typing |
 | `scripts/ygoprodeck-client.mjs` | YGOPRODeck API client, `db.ygoprodeck.com/api/v7` |
@@ -392,7 +394,7 @@ npm test              # single run
 npm run test:watch    # watch mode
 ```
 
-Twenty-one files, 468 tests, all passing as of the last run on Node 24.16.0.
+Twenty-three files, 505 tests, all passing as of the last run on Node 24.16.0.
 
 | Suite | Covers |
 | --- | --- |
@@ -407,6 +409,8 @@ Twenty-one files, 468 tests, all passing as of the last run on Node 24.16.0.
 | `view.test.js` | Which view is visible, given the selected view and the load state |
 | `debounce.test.js` | Timer behaviour of the search debounce |
 | `keyboard.test.js` | Text-entry target detection |
+| `facets.test.js` | Facet definitions, the exclude-own-facet counting rule, and menu counts agreeing with what filtering returns |
+| `focus.test.js` | Where focus lands after a rebuilt list loses the element that held it |
 | `licence.test.js` | The four places the licence is stated agreeing with each other, and the bundled font licence |
 | `tokens.test.js` | Reads the stylesheets as text to enforce that colour values live in `tokens.css` and nowhere else, and computes the WCAG AA contrast of every card-frame ink |
 | `layout.test.js` | Guards the 59:86 card geometry against a fixed pixel height creeping back onto the art box |
