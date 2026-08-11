@@ -246,6 +246,40 @@ export function selectionChips(selection = {}) {
 }
 
 /**
+ * Drop selected values that no card in the collection can satisfy.
+ *
+ * The refresh button replaces the collection under a live selection. A value
+ * that has since left the data — the last Earth card removed, a set no longer
+ * held — would otherwise sit in the chip tray filtering everything out, and
+ * the page would look broken rather than empty for a reason.
+ *
+ * Only impossible values are dropped. A value that merely returns nothing in
+ * combination with another filter is kept, because removing the other filter
+ * brings it back.
+ *
+ * @param {Record<string, string[]>} [selection] - selected values keyed by facet
+ * @param {object[]} [cards] - the collection to check against
+ * @returns {Record<string, string[]>} a new selection holding only reachable values
+ */
+export function pruneSelection(selection = {}, cards = []) {
+    const pruned = {};
+
+    for (const [facetKey, selected] of Object.entries(selection)) {
+        const facet = FACETS_BY_KEY[facetKey];
+        // An unknown facet key cannot be checked, so it is dropped: it can only
+        // be a leftover from a facet that no longer exists.
+        if (!facet || !Array.isArray(selected)) continue;
+
+        const available = new Set(cards.flatMap(card => facet.values(card)));
+        const kept = selected.filter(value => available.has(value));
+
+        if (kept.length > 0) pruned[facetKey] = kept;
+    }
+
+    return pruned;
+}
+
+/**
  * Count how many values are selected across every facet.
  *
  * @param {Record<string, string[]>} [selection] - selected values keyed by facet

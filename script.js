@@ -1,4 +1,4 @@
-import { loadCards } from './assets/js/data.js';
+import { loadCards, cacheBustedUrl, formatUpdatedAt } from './assets/js/data.js';
 import { buildCardHTML } from './assets/js/render.js';
 import {
     filterCards,
@@ -9,7 +9,7 @@ import {
     getPageSlice,
     clampPage
 } from './assets/js/filters.js';
-import { FACETS, facetOptions, selectionChips } from './assets/js/facets.js';
+import { FACETS, facetOptions, selectionChips, pruneSelection } from './assets/js/facets.js';
 import { focusIndexAfterRemoval } from './assets/js/focus.js';
 import { debounce } from './assets/js/debounce.js';
 import { isTextEntryTarget } from './assets/js/keyboard.js';
@@ -630,6 +630,66 @@ function setDataReady(ready) {
 }
 
 /**
+ * Re-fetch the deployed collection without reloading the page.
+ *
+ * What it shows is the last data the pipeline deployed, not Airtable live —
+ * a static page has nowhere safe to keep a token, which is the same reason
+ * client-side Airtable was rejected outright (CLAUDE.md §3).
+ *
+ * The user's context survives on purpose: the filters, the search term, the
+ * view and the scroll position are all left alone. Only a selected value that
+ * no longer exists anywhere in the new data is dropped, because that one would
+ * filter the page down to nothing with no way for the user to know why.
+ *
+ * A failure keeps the collection already on screen. Replacing a working page
+ * with an error because a refresh failed would lose the user more than the
+ * stale data cost them.
+ *
+ * @returns {Promise<void>}
+ */
+async function refreshCollection() {
+    const button = document.getElementById('refreshBtn');
+    if (button.disabled) return;
+
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    try {
+        const { cards, skipped } = await loadCards(cacheBustedUrl());
+
+        if (skipped > 0) {
+            console.warn(`Skipped ${skipped} card record(s) missing required fields.`);
+        }
+
+        // An empty payload is treated as a failed refresh rather than an empty
+        // collection: the pipeline refuses to publish zero cards, so this can
+        // only be a bad deploy or a truncated response.
+        if (cards.length === 0) {
+            throw new Error('The refreshed collection came back empty. Keeping the cards already loaded.');
+        }
+
+        allCards = cards;
+        activeFacets = pruneSelection(activeFacets, allCards);
+
+        // Values and counts both come from the collection, so the toolbar is
+        // rebuilt rather than left describing the previous data.
+        buildFacetBar();
+        applyFilters();
+
+        setStatus(null);
+        document.getElementById('refreshStamp').textContent = formatUpdatedAt(new Date());
+    } catch (error) {
+        console.error(error);
+        setStatus(error.message, true);
+    } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+    }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', refreshCollection);
+
+/**
  * Load the collection, then render it.
  *
  * A failure leaves a readable message on screen rather than a blank page.
@@ -657,6 +717,7 @@ async function init() {
         // toolbar cannot be built until the data is in.
         buildFacetBar();
         applyFilters();
+        document.getElementById('refreshStamp').textContent = formatUpdatedAt(new Date());
     } catch (error) {
         console.error(error);
         setStatus(error.message, true);
