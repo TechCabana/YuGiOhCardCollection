@@ -146,7 +146,7 @@ describe('control labelling', () => {
     }));
 
     it('finds the buttons, so the assertions below are not vacuous', () => {
-        expect(buttons.length).toBeGreaterThanOrEqual(8);
+        expect(buttons.length).toBeGreaterThanOrEqual(4);
     });
 
     // A button whose only content is a glyph is announced by that glyph's
@@ -166,13 +166,21 @@ describe('control labelling', () => {
         }
     });
 
-    it('gives every toggle an initial aria-pressed', () => {
-        const toggles = buttons.filter(({ attributes }) => /class="(pill|view-btn)/.test(attributes));
+    // The filter pills are gone: the facet buttons that replaced them are
+    // built from the data at runtime, so index.html carries only the container
+    // and the view toggle.
+    it('gives every toggle in the served markup an initial aria-pressed', () => {
+        const toggles = buttons.filter(({ attributes }) => /class="view-btn/.test(attributes));
 
-        expect(toggles).toHaveLength(6);
+        expect(toggles).toHaveLength(2);
         for (const toggle of toggles) {
             expect(toggle.attributes).toMatch(/aria-pressed="(true|false)"/);
         }
+    });
+
+    it('leaves an empty facet bar for the toolbar to be built into', () => {
+        expect(indexHtml).toMatch(/<div class="facet-bar" id="facetBar"><\/div>/);
+        expect(indexHtml).not.toMatch(/class="pill"/);
     });
 
     // The one toggle that starts engaged is the default view, and its markup

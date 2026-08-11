@@ -151,6 +151,16 @@ input {
     border-color: var(--danger-border);
 }
 
+/*
+ * Both views render into a <ul>, so the empty state is wrapped in an <li> to
+ * stay inside the list. The wrapper takes the full width in either container:
+ * the grid also gets an inline grid-column spanning every column, and the
+ * carousel stage is a flex row where an unsized item would shrink to its text.
+ */
+.empty-state-item {
+    width: 100%;
+}
+
 /* Shown in either view when no cards match the current filters. */
 .empty-state {
     display: flex;
@@ -262,49 +272,162 @@ input {
     color: var(--text-muted);
 }
 
-.filter-section {
+/*
+ * Facet toolbar. One dropdown per facet, values and counts inside.
+ *
+ * The row it replaces was four fixed pills filtering on card type — the one
+ * dimension this collection does not vary by. A dropdown holds a value list
+ * with counts, which is most of a sidebar's usefulness without a sidebar's
+ * claim on the width the card art needs.
+ */
+.facet-bar {
     display: flex;
     gap: var(--space-1);
     flex-wrap: wrap;
     align-items: center;
 }
 
-.filter-pills {
-    display: flex;
-    gap: var(--space-1);
-    flex-wrap: wrap;
+/* The panel is positioned against this, so the wrapper is the containing block. */
+.facet {
+    position: relative;
 }
 
-/* A pill is one of the few things that earns the fully round radius. */
-.pill {
+.facet-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     padding: 0.5rem 1rem;
+    min-height: 44px;
     border: 1px solid var(--border-subtle);
     background: var(--surface-2);
     color: var(--text-secondary);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    /* transform is named explicitly because :hover lifts the pill 2px. */
+    font-size: var(--text-sm);
     transition: background-color var(--duration-state) var(--ease-out),
                 border-color var(--duration-state) var(--ease-out),
-                color var(--duration-state) var(--ease-out),
-                transform var(--duration-state) var(--ease-out);
-    font-size: var(--text-sm);
-    user-select: none;
+                color var(--duration-state) var(--ease-out);
 }
 
-.pill:hover {
+.facet-btn:hover {
     background: var(--surface-3);
     border-color: var(--border-strong);
     color: var(--text-primary);
-    transform: translateY(-2px);
 }
 
-/* Active filter is state the user caused, so it takes the accent. */
-.pill.active {
+/* A facet doing something takes the interaction accent, like an active pill. */
+.facet-btn.is-active {
+    border-color: var(--accent-border);
+    background: var(--accent-wash);
+    color: var(--text-primary);
+}
+
+.facet-btn-count {
+    padding: 0 0.4rem;
+    border-radius: var(--radius-pill);
     background: var(--accent);
-    border-color: var(--accent);
     color: var(--accent-fg);
+    font-size: var(--text-2xs);
     font-weight: var(--weight-semibold);
+}
+
+/*
+ * Anchored to its button rather than to the toolbar, so a wrapped row of
+ * facets still opens each panel under the right control. max-height plus
+ * scrolling because Set has thirty values and the viewport does not.
+ */
+.facet-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 20;
+    min-width: 14rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    padding: var(--space-1);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+}
+
+.facet-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.facet-option:hover {
+    background: var(--surface-3);
+    color: var(--text-primary);
+}
+
+.facet-option-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.facet-option-count {
+    color: var(--text-muted);
+    font-size: var(--text-2xs);
+    font-variant-numeric: tabular-nums;
+}
+
+/*
+ * A value that would return nothing under the current filters. Dimmed rather
+ * than removed: a menu that reshuffles as boxes are ticked is harder to use
+ * than one with a few quiet rows, and the zero is information.
+ */
+.facet-option.is-empty {
+    opacity: 0.45;
+}
+
+/*
+ * Active filters, one chip each. This is the part the old pill row got wrong:
+ * the only record of what was filtering was a highlighted pill, and once the
+ * toolbar scrolled away there was none at all.
+ */
+.chip-tray {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    align-items: center;
+    padding: 0 var(--space-4) var(--space-2) var(--space-4);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    min-height: 32px;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-wash);
+    color: var(--text-primary);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: var(--text-xs);
+    transition: background-color var(--duration-state) var(--ease-out),
+                border-color var(--duration-state) var(--ease-out);
+}
+
+.chip:hover {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+}
+
+.chip-remove {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: 1;
 }
 
 .clear-btn {
@@ -985,20 +1108,25 @@ input {
         width: 100%;
     }
 
-    .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-    }
-
-    .filter-pills {
+    /* Two facet buttons per row rather than a horizontal scroll. */
+    .facet-bar {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
 
-    /* 44px is the minimum comfortable touch target; pills were ~32px. */
-    .pill,
+    /*
+     * A panel anchored to a half-width button would be clipped by the viewport
+     * on the right-hand column, so on a phone it spans the toolbar instead.
+     */
+    .facet-panel {
+        left: 0;
+        right: 0;
+        min-width: 0;
+    }
+
+    /* 44px is the minimum comfortable touch target. */
+    .facet-btn,
     .clear-btn,
     .view-btn {
         min-height: 44px;
