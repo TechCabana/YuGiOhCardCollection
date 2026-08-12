@@ -31,9 +31,31 @@ describe('tokens.css', () => {
         expect(declaredProperties(tokensCss).length).toBeGreaterThan(0);
     });
 
-    it('declares no duplicate tokens', () => {
-        const declared = declaredProperties(tokensCss);
-        expect(declared.length).toBe(new Set(declared).size);
+    // Per block, not per file: the reduced-motion query redeclares the two
+    // duration tokens on purpose, and that is the one legitimate reason for a
+    // token to appear twice. A second declaration inside the same block is
+    // still a mistake — the later value silently wins.
+    it('declares no duplicate tokens within a block', () => {
+        for (const block of tokensCss.match(/{[^{}]*}/g) ?? []) {
+            const declared = declaredProperties(block);
+            expect(declared.length).toBe(new Set(declared).size);
+        }
+    });
+
+    it('redeclares a token only under a media query that explains it', () => {
+        const counts = new Map();
+        for (const name of declaredProperties(tokensCss)) {
+            counts.set(name, (counts.get(name) ?? 0) + 1);
+        }
+
+        const redeclared = [...counts].filter(([, count]) => count > 1).map(([name]) => name);
+        expect(redeclared.sort()).toEqual(['--duration-state', '--duration-view']);
+
+        const query = tokensCss.match(/@media \(prefers-reduced-motion: reduce\)\s*{[\s\S]*?}\s*}/);
+        expect(query).not.toBeNull();
+        for (const name of redeclared) {
+            expect(query[0]).toContain(name);
+        }
     });
 
     it('carries no token that styles.css never uses', () => {
@@ -150,5 +172,61 @@ describe('styles.css', () => {
         const open = (stylesCss.match(/{/g) ?? []).length;
         const close = (stylesCss.match(/}/g) ?? []).length;
         expect(open).toBe(close);
+    });
+});
+
+/**
+ * Text colour against every surface it can land on.
+ *
+ * The frame inks were already checked this way; the three text tokens were
+ * not, and --text-muted was the one that failed — 4.16 against --surface-2
+ * behind .view-btn and .stat-label, 3.79 on a --surface-3 hover. "Measured
+ * against --surface-1", which is what the token comment used to say, is not
+ * the same as measured against what it is used on.
+ */
+describe('text tokens', () => {
+    const textTokens = ['--text-primary', '--text-secondary', '--text-muted'];
+
+    // Every ground a text token sits on, --bg included: the page itself is
+    // darker than surface-1, so it is the easy case, and surface-3 the hard one.
+    const surfaces = ['--bg', '--surface-1', '--surface-2', '--surface-3'];
+
+    it.each(textTokens)('%s is a six-digit hex', (name) => {
+        expect(tokenValue(tokensCss, name)).toMatch(/^#[0-9a-f]{6}$/i);
+    });
+
+    it.each(textTokens)('%s clears WCAG AA on every surface', (name) => {
+        const ink = tokenValue(tokensCss, name);
+
+        for (const surface of surfaces) {
+            const ratio = contrastRatio(ink, tokenValue(tokensCss, surface));
+            expect(`${name} on ${surface}: ${ratio.toFixed(2)}`).toBe(
+                `${name} on ${surface}: ${Math.max(ratio, 4.5).toFixed(2)}`
+            );
+        }
+    });
+
+    it('keeps the three steps of emphasis distinct and ordered', () => {
+        const [primary, secondary, muted] = textTokens.map((name) =>
+            luminance(tokenValue(tokensCss, name))
+        );
+
+        expect(primary).toBeGreaterThan(secondary);
+        expect(secondary).toBeGreaterThan(muted);
+    });
+
+    it('gives the accent enough contrast to carry text on the page ground', () => {
+        const accent = tokenValue(tokensCss, '--accent');
+        expect(contrastRatio(accent, tokenValue(tokensCss, '--bg'))).toBeGreaterThanOrEqual(4.5);
+    });
+
+    // The focus ring is a non-text element: AA asks 3:1 for those, and it has
+    // to be visible against the darkest and the lightest surface alike.
+    it('keeps the focus ring visible against every surface', () => {
+        const accent = tokenValue(tokensCss, '--accent');
+
+        for (const surface of surfaces) {
+            expect(contrastRatio(accent, tokenValue(tokensCss, surface))).toBeGreaterThanOrEqual(3);
+        }
     });
 });
