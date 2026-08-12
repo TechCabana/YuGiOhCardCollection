@@ -114,3 +114,50 @@ describe('workflow Node version', () => {
         }
     });
 });
+
+/**
+ * The deploy copies an allowlist of served files into _site. A file added to
+ * the repo root is therefore not published until it is named in both
+ * workflows, and nothing else notices: the deploy stays green and the file is
+ * simply a 404. These tests are what notices.
+ */
+describe('the deployed file list', () => {
+    /**
+     * The files copied into the artifact root — the `cp a b c _site/` line
+     * only. Anchored to the end of the line so that `cp -r assets
+     * _site/assets`, which copies a directory rather than a root file, is not
+     * pulled in. Flags are dropped so a future `-p` cannot read as a filename.
+     */
+    const copied_files = (text) =>
+        [...text.matchAll(/^\s*cp\s+([^\n]*?)\s+_site\/\s*$/gm)]
+            .flatMap((match) => match[1].split(/\s+/))
+            .filter((argument) => !argument.startsWith('-'));
+
+    const deploying_workflows = workflows.filter(({ text }) => text.includes('_site'));
+
+    it('is declared by both deploying workflows', () => {
+        expect(deploying_workflows.map((workflow) => workflow.name).sort()).toEqual([
+            'pages.yml',
+            'process-data.yml'
+        ]);
+    });
+
+    it.each(deploying_workflows)('publishes every served root file in $name', ({ text }) => {
+        const copied = copied_files(text);
+        for (const file of ['index.html', '404.html', 'styles.css', 'script.js', '.nojekyll']) {
+            expect(copied).toContain(file);
+        }
+    });
+
+    it.each(deploying_workflows)('keeps repo metadata out of the artifact in $name', ({ text }) => {
+        const copied = copied_files(text);
+        for (const file of ['CLAUDE.md', 'package.json', '.env', 'README.md']) {
+            expect(copied).not.toContain(file);
+        }
+    });
+
+    it('copies the same set in both workflows, so a deploy path cannot drift', () => {
+        const [first, second] = deploying_workflows.map(({ text }) => copied_files(text).sort());
+        expect(first).toEqual(second);
+    });
+});
