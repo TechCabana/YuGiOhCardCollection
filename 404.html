@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found — Yu-Gi-Oh! Collection</title>
+    <!--
+      A 404 must never be indexed: it is not a page anyone should arrive at
+      from a search result, and GitHub Pages serves it for every unmatched
+      path, so one indexed copy would stand in for thousands of URLs.
+    -->
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0b0b0d">
+
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="assets/icons/favicon.ico" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <!--
+      Same two stylesheets, same order, as index.html: this page is the site,
+      not a separate thing that resembles it.
+
+      Paths are relative, and GitHub Pages serves 404.html for any depth of
+      unmatched path — /YuGiOhCardCollection/nope/nope resolves these against
+      that directory and fails. The <base> below pins them to the site root so
+      the page is styled however deep the missing URL was.
+    -->
+    <base href="/YuGiOhCardCollection/">
+    <link rel="stylesheet" href="assets/css/tokens.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>My Yu-Gi-Oh! Collection</h1>
+    </header>
+
+    <main>
+        <!--
+          Reuses the empty state the collection already shows when a filter
+          matches nothing: the same block, the same words for the same shape of
+          problem. Nothing here is a 404-only component.
+        -->
+        <div class="empty-state">
+            <p class="empty-state-title">That page is not here</p>
+            <p class="empty-state-hint">
+                The link may be old, or the address mistyped. The collection itself is
+                one click away.
+            </p>
+            <a class="empty-state-action" href="./">Back to the collection</a>
+        </div>
+    </main>
+</body>
+</html>
