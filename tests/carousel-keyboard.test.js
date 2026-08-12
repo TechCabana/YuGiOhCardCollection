@@ -118,3 +118,40 @@ describe('the focus ring stays perceivable on a dimmed side card', () => {
         expect(undim).toMatch(/filter:\s*none/);
     });
 });
+
+/**
+ * The side cards stay in the accessibility tree.
+ *
+ * The accessibility card asked for the dimmed side cards to be marked
+ * aria-hidden, on the reasoning that a screen reader was reading duplicate
+ * card content. Both halves of that have since been answered somewhere else:
+ * getCarouselSlots stopped repeating a card index when fewer than five match,
+ * so the content is not duplicated, and each side card now carries a real
+ * button, so hiding it would hide a focusable control — a worse violation
+ * than the one it was meant to fix, and one axe reports directly.
+ *
+ * These assertions record that decision, so nobody implements the original
+ * bullet later and quietly breaks the keyboard path.
+ */
+describe('the side cards are not hidden from assistive technology', () => {
+    it('never marks a carousel slot aria-hidden', () => {
+        expect(updateCarousel).not.toMatch(/aria-hidden/);
+        expect(actionBuilder).not.toMatch(/aria-hidden/);
+    });
+
+    it('never marks one inert either, which would take the focus with it', () => {
+        expect(updateCarousel).not.toMatch(/\binert\b/);
+        expect(actionBuilder).not.toMatch(/\binert\b/);
+    });
+
+    // The premise of the original bullet: that the slots repeat a card. They
+    // do not, at any collection size the carousel can be asked to show.
+    it.each([1, 2, 3, 4, 5, 9, 128])('shows %i cards without repeating one', (count) => {
+        const cards = Array.from({ length: count }, (_, index) => ({ name: `Card ${index}` }));
+
+        for (let current = 0; current < count; current += 1) {
+            const indexes = getCarouselSlots(cards, current).map((slot) => slot.index);
+            expect(new Set(indexes).size).toBe(indexes.length);
+        }
+    });
+});

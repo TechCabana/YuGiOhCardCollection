@@ -87,3 +87,83 @@ describe('animations', () => {
         expect(stylesCss).not.toMatch(/\binfinite\b/);
     });
 });
+
+/**
+ * Reduced motion.
+ *
+ * The OS setting is the one accessibility signal a browser hands over
+ * directly, and the stylesheet had no answer for it at all — eleven
+ * transitions and four hover transforms ran regardless of what the user had
+ * asked their machine for.
+ *
+ * Checked as text for the same reason the rest of this file is: nothing here
+ * is about how a browser computes a value, and a media query that stops
+ * matching would not fail anything else.
+ */
+describe('prefers-reduced-motion', () => {
+    /** The body of the reduced-motion query in a stylesheet, or null. */
+    const reducedMotionBlock = (css) => {
+        const start = css.search(/@media \(prefers-reduced-motion: reduce\)/);
+        if (start === -1) return null;
+
+        // Walk the braces rather than matching a fixed shape: the block holds
+        // nested rules, which a lazy regex would cut short at the first }.
+        let depth = 0;
+        for (let index = css.indexOf('{', start); index < css.length; index += 1) {
+            if (css[index] === '{') depth += 1;
+            if (css[index] === '}') {
+                depth -= 1;
+                if (depth === 0) return css.slice(start, index + 1);
+            }
+        }
+
+        return null;
+    };
+
+    it('is answered by the token layer', () => {
+        expect(reducedMotionBlock(tokensCss)).not.toBeNull();
+    });
+
+    it('collapses both durations, so every transition is covered at once', () => {
+        const block = reducedMotionBlock(tokensCss);
+
+        for (const name of ['--duration-state', '--duration-view']) {
+            const value = block.match(new RegExp(`${name}:\\s*([\\d.]+)ms`));
+            expect(value).not.toBeNull();
+            expect(Number(value[1])).toBeLessThan(1);
+        }
+    });
+
+    // Zero never fires transitionend, so anything waiting on one would hang.
+    it('collapses to a fraction of a millisecond rather than to zero', () => {
+        const block = reducedMotionBlock(tokensCss);
+        expect(block).not.toMatch(/--duration-[a-z]+:\s*0m?s/);
+    });
+
+    it('drops the hover transforms that would otherwise jump instantly', () => {
+        const block = reducedMotionBlock(stylesCss);
+        expect(block).not.toBeNull();
+        expect(block).toMatch(/transform:\s*none/);
+
+        for (const selector of ['.nav-btn:hover', '.page-btn:hover', '.grid-card:hover']) {
+            expect(block).toContain(selector);
+        }
+    });
+
+    // The carousel's transforms place the cards; without them five cards stack
+    // on one spot. Reduced motion asks for less movement, not a broken layout.
+    it('leaves the carousel positioning transforms alone', () => {
+        const block = reducedMotionBlock(stylesCss);
+        for (const selector of ['.pos-left', '.pos-right', '.pos-center']) {
+            expect(block).not.toContain(selector);
+        }
+    });
+
+    it('never uses the no-preference form, which fails closed on old engines', () => {
+        // An engine that does not know the feature matches neither branch, so
+        // wrapping motion in no-preference would silently remove it for
+        // everyone on that engine. reduce is the additive form.
+        expect(tokensCss).not.toMatch(/prefers-reduced-motion:\s*no-preference/);
+        expect(stylesCss).not.toMatch(/prefers-reduced-motion:\s*no-preference/);
+    });
+});
