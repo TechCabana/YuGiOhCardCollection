@@ -41,11 +41,11 @@ const OUTPUT_DIR = resolve(REPO_ROOT, 'assets/icons');
  * @returns {string} the six-digit hex value
  * @throws {Error} when the token is absent or is not a six-digit hex
  */
-let tokens_css_cache = null;
+let tokensCssCache = null;
 export function token(name) {
-    if (tokens_css_cache === null) tokens_css_cache = readFileSync(TOKENS_CSS, 'utf8');
+    if (tokensCssCache === null) tokensCssCache = readFileSync(TOKENS_CSS, 'utf8');
 
-    const value = tokens_css_cache.match(new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1];
+    const value = tokensCssCache.match(new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1];
     if (!value) throw new Error(`Token ${name} not found, or not a six-digit hex`);
     return value;
 }
