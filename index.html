@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yu-Gi-Oh! Collection</title>
     <!--
+      No card count in any of this copy. The collection grows every time the
+      pipeline runs, and a number here would go stale without anything failing.
+    -->
+    <meta name="description" content="A personal Yu-Gi-Oh! card collection, browsable by type, attribute, rarity, summon type and set, with the real card art and frame colours.">
+    <!--
+      The canonical URL is the Pages one. Without it, the same page served from
+      a fork's Pages site or from a preview host competes with this one in an
+      index, and neither wins outright.
+    -->
+    <link rel="canonical" href="https://techcabana.github.io/YuGiOhCardCollection/">
+    <!-- Matches --bg in tokens.css, so mobile browser chrome joins the page. -->
+    <meta name="theme-color" content="#0b0b0d">
+
+    <!--
+      Link preview. og:image must be absolute — a relative path resolves
+      against the scraper, not the page, so every platform silently drops it.
+      Regenerate the image with `node scripts/make-icons.mjs`.
+    -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Yu-Gi-Oh! Collection">
+    <meta property="og:title" content="Yu-Gi-Oh! Collection">
+    <meta property="og:description" content="A personal Yu-Gi-Oh! card collection, browsable by type, attribute, rarity, summon type and set.">
+    <meta property="og:url" content="https://techcabana.github.io/YuGiOhCardCollection/">
+    <meta property="og:image" content="https://techcabana.github.io/YuGiOhCardCollection/assets/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="A gold card silhouette on a near-black ground, under a band of the ten Yu-Gi-Oh! card-frame colours.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yu-Gi-Oh! Collection">
+    <meta name="twitter:description" content="A personal Yu-Gi-Oh! card collection, browsable by type, attribute, rarity, summon type and set.">
+    <meta name="twitter:image" content="https://techcabana.github.io/YuGiOhCardCollection/assets/icons/og-image.png">
+
+    <!--
+      SVG first: any browser that understands it scales one file to every size.
+      The PNG and the ICO are the fallback, and apple-touch-icon is what iOS
+      uses when the site is added to a home screen.
+    -->
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="assets/icons/favicon.ico" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <!--
       Preloaded because the @font-face that asks for it sits inside styles.css:
       without this the browser cannot discover the font until the stylesheet has
       downloaded and parsed, which is a whole round trip of fallback text.
