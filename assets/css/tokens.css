@@ -33,11 +33,20 @@
     --border-strong: rgba(255, 255, 255, 0.22);
 
     /* ---------------------------------------------------------------
-       Text. Three weights of emphasis, all measured against --surface-1.
+       Text. Three weights of emphasis, measured against every surface
+       rather than against --surface-1 alone.
+
+       That distinction is what moved --text-muted from #7c7c88: it
+       cleared AA on the page ground at 4.77 and failed on the surfaces
+       it is actually used on — 4.16 behind .view-btn and .stat-label,
+       both --surface-2, and 3.79 on a --surface-3 hover. #8c8c98 is the
+       first step up the same neutral that clears 4.5 on all four, at
+       4.70 against the lightest. tokens.test.js computes all twelve
+       ratios, so this cannot be undone quietly.
        --------------------------------------------------------------- */
     --text-primary: #f2f2f4;
     --text-secondary: #b4b4bd;
-    --text-muted: #7c7c88;
+    --text-muted: #8c8c98;
 
     /* ---------------------------------------------------------------
        Accent. Muted gold, one step off the card-frame foil rather than a
@@ -169,4 +178,29 @@
     --duration-state: 160ms;
     --duration-view: 340ms;
     --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/*
+ * Reduced motion, at the token layer.
+ *
+ * Every transition in styles.css takes its duration from one of the two
+ * tokens above, so collapsing them here turns off the site's motion in one
+ * place — including any transition added later, which is the part a
+ * per-rule @media block cannot promise.
+ *
+ * 0.01ms rather than 0: a zero-duration transition never fires transitionend,
+ * and code that waits for one would hang. This is short enough that no frame
+ * renders in between.
+ *
+ * The state change itself still happens, and must: a filter that stops
+ * applying because someone asked for less motion is a broken filter. What
+ * goes is the travel between the two states. styles.css drops the hover
+ * transforms under the same query, because a card that jumps ten pixels
+ * instantly is worse than one that does not move at all.
+ */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --duration-state: 0.01ms;
+        --duration-view: 0.01ms;
+    }
 }

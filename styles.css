@@ -185,7 +185,16 @@ input {
     color: var(--text-muted);
 }
 
+/*
+ * Used by the button in the filtered-empty state and by the link on 404.html.
+ * The flex box and the text-decoration reset are what let an <a> take the
+ * same 44px target as the <button> without a second class.
+ */
 .empty-state-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     margin-top: 0.4rem;
     min-height: 44px;
     padding: 0.6rem 1.4rem;
@@ -1265,5 +1274,29 @@ input {
 
     .status-message {
         margin: 2rem 1rem;
+    }
+}
+
+/*
+ * Reduced motion, part two.
+ *
+ * The durations collapse in tokens.css, which stops anything travelling. What
+ * is left is the movement itself: a card that lifts ten pixels under the
+ * pointer and a control that grows still move, they simply arrive instantly,
+ * and an instant jump is the thing a vestibular trigger notices.
+ *
+ * These are hover states, so nothing is lost by dropping them — the border
+ * and background changes in the same rules still report the hover, and both
+ * of those were always the stronger signal on a near-black surface.
+ *
+ * The carousel's own transforms are deliberately not here. They are not
+ * decoration: pos-left, pos-near and pos-center are what place a card on the
+ * stage, and removing them would stack five cards on one spot.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .nav-btn:hover:not(:disabled),
+    .page-btn:hover:not(:disabled),
+    .grid-card:hover {
+        transform: none;
     }
 }
