@@ -46,13 +46,22 @@ jobs:
 
       - name: Prepare site directory
         # No build step — this is a static site. Copy only what's actually
-        # served (index.html, styles.css, script.js, assets/, data/) into a
-        # clean directory so node_modules/, tests/, scripts/, .github/ and
-        # repo metadata (CLAUDE.md, package.json, .env, ...) never reach the
-        # deployed artifact.
+        # served (index.html, 404.html, styles.css, script.js, assets/, data/)
+        # into a clean directory so node_modules/, tests/, scripts/, .github/
+        # and repo metadata (CLAUDE.md, package.json, .env, ...) never reach
+        # the deployed artifact.
+        #
+        # The copy list is an allowlist, so a new served file is invisible to
+        # the deploy until it is named here. tests/workflows.test.js checks
+        # that every top-level file the site serves appears in both workflows.
+        #
+        # .nojekyll does nothing while Pages deploys from this workflow —
+        # upload-pages-artifact does not run Jekyll at all. It is carried
+        # because the setting is one click away from branch-serving, where
+        # Jekyll would silently drop any path beginning with an underscore.
         run: |
           mkdir _site
-          cp index.html styles.css script.js _site/
+          cp index.html 404.html styles.css script.js .nojekyll _site/
           cp -r assets _site/assets
           cp -r data _site/data
 
