@@ -1015,6 +1015,18 @@ input {
     margin: 0 auto 3rem auto;
 }
 
+/*
+ * A grid card is content, not a control. It carries no click handler and no
+ * activation of any kind, so it deliberately has no `cursor: pointer` and no
+ * focusable element inside it: a pointer cursor on something that does nothing
+ * when clicked is an affordance that lies, and giving it a tab stop would put
+ * an empty stop in the tab order for a keyboard user to land on and find no
+ * action behind.
+ *
+ * The hover response is kept, but small enough to read as depth rather than as
+ * a promise of interactivity. The 10px lift it replaces was the same magnitude
+ * the real controls use.
+ */
 .grid-card {
     background: var(--surface-1);
     border: 1px solid var(--border-hairline);
@@ -1023,11 +1035,10 @@ input {
     transition: transform var(--duration-state) var(--ease-out),
                 border-color var(--duration-state) var(--ease-out),
                 box-shadow var(--duration-state) var(--ease-out);
-    cursor: pointer;
 }
 
 .grid-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-2px);
     border-color: var(--border-strong);
     box-shadow: var(--shadow-2);
 }
