@@ -214,6 +214,16 @@ describe('the committed icons', () => {
         expect(read('../assets/icons/favicon.svg').toString('utf8')).toBe(buildSvgIcon());
     });
 
+    // A checkout-time line-ending rewrite (core.autocrlf without a pinning
+    // .gitattributes) fails the byte-exact assertion above too, but as a wall
+    // of individually-diffed characters that reads like content drift rather
+    // than what it actually is. This isolates that one failure mode so it
+    // says what it means.
+    it('carries LF line endings, not a checkout-time rewrite to CRLF', () => {
+        const bytes = read('../assets/icons/favicon.svg');
+        expect(bytes.includes(0x0d)).toBe(false);
+    });
+
     it('ship an SVG that carries no external reference', () => {
         const svg = read('../assets/icons/favicon.svg').toString('utf8');
         expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
