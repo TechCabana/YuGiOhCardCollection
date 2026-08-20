@@ -15,6 +15,9 @@ dist/
 # read back by scripts/pipeline-report.mjs. Run artefacts, not source.
 .pipeline/
 
+# Planning / local-dev doc — never pushed to remote
+CLAUDE.md
+
 # OS / editor
 .DS_Store
 Thumbs.db
