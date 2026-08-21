@@ -4,17 +4,17 @@
 
 **A personal card collection, published as a static site from Airtable.**
 
-[![License](https://img.shields.io/github/license/TechCabana/YuGiOhCardCollection?style=flat&color=blue)](LICENSE)
-[![Language](https://img.shields.io/github/languages/top/TechCabana/YuGiOhCardCollection?style=flat)](https://github.com/TechCabana/YuGiOhCardCollection)
-[![Repo size](https://img.shields.io/github/repo-size/TechCabana/YuGiOhCardCollection?style=flat)](https://github.com/TechCabana/YuGiOhCardCollection)
-[![Last commit](https://img.shields.io/github/last-commit/TechCabana/YuGiOhCardCollection?style=flat)](https://github.com/TechCabana/YuGiOhCardCollection/commits/main)
+[![License](https://img.shields.io/github/license/TechCabana/yugioh-card-collection?style=flat&color=blue)](LICENSE)
+[![Language](https://img.shields.io/github/languages/top/TechCabana/yugioh-card-collection?style=flat)](https://github.com/TechCabana/yugioh-card-collection)
+[![Repo size](https://img.shields.io/github/repo-size/TechCabana/yugioh-card-collection?style=flat)](https://github.com/TechCabana/yugioh-card-collection)
+[![Last commit](https://img.shields.io/github/last-commit/TechCabana/yugioh-card-collection?style=flat)](https://github.com/TechCabana/yugioh-card-collection/commits/main)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/ci.yml)
-[![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/YuGiOhCardCollection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/YuGiOhCardCollection/actions/workflows/pages.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/TechCabana/yugioh-card-collection/ci.yml?branch=main&style=flat&label=ci)](https://github.com/TechCabana/yugioh-card-collection/actions/workflows/ci.yml)
+[![Deploy](https://img.shields.io/github/actions/workflow/status/TechCabana/yugioh-card-collection/pages.yml?branch=main&style=flat&label=deploy)](https://github.com/TechCabana/yugioh-card-collection/actions/workflows/pages.yml)
 [![Tests](https://img.shields.io/badge/tests-505%20passing-2EA043?style=flat)](#testing)
 [![Node](https://img.shields.io/badge/Node-24.x-5FA04E?style=flat&logo=nodedotjs&logoColor=white)](package.json)
 
-[Live site](https://techcabana.github.io/YuGiOhCardCollection/) ·
+[Live site](https://techcabana.github.io/yugioh-card-collection/) ·
 [Getting started](#getting-started) ·
 [Architecture](#architecture) ·
 [Project structure](#project-structure) ·
@@ -79,8 +79,8 @@ directory. Node is for the tooling.
 ### 1. Clone
 
 ```bash
-git clone https://github.com/TechCabana/YuGiOhCardCollection.git
-cd YuGiOhCardCollection
+git clone https://github.com/TechCabana/yugioh-card-collection.git
+cd yugioh-card-collection
 ```
 
 ### 2. Run the site
@@ -344,7 +344,7 @@ than publishing them.
 ### Project structure
 
 ```
-YuGiOhCardCollection/
+yugioh-card-collection/
 ├── index.html              page shell
 ├── script.js               app entry, wires the DOM to the modules below
 ├── styles.css              everything that is not a token

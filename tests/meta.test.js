@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 const path = (relativePath) => fileURLToPath(new URL(relativePath, import.meta.url));
 const indexHtml = readFileSync(path('../index.html'), 'utf8');
 
-const PAGES_URL = 'https://techcabana.github.io/YuGiOhCardCollection/';
+const PAGES_URL = 'https://techcabana.github.io/yugioh-card-collection/';
 
 /** The content of <meta name="..."> or <meta property="...">, or null. */
 const meta = (attribute, name) => {

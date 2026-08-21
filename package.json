@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TechCabana/YuGiOhCardCollection.git"
+    "url": "git+https://github.com/TechCabana/yugioh-card-collection.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/TechCabana/YuGiOhCardCollection/issues"
+    "url": "https://github.com/TechCabana/yugioh-card-collection/issues"
   },
-  "homepage": "https://github.com/TechCabana/YuGiOhCardCollection#readme",
+  "homepage": "https://github.com/TechCabana/yugioh-card-collection#readme",
   "devDependencies": {
     "vitest": "^4.1.10"
   },
