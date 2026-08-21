@@ -10,8 +10,11 @@
 [![Last commit](https://img.shields.io/github/last-commit/TechCabana/yugioh-card-collection?style=flat)](https://github.com/TechCabana/yugioh-card-collection/commits/main)
 
 [Live site](https://techcabana.github.io/yugioh-card-collection/) ·
+[Overview](#overview) ·
 [Installation](#installation) ·
-[Architecture](#architecture)
+[Architecture](#architecture) ·
+[Testing](#testing) ·
+[Contributing & Licence](#contributing--licence)
 
 </div>
 
