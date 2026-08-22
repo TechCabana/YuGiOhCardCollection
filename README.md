@@ -205,7 +205,7 @@ Everything else is fetched.
 
 ```mermaid
 flowchart LR
-    A[Airtable\nSerial typed in] --> B[enrich-airtable.mjs]
+    A["Airtable\nSerial typed in"] --> B[enrich-airtable.mjs]
     B -->|YGOPRODeck lookup| C[YGOPRODeck API]
     C --> B
     B -->|PATCH machine-owned fields| A
