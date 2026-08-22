@@ -221,22 +221,22 @@ flowchart LR
 <!-- ASCII fallback:
 ```
    you                     GitHub Actions                        visitors
-    |                            |                                   |
-    |  type a Serial             |                                   |
-    v                            |                                   |
- Airtable ------------------------>                                  |
-    ^                            |  enrich-airtable.mjs               |
-    |                            +--> YGOPRODeck lookup               |
-    |  PATCH machine-owned       |                                   |
-    +----------------------------+                                   |
-                                 |  sync-airtable.mjs                 |
-                                 +--> data/cards.json (committed)     |
-                                 |                                   |
-                                 |  mirror-images.mjs                 |
-                                 +--> assets/cards/*.jpg (committed)  |
-                                 |                                   |
-                                 |  actions/deploy-pages              |
-                                 +--> GitHub Pages ---------------------+
+    │                            │                                   │
+    │  type a Serial             │                                   │
+    v                            │                                   │
+ Airtable ────────────────────────>                                  │
+    ^                            │  enrich-airtable.mjs               │
+    │                            +──> YGOPRODeck lookup               │
+    │  PATCH machine-owned       │                                   │
+    +────────────────────────────+                                   │
+                                 │  sync-airtable.mjs                 │
+                                 +──> data/cards.json (committed)     │
+                                 │                                   │
+                                 │  mirror-images.mjs                 │
+                                 +──> assets/cards/*.jpg (committed)  │
+                                 │                                   │
+                                 │  actions/deploy-pages              │
+                                 +──> GitHub Pages ──────────────────────+
 ```
 -->
 
